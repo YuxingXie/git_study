@@ -271,4 +271,14 @@ error: the following file has local modifications:
 
 注意-f和--cached两个不同的命令选项。
 
-我们使用-f选项删除，强制移除这个文件，然后再创建一个a.txt再add,然后用git status看看：
+rm之后需要git会暂存"删除"这个变更(不需要add了)，然后可以commit到版本库。
+
+##### 重命名
+
+方法一：
+```text
+$ git mv a.txt b.txt
+```
+
+方法二：
+``````
