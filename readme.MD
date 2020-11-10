@@ -289,6 +289,18 @@ git clone用于创建版本库副本。
 $ git clone 源版本库目录全路径 目的版本库目录全路径
 ``` 
 
-如：git clone ~/a_project ~/b_project。这个操作实际应该和copy文件夹没太多区别。
+如：git clone ~/a_project ~/b_project。这个操作和copy文件夹是不一样的。
+
+### 3.3 配置文件
+
+有几个地方可以找到配置文件，并有不同的优先级。
+
+* .git/config(版本库特定)
+
+* ~/.gitconfig(用户级别)
+
+* /etc/gitconfig(linux系统级)
+
+* /usr/local/git/etc/gitconfig(我的mac，不知道是不是系统级)
 
 
