@@ -196,4 +196,4 @@ $ git config user.email "trump4moreyears@donald.com"
 
 #### 3.2.4 再次提交
 
-记得add! 
+NOTE:记得add! 书上说文件已经添加到版本库就没必要add，这与我使用的结果不一样。这是版本差异还是作者错了？
