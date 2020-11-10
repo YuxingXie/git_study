@@ -127,7 +127,8 @@ $ git add 文件名
 
 2. 暂存(staged):git add之后的文件状态；
 
-3. modified:文件被修改的状态,对于曾经提交(commit)过的文件，修改后不管是否add都是modified状态。
+3. modified:新文件相对于暂存，或老文件相对于git库处于被修改的状态,修改后不管是否add都是modified状态,但是如果add了，
+用status命令查看，文件颜色是绿色的，否则是红色。
 
 NOTE:git add并不仅仅只是添加新文件,当文件状态是modified的时候，git add可以将改变的文件重新暂存。可以这样理解：staged状态的文件，暂存起来
 的内容和正在编辑的内容是一样的，它们随时可以提交。
@@ -171,4 +172,5 @@ git commit [-a | --interactive | --patch] [-s] [-v] [-u<mode>] [--amend]
                   [--date=<date>] [--cleanup=<mode>] [--[no-]status]
 ```
 
+NOTE:commit提交那些被add的文件，add之后如果文件有变化，这些变化不会被提交到版本库。所以除非特殊情况，commit之前确认是否add可能是个好习惯。
 
