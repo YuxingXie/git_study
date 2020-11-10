@@ -174,3 +174,26 @@ git commit [-a | --interactive | --patch] [-s] [-v] [-u<mode>] [--amend]
 
 NOTE:commit提交那些被add的文件，add之后如果文件有变化，这些变化不会被提交到版本库。所以除非特殊情况，commit之前确认是否add可能是个好习惯。
 
+如果git add --all（添加所有）后commit,用git status查看：
+```text
+$ git status
+On branch master
+Your branch is ahead of 'origin/master' by 2 commits.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean
+```
+工作目录干净(working tree clean),意思我理解应该是：我工作的地方(文本编辑器，IDE)等这些地方的文件内容和版本库一样了。
+
+#### 3.2.3 配置提交作者
+
+```text
+$ git config user.name "Shame on Joe Biden"
+$ git config user.email "trump4moreyears@donald.com"
+```
+
+也可以设置环境变量GIT_AUTHOR_NAME和GIT_AUTHOR_EMAIL.
+
+#### 3.2.4 再次提交
+
+记得add! 
