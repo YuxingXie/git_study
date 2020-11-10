@@ -12,8 +12,11 @@
 
 ### 3.1 Git命令行
 
+
+
 重点：命令行格式，基础命令（即git这个命令），子命令，选项（子命令选项）,专用子命令选项，命令参数，长选项，短选项
 
+NOTE：这些东西多用就熟悉并能融会贯通，没必要死记硬背。
 
 * "git --选项"，选项包括：version,help等十来个，记得前面带上"--"，如：git --version；
 
@@ -102,6 +105,70 @@ See 'git help git' for an overview of the system.
 
 ### 3.2 快速入门
 
-git init初始化一个空仓库；
+#### 3.2.1 初始化一个空仓库
 
-git add 
+理解：实际是创建一个.git目录
+```text
+git init
+```
+
+#### 3.2.2 将文件添加到版本库中
+
+##### git add
+
+```text
+# 将文件添加到版本库
+$ git add 文件名
+```
+
+文件未提交(commit)前在版本库中的几种状态：
+
+1. Untracked：未add之前的状态；
+
+2. 暂存(staged):git add之后的文件状态；
+
+3. modified:文件被修改的状态,对于曾经提交(commit)过的文件，修改后不管是否add都是modified状态。
+
+NOTE:git add并不仅仅只是添加新文件,当文件状态是modified的时候，git add可以将改变的文件重新暂存。可以这样理解：staged状态的文件，暂存起来
+的内容和正在编辑的内容是一样的，它们随时可以提交。
+
+##### git status
+
+```text
+# 
+$ git status
+
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        new file:   .gitignore
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   .gitignore
+        modified:   readme.MD
+
+
+```
+NOTE:根据命令提示，(use "git restore --staged <file>..." to unstage)，我尝试将一个已暂存的文件a.txt移出版本库：
+```text
+# 从版本库中移除a.txt，使其变为untracked状态
+$ git restore --staged a.txt
+``` 
+
+##### git commit
+
+```text
+# 查看commit子命令格式
+$ git help commit
+git commit [-a | --interactive | --patch] [-s] [-v] [-u<mode>] [--amend]
+                  [--dry-run] [(-c | -C | --fixup | --squash) <commit>]
+                  [-F <file> | -m <msg>] [--reset-author] [--allow-empty]
+                  [--allow-empty-message] [--no-verify] [-e] [--author=<author>]
+                  [--date=<date>] [--cleanup=<mode>] [--[no-]status]
+```
+
+
