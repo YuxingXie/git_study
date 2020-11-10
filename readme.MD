@@ -128,7 +128,9 @@ $ git add 文件名
 2. 暂存(staged):git add之后的文件状态；
 
 3. modified:新文件相对于暂存，或老文件相对于git库处于被修改的状态,修改后不管是否add都是modified状态,但是如果add了，
-用status命令查看，文件颜色是绿色的，否则是红色。
+用status命令查看，文件颜色是绿色的，否则是红色;
+
+4. deleted:被删除
 
 NOTE:git add并不仅仅只是添加新文件,当文件状态是modified的时候，git add可以将改变的文件重新暂存。可以这样理解：staged状态的文件，暂存起来
 的内容和正在编辑的内容是一样的，它们随时可以提交。
@@ -255,3 +257,18 @@ git show-branch是查看当前分支的单行摘要,可以带上命令选项--mo
 #### 3.2.6 查看提交差异
 
 命令格式为：git diff 提交ID1 提交ID2
+
+#### 3.2.7 版本库内文件的删除和重命名
+
+##### 删除
+
+```text
+$ git rm a.txt
+error: the following file has local modifications:
+    a.txt
+(use --cached to keep the file, or -f to force removal)
+```
+
+注意-f和--cached两个不同的命令选项。
+
+我们使用-f选项删除，强制移除这个文件，然后再创建一个a.txt再add,然后用git status看看：
