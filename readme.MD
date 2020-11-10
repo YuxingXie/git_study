@@ -197,3 +197,61 @@ $ git config user.email "trump4moreyears@donald.com"
 #### 3.2.4 再次提交
 
 NOTE:记得add! 书上说文件已经添加到版本库就没必要add，这与我使用的结果不一样。这是版本差异还是作者错了？
+
+#### 3.2.5 查看提交
+
+```text
+$ git log
+
+commit 5fda9bdf727db118dd41cf00267cbec39d8e54e0 (HEAD -> master)
+Author: yuxingxie <185246042@qq.com>
+Date:   Tue Nov 10 15:00:21 2020 +0800
+
+    must add before commit?
+
+commit 39f1662f767217bea2055927fe153524c0ca2895
+Author: yuxingxie <185246042@qq.com>
+Date:   Tue Nov 10 14:55:43 2020 +0800
+
+    ds
+:
+
+```
+
+5fda9bdf727db118dd41cf00267cbec39d8e54e0这一串东西叫提交ID。看下面的命令：
+
+```text
+$ git show d89dc2fedea05fa019a8edc846b0a000f53755e8
+commit d89dc2fedea05fa019a8edc846b0a000f53755e8 (HEAD -> master)
+Author: yuxingxie <185246042@qq.com>
+Date:   Tue Nov 10 15:16:40 2020 +0800
+
+    add exists file a.txt
+
+diff --git a/a.txt b/a.txt
+index d518ffc..e6c17c7 100644
+--- a/a.txt
++++ b/a.txt
+@@ -1 +1 @@
+-dsdfsfds的范德萨发生的双方都胜多负少
+\ No newline at end of file
++dsdfsfds的范德萨发生的双方都胜多负少dsfsdfdsdsf
+\ No newline at end of file
+
+```
+git show-branch是查看当前分支的单行摘要,可以带上命令选项--more=n。n是一个整数，表示看更多的提交次数。
+```text
+ git show-branch --more=10
+[master] add exists file a.txt
+[master^] must add before commit?
+[master~2] ds
+[master~3] aaa
+[master~4] some files not staged
+[master~5] Initial commit
+
+```
+关于分支日后研究，现在我们这个分支叫master分支。
+
+#### 3.2.6 查看提交差异
+
+命令格式为：git diff 提交ID1 提交ID2
