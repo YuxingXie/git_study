@@ -473,7 +473,7 @@ blob对象是数据结构的“底端”；它什么也不引用而且只被树�
 
 ![](https://github.com/YuxingXie/git_study/raw/master/assets/image/04-01.jpg)  
 
-图4-2　二次提交后的Git对象
+>>>>>>> 图4-2　二次提交后的Git对象
 
 就像前一张图里，新提交对象添加了一个关联的树对象来表示目录和文件结构的总状态。在这里，它是ID为cafed00d的树对象。
 
