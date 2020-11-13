@@ -471,7 +471,6 @@ blob对象是数据结构的“底端”；它什么也不引用而且只被树�
 
 现在，让我们使事情变得复杂一点。保留原来的两个文件不变，添加一个包含一个文件的新子目录。对象库就如图4-2所示。
 
-https://github.com/ 你的用户名 / 你的项目名 / raw / 分支名 / 存放图片的文件夹 / 该文件夹下的图片
 ![](https://github.com/YuxingXie/git_study/raw/master/assets/image/04-01.jpg)  
 
 图4-2　二次提交后的Git对象
