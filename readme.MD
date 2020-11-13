@@ -242,7 +242,7 @@ index d518ffc..e6c17c7 100644
 
 ```
 git show-branch是查看当前分支的单行摘要,可以带上命令选项--more=n。n是一个整数，表示看更多的提交次数。
-```Bash
+```text
  git show-branch --more=10
 [master] add exists file a.txt
 [master^] must add before commit?
@@ -262,7 +262,7 @@ git show-branch是查看当前分支的单行摘要,可以带上命令选项--mo
 
 ##### 删除
 
-```Bash
+```text
 $ git rm a.txt
 error: the following file has local modifications:
     a.txt
@@ -276,7 +276,7 @@ rm之后需要git会暂存"删除"这个变更(不需要add了)，然后可以co
 ##### 重命名
 
 书中介绍了两种方法，我并不打算使用他的git rm和git add组合方法，仅推荐如下方法：
-```Bash
+```text
 $ git mv a.txt b.txt
 ```
 
@@ -473,7 +473,7 @@ blob对象是数据结构的“底端”；它什么也不引用而且只被树�
 现在，让我们使事情变得复杂一点。保留原来的两个文件不变，添加一个包含一个文件的新子目录。对象库就如图4-2所示。
 
 ![](https://github.com/YuxingXie/git_study/raw/master/assets/image/04-02.jpg)  
-图4-2　二次提交后的Git对象
+<div style="vertical-align: center">图4-2　二次提交后的Git对象</div>
 
 就像前一张图里，新提交对象添加了一个关联的树对象来表示目录和文件结构的总状态。在这里，它是ID为cafed00d的树对象。
 
