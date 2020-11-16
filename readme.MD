@@ -493,3 +493,128 @@ blob对象是数据结构的“底端”；它什么也不引用而且只被树�
 
 带着一些原则，来看看所有这些概念和组件是如何在版本库里结合在一起的。让我们创建一个新的版本库，并更详细地检查内部文件和对象库。
 
+```text
+# 与书中不一样，这里直接find .git目录
+
+$ find .
+
+.
+./.git
+./.git/hooks
+./.git/hooks/commit-msg.sample
+./.git/hooks/applypatch-msg.sample
+./.git/hooks/pre-applypatch.sample
+./.git/hooks/post-commit.sample
+./.git/hooks/pre-rebase.sample
+./.git/hooks/post-receive.sample
+./.git/hooks/prepare-commit-msg.sample
+./.git/hooks/post-update.sample
+./.git/hooks/pre-commit.sample
+./.git/hooks/update.sample
+./.git/refs
+./.git/refs/heads
+./.git/refs/tags
+./.git/config
+./.git/objects
+./.git/objects/pack
+./.git/objects/info
+./.git/description
+./.git/HEAD
+./.git/branches
+./.git/info
+./.git/info/exclude
+
+
+```
+
+可以看到，.git目录包含很多内容。这些文件是基于模板目录显示的，根据需要可以进行调整。根据使用的Git的版本，实际列表可能看起来会有一点不同。例如，旧版本的Git不对.git/hooks 文件使用.sample 后缀。
+
+在一般情况下，不需要查看或者操作.git目录下的文件。认为这些“隐藏”的文件是Git底层（plumbing）或者配置的一部分。Git有一小部分底层命令来处理这些隐藏的文件，但是你很少会用到它们。
+
+最初，除了几个占位符之外，.git/objects 目录（用来存放所有Git对象的目录）是空的。
+```text
+$ find .git/objects
+
+
+
+
+
+.git/objects
+.git/objects/pack
+.git/objects/info
+```
+
+
+
+
+
+现在，让我们来小心地创建一个简单的对象。
+
+```text
+$ echo "hello world" > hello.txt
+
+
+
+
+$ git add hello.txt
+
+```
+
+
+
+
+
+
+
+
+如果输入的“hello world”跟这里一样（没有改变间距和大小写），那么objects目录应该如下所示：
+
+```text
+$ find .git/objects
+
+
+
+
+.git/objects
+.git/objects/pack
+.git/objects/3b
+.git/objects/3b/18e512dba79e4c8300dd08aeb37f8e728b8dad
+.git/objects/info
+
+
+
+```
+
+
+所有这一切看起来很神秘。其实不然，下面各节会慢慢解释原因。
+
+#### 4.3.2　对象、散列和blob
+
+当为hello.txt 创建一个对象的时候，Git并不关心hello.txt 的文件名。Git只关心文件里面的内容：表示“hello world”的12个字节和换行符（跟之前创建的blob一样）。Git对这个blob执行一些操作，计算它的SHA1散列值，把散列值的十六进制表示作为文件名它放进对象库中。
+
+```text
+如何知道一个SHA1散列值是唯一的？
+
+两个不同blob产生相同SHA1散列值的机会十分渺茫。当这种情况发生的时候，称为一次碰撞。然而，一次SHA1碰撞的可能性太低，你可以放心地认为它不会干扰我们对Git的使用。
+
+SHA1是“安全散列加密”算法。直到现在，没有任何已知的方法（除了运气之外）可以让一个用户刻意造成一次碰撞。但是碰撞会随机发生吗？让我们来看看。
+
+对于160位数，你有2160 或者大约1048 （1后面跟48个0）种可能的SHA1散列值。这个数是极其巨大的。即使你雇用一万亿人来每秒产生一万亿个新的唯一blob对象，持续一万亿年，你也只有1043 个blob对象。
+
+如果你散列了280 个随机blob，可能会发生一次碰撞。
+
+不相信我们的话，就去读读Bruce Schneier的书吧 ② 。
+```
+
+在这种情况下散列值是3b18e512dba79e4c8300dd08aeb37f8e728b8dad。160位的SHA1散列值对应20个字节，这需要40个字节的十六进制来显示，因此这内容另存为.git/objects/3b/18e512dba79e4c8300dd08aeb37f8e728b8dad 。Git在前两个数字后面插入一个“/”以提高文件系统效率（如果你把太多的文件放在同一个目录中，一些文件系统会变慢；使SHA1的第一个字节成为一个目录是一个很简单的办法，可以为所有均匀分布的可能对象创建一个固定的、256路分区的命名空间）。
+
+为了展示Git真的没有对文件的内容做很多事情（它还是同样的内容“hello world”），可以在任何时间使用散列值把它从对象库里提取出来。
+
+```text
+$ git cat-file -p 3b18e512dba79e4c8300dd08aeb37f8e728b8dad
+
+
+
+
+hello world
+```
