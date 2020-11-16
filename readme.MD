@@ -494,6 +494,14 @@ blob对象是数据结构的“底端”；它什么也不引用而且只被树�
 带着一些原则，来看看所有这些概念和组件是如何在版本库里结合在一起的。让我们创建一个新的版本库，并更详细地检查内部文件和对象库。
 
 ```text
+$ mkdir /tmp/hello
+
+$ cd /tmp/hello
+
+$ git init
+Initialized empty Git repository in /tmp/hello/.git/
+
+# 列出当前目录中的所有文件
 $ find .
 
 .
@@ -532,10 +540,6 @@ $ find .
 最初，除了几个占位符之外，.git/objects 目录（用来存放所有Git对象的目录）是空的。
 ```text
 $ find .git/objects
-
-
-
-
 
 .git/objects
 .git/objects/pack
@@ -616,3 +620,96 @@ $ git cat-file -p 3b18e512dba79e4c8300dd08aeb37f8e728b8dad
 
 hello world
 ```
+
+提示
+
+Git也知道手动输入40个字符是很不切实际的，因此它提供了一个命令通过对象的唯一前缀来查找对象的散列值。
+
+```text
+$ git rev-parse 3b18e512d
+
+
+
+
+3b18e512dba79e4c8300dd08aeb37f8e728b8dad
+```
+
+
+#### 4.3.3　文件和树
+
+
+既然“hello world”那个blob已经安置在对象库里了，那么它的文件名又发生了什么事呢？如果不能通过文件名找到文件Git就太没用了。
+
+正如前面提到的，Git通过另一种叫做目录树（tree）的对象来跟踪文件的路径名。当使用git add命令时，Git会给添加的每个文件的内容创建一个对象，但它并不会马上为树创建一个对象。相反，索引更新了。索引位于.git/index 中，它跟踪文件的路径名和相应的blob。每次执行命令（比如，git add、git rm或者git mv）的时候，Git会用新的路径名和blob信息来更新索引。
+
+任何时候，都可以从当前索引创建一个树对象，只要通过底层的git write-tree命令来捕获索引当前信息的快照就可以了。
+
+目前，该索引只包含一个文件，hello.txt.
+
+```text
+$ git ls-files -s
+
+
+
+
+100644 3b18e512dba79e4c8300dd08aeb37f8e728b8dad 0　　　hello.txt
+
+
+
+```
+
+
+在这里你可以看到文件的关联，hello.txt 与3b18e4...的blob。
+
+接下来，让我们捕获索引状态并把它保存到一个树对象里。
+```text
+
+$ git write-tree
+
+
+
+
+68aba62e560c0ebc3396e8ae9335232cd93a3f60
+
+$ find .git/objects
+
+
+
+
+.git/objects
+.git/objects/68
+.git/objects/68/aba62e560c0ebc3396e8ae9335232cd93a3f60
+.git/objects/pack
+.git/objects/3b
+.git/objects/3b/18e512dba79e4c8300dd08aeb37f8e728b8dad
+.git/objects/info
+
+
+
+```
+
+
+现在有两个对象：3b18e5的“hello world”对象和一个新的68aba6树对象。可以看到，SHA1对象名完全对应.git/objects 下的子目录和文件名。
+
+但是树是什么样子的呢？因为它是一个对象，就像blob一样，所以可以用底层命令来查看它。
+```text
+
+$ git cat-file -p 68aba6
+
+
+
+
+100644 blob 3b18e512dba79e4c8300dd08aeb37f8e728b8dad　　 hello.txt
+
+
+```
+
+
+
+对象的内容应该很容易解释。第一个数100644，是对象的文件属性的八进制表示，用过UNIX的chmod命令的人应该对这个很熟悉了。这里，3b18e5是hello world 的blob的对象名，hello.txt 是与该blob关联的名字。
+
+当执行git ls-file -s的时候，很容易就可以看到树对象已经捕获了索引中的信息。
+
+#### 4.3.4　对Git使用SHA1的一点说明
+
+在更详细地讲解树对象的内容之前，让我们先来看看SHA1散列的一个重要特性。
