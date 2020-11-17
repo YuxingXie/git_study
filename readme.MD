@@ -657,7 +657,20 @@ $ git add b.txt
 ```
 ![](https://github.com/YuxingXie/git_study/raw/master/assets/image/04-03-01-02.png) 
 
-并没有在3d目录下多出一个文件，而是多出一个8d/0e41234f24b6da002d962a26c2495ea16a425f文件。
+可以看到并没有在3d目录下多出一个文件，而是多出一个8d/0e41234f24b6da002d962a26c2495ea16a425f文件。
+所以工作区的文件目录与git仓库并不是简单的做一个映射而已，也就是书中所说的"目录树"有自己的一套规则。
+
+另外，文件内容都为"hello world"的两个文件,git并没有创建一个object,而是引用同一个object。为了验证这一点，做如下操作：
+
+```text
+$ mkdir t
+$ cd t
+$ touch c.txt
+$ echo "hello world" > c.txt
+$ git add c.txt 
+
+```
+可以看到，在objects下没有新目录和文件生产，这印证了我的想法。那么问题来了：git是如何区分这些文件的呢？
 
 
 #### 4.3.3　文件和树
