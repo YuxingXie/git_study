@@ -650,6 +650,15 @@ $ git add b.txt
 ```
 ![](https://github.com/YuxingXie/git_study/raw/master/assets/image/04-03-01-01.png) 
 
+可以看到在.git/objects/3b目录下并没有两个文件。然后，我继续执行如下命令：
+```text
+$ echo "hello git" > b.txt
+$ git add b.txt 
+```
+![](https://github.com/YuxingXie/git_study/raw/master/assets/image/04-03-01-02.png) 
+
+并没有在3d目录下多出一个文件，而是多出一个8d/0e41234f24b6da002d962a26c2495ea16a425f文件。
+
 
 #### 4.3.3　文件和树
 
