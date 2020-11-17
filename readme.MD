@@ -683,7 +683,49 @@ $ git commit --all -m 'sss'
 ```
 ![](https://github.com/YuxingXie/git_study/raw/master/assets/image/04-03-01-03.png) 
 
-wow,objects下多出了好多文件夹。
+喔,提交(commit)以后，objects下多出了6a、19、c4三个文件夹。
+
+```text
+$ find .git/objects
+.git/objects
+.git/objects/3b
+.git/objects/3b/18e512dba79e4c8300dd08aeb37f8e728b8dad
+.git/objects/6a
+.git/objects/6a/b6f1e2bd40b2a0440de63c2e235c22c3201a91
+.git/objects/.DS_Store
+.git/objects/pack
+.git/objects/19
+.git/objects/19/cfe1593d7232f7ee419a9a171d09ae309fdc48
+.git/objects/info
+.git/objects/c4
+.git/objects/c4/a1f291510b4b1a7065e4e18143b8af822d5bbb
+.git/objects/8d
+.git/objects/8d/0e41234f24b6da002d962a26c2495ea16a425f
+```
+3b文件夹里面的文件的散列值并没有变化，而生成的新文件中并没有和3b文件夹相同散列值的文件，我用git cat-file看看这些文件都是什么:
+
+```text
+# git cat-file 看看6a目录下的这个文件代表什么
+git cat-file -p git cat-file -p 6ab6f1e2bd40b2a0440de63c2e235c22c3201a91
+
+100644 blob 3b18e512dba79e4c8300dd08aeb37f8e728b8dad	a.txt
+100644 blob 8d0e41234f24b6da002d962a26c2495ea16a425f	b.txt
+040000 tree c4a1f291510b4b1a7065e4e18143b8af822d5bbb	t
+```
+所以6a下的这个文件(散列码)包含三个对象：a.txt,b.txt,t。可以认为它表示根目录树结构。
+
+再看看19和c4：
+```text
+git cat-file -p 19cfe1593d7232f7ee419a9a171d09ae309fdc48
+tree 6ab6f1e2bd40b2a0440de63c2e235c22c3201a91
+author yuxingxie <185246042@qq.com> 1605601275 +0800
+committer yuxingxie <185246042@qq.com> 1605601275 +0800
+
+sss
+
+```
+
+
 #### 4.3.3　文件和树
 
 
@@ -721,10 +763,6 @@ $ git write-tree
 68aba62e560c0ebc3396e8ae9335232cd93a3f60
 
 $ find .git/objects
-
-
-
-
 .git/objects
 .git/objects/68
 .git/objects/68/aba62e560c0ebc3396e8ae9335232cd93a3f60
@@ -742,15 +780,9 @@ $ find .git/objects
 
 但是树是什么样子的呢？因为它是一个对象，就像blob一样，所以可以用底层命令来查看它。
 ```text
-
+# NOTE:记住这个命令
 $ git cat-file -p 68aba6
-
-
-
-
 100644 blob 3b18e512dba79e4c8300dd08aeb37f8e728b8dad　　 hello.txt
-
-
 ```
 
 
