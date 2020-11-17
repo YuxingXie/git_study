@@ -628,6 +628,8 @@ hello world
 Git也知道手动输入40个字符是很不切实际的，因此它提供了一个命令通过对象的唯一前缀来查找对象的散列值。
 
 ```text
+
+# 注意，前面3b是文件夹名称，连写就行，不要用任何东西分割
 $ git rev-parse 3b18e512d
 
 
@@ -670,9 +672,18 @@ $ echo "hello world" > c.txt
 $ git add c.txt 
 
 ```
-可以看到，在objects下没有新目录和文件生产，这印证了我的想法。那么问题来了：git是如何区分这些文件的呢？
+可以看到，在objects下没有新目录和文件生产，这似乎印证了我的想法，但是别急，看下面的操作：
+```text
+$ git commit --all -m 'sss'
+[master (root-commit) 19cfe15] sss
+ 3 files changed, 3 insertions(+)
+ create mode 100644 a.txt
+ create mode 100644 b.txt
+ create mode 100644 t/c.txt
+```
+![](https://github.com/YuxingXie/git_study/raw/master/assets/image/04-03-01-03.png) 
 
-
+wow,objects下多出了好多文件夹。
 #### 4.3.3　文件和树
 
 
