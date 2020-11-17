@@ -636,6 +636,20 @@ $ git rev-parse 3b18e512d
 3b18e512dba79e4c8300dd08aeb37f8e728b8dad
 ```
 
+##### 我的补充
+
+我新建了一个git仓库，然后执行了如下git命令：
+```text
+$ touch a.txt
+$ echo "hello world" > a.txt
+$ git add a.txt
+$ touch b.txt
+$ echo "hello world" > b.txt
+$ git add b.txt
+
+```
+![](https://github.com/YuxingXie/git_study/raw/master/assets/image/04-03-01-01.png) 
+
 
 #### 4.3.3　文件和树
 
