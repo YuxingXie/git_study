@@ -1,5 +1,9 @@
 # Git版本控制管理
 
+
+> 目录
+>> <a href='#3'>第3章 起步</a>
+
 参考书籍：《Git版本控制管理》(Jon Loeliger & Mattbew McCullough)
 
 学前掌握程度：熟练
@@ -9,6 +13,7 @@
 略过背景、安装、与svn结合等内容。
 
 ## 第3章 起步
+<div id='3'></div>
 
 ### 3.1 Git命令行
 
