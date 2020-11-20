@@ -1,3 +1,8 @@
+<style>
+code {
+  white-space : pre-wrap !important;
+}
+</style>
 # Git版本控制管理
 
 参考书籍：《Git版本控制管理》(Jon Loeliger & Mattbew McCullough)
@@ -771,7 +776,10 @@ NOTE:散列值就是文件blob对象的字符串表示法。
 
 当为hello.txt 创建一个对象的时候，Git并不关心hello.txt 的文件名。Git只关心文件里面的内容：表示“hello world”的12个字节和换行符（跟之前创建的blob一样）。Git对这个blob执行一些操作，计算它的SHA1散列值，把散列值的十六进制表示作为文件名它放进对象库中。
 
-<div style="background: gainsboro;border: 1px solid grey">
+
+
+<code>
+
 如何知道一个SHA1散列值是唯一的？
 
 两个不同blob产生相同SHA1散列值的机会十分渺茫。当这种情况发生的时候，称为一次碰撞。然而，一次SHA1碰撞的可能性太低，你可以放心地认为它不会干扰我们对Git的使用。
@@ -783,10 +791,9 @@ SHA1是“安全散列加密”算法。直到现在，没有任何已知的方�
 如果你散列了280 个随机blob，可能会发生一次碰撞。
 
 不相信我们的话，就去读读Bruce Schneier的书吧 ② 。
-</div>
-```text
 
-```
+</code>
+
 
 在这种情况下散列值是3b18e512dba79e4c8300dd08aeb37f8e728b8dad。160位的SHA1散列值对应20个字节，这需要40个字节的十六进制来显示，因此这内容另存为.git/objects/3b/18e512dba79e4c8300dd08aeb37f8e728b8dad 。Git在前两个数字后面插入一个“/”以提高文件系统效率（如果你把太多的文件放在同一个目录中，一些文件系统会变慢；使SHA1的第一个字节成为一个目录是一个很简单的办法，可以为所有均匀分布的可能对象创建一个固定的、256路分区的命名空间）。
 
