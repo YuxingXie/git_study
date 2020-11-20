@@ -772,7 +772,7 @@ $ find .git/objects
 
 #### <a id='4.3.2' href='#c4.3.2'>4.3.2　对象、散列和blob</a>
 
-NOTE:散列值就是文件blob对象的字符串表示法。
+NOTE:散列值就是文件blob对象的40位字符串表示法。
 
 当为hello.txt 创建一个对象的时候，Git并不关心hello.txt 的文件名。Git只关心文件里面的内容：表示“hello world”的12个字节和换行符（跟之前创建的blob一样）。Git对这个blob执行一些操作，计算它的SHA1散列值，把散列值的十六进制表示作为文件名它放进对象库中。
 
@@ -785,7 +785,8 @@ NOTE:散列值就是文件blob对象的字符串表示法。
 两个不同blob产生相同SHA1散列值的机会十分渺茫。当这种情况发生的时候，称为一次碰撞。
 然而，一次SHA1碰撞的可能性太低，你可以放心地认为它不会干扰我们对Git的使用。
 
-SHA1是“安全散列加密”算法。直到现在，没有任何已知的方法（除了运气之外）可以让一个用户刻意造成一次碰撞。但是碰撞会随机发生吗？让我们来看看。
+SHA1是“安全散列加密”算法。直到现在，没有任何已知的方法（除了运气之外）可以让一个用户刻意造成一次碰撞。
+但是碰撞会随机发生吗？让我们来看看。
 
 对于160位数，你有2160 或者大约1048 （1后面跟48个0）种可能的SHA1散列值。
 这个数是极其巨大的。即使你雇用一万亿人来每秒产生一万亿个新的唯一blob对象，持续一万亿年，你也只有1043 个blob对象。
@@ -841,12 +842,18 @@ $ git add b.txt
 
 可以看到在.git/objects/3b目录下并没有两个文件。然后，我继续执行如下命令：
 ```text
+$ git cat-file -p 3b18e512dba79e4c8300dd08aeb37f8e728b8dad
+hello world
+
 $ echo "hello git" > b.txt
 $ git add b.txt 
 ```
 ![](https://github.com/YuxingXie/git_study/raw/master/assets/image/04-03-01-02.png) 
 
 可以看到并没有在3d目录下多出一个文件，而是多出一个8d/0e41234f24b6da002d962a26c2495ea16a425f文件。
+
+
+
 所以工作区的文件目录与git仓库并不是简单的做一个映射而已，也就是书中所说的"目录树"有自己的一套规则。
 
 另外，文件内容都为"hello world"的两个文件,git并没有创建一个object,而是引用同一个object。为了验证这一点，做如下操作：
@@ -893,7 +900,7 @@ $ find .git/objects
 
 ```text
 # git cat-file 看看6a目录下的这个文件代表什么
-git cat-file -p git cat-file -p 6ab6f1e2bd40b2a0440de63c2e235c22c3201a91
+$ git cat-file -p 6ab6f1e2bd40b2a0440de63c2e235c22c3201a91
 
 100644 blob 3b18e512dba79e4c8300dd08aeb37f8e728b8dad	a.txt
 100644 blob 8d0e41234f24b6da002d962a26c2495ea16a425f	b.txt
@@ -903,15 +910,23 @@ git cat-file -p git cat-file -p 6ab6f1e2bd40b2a0440de63c2e235c22c3201a91
 
 再看看19和c4：
 ```text
-git cat-file -p 19cfe1593d7232f7ee419a9a171d09ae309fdc48
+
+
+$ git cat-file -p 19cfe1593d7232f7ee419a9a171d09ae309fdc48
 tree 6ab6f1e2bd40b2a0440de63c2e235c22c3201a91
 author yuxingxie <185246042@qq.com> 1605601275 +0800
 committer yuxingxie <185246042@qq.com> 1605601275 +0800
 
 sss
 
-```
+$ git cat-file -p c4a1f291510b4b1a7065e4e18143b8af822d5bbb
+100644 blob 3b18e512dba79e4c8300dd08aeb37f8e728b8dad	c.txt
 
+```
+注意一点，我们使用git cat-file -p命令后，获得的信息有可能是：
+* 内容，如:hello world
+* blob，指向一个文件
+* tree，指向一个目录，比如上面的6ab6f1e2bd40b2a0440de63c2e235c22c3201a91，似乎是git项目的根目录
 
 #### <a id='4.3.3' href='#c4.3.3'>4.3.3　文件和树</a>
 
