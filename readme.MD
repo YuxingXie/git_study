@@ -1,6 +1,7 @@
 <style>
 code {
   white-space : pre-wrap !important;
+  background: gainsboro;
 }
 </style>
 # Git版本控制管理
