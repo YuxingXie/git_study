@@ -855,35 +855,35 @@ $ git cat-file -p 68aba6
 
 ## <div id='5'>第5章 文件索引和管理</div>
 
- <div id='6'>第6章 提交</div>
+## <div id='6'>第6章 提交</div>
 
- <div id='7'>第7章 分支</div>
+## <div id='7'>第7章 分支</div>
 
- <div id='8'>第8章 diff</div>
+## <div id='8'>第8章 diff</div>
 
- <div id='9'>第9章 合并</div>
+## <div id='9'>第9章 合并</div>
 
- <div id='10'>第10章 更改提交</div>
+## <div id='10'>第10章 更改提交</div>
 
- <div id='11'>第11章 储存和引用日志</div>
+## <div id='11'>第11章 储存和引用日志</div>
 
- <div id='12'>第12章 远程版本控制</div>
+## <div id='12'>第12章 远程版本控制</div>
 
- <div id='13'>第13章 版本库管理</div>
+## <div id='13'>第13章 版本库管理</div>
 
- <div id='14'>第14章 补丁</div>
+## <div id='14'>第14章 补丁</div>
 
- <div id='15'>第15章 钩子</div>
+## <div id='15'>第15章 钩子</div>
 
- <div id='16'>第16章 合并项目</div>
+## <div id='16'>第16章 合并项目</div>
 
- <div id='17'>第17章 子模块最佳实践</div>
+## <div id='17'>第17章 子模块最佳实践</div>
 
- <div id='18'>第18章 结合SVN版本库使用Git</div>
+## <div id='18'>第18章 结合SVN版本库使用Git</div>
 
- <div id='19'>第19章 高级操作</div>
+## <div id='19'>第19章 高级操作</div>
 
- <div id='20'>第20章 提示、技巧和技术</div>
+## <div id='20'>第20章 提示、技巧和技术</div>
 
- <div id='21'>第21章 Git和GitHub</div>
+## <div id='21'>第21章 Git和GitHub</div>
 
