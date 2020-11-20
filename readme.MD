@@ -136,6 +136,16 @@
 >> <a href='#7.8' id='c7.8'>7.8 删除分支</a>
 >
 > <a href='#8' id='c8'>第8章 diff</a>
+>>
+>> <a href='#8.1' id='c8.1'>8.1 git diff命令的格式</a>
+>>
+>> <a href='#8.2' id='c8.2'>8.2 简单的git diff例子</a>
+>>
+>> <a href='#8.3' id='c8.3'>8.3 git diff和提交范围</a>
+>>
+>> <a href='#8.4' id='c8.4'>8.4 路径限制的git diff</a>
+>>
+>> <a href='#8.5' id='c8.5'>8.5 比较SVN和Git如何产生diff</a>
 >
 > <a href='#9' id='c9'>第9章 合并</a>
 >
