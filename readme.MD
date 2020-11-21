@@ -922,7 +922,7 @@ $ git cat-file -p c4a1f291510b4b1a7065e4e18143b8af822d5bbb
 注意一点，我们使用git cat-file -p命令后，获得的信息有可能是：
 * 内容，如:hello world
 * blob，指向一个文件
-* tree，指向一个目录，比如上面的6ab6f1e2bd40b2a0440de63c2e235c22c3201a91，似乎是git项目的根目录
+* tree，指向一个目录，比如上面的6ab6f1e2bd40b2a0440de63c2e235c22c3201a91，似乎是git项目的根目录，而c4a1f291510b4b1a7065e4e18143b8af822d5bbb则是t目录。
 
 #### <a id='4.3.3' href='#c4.3.3'>4.3.3　文件和树</a>
 
@@ -990,6 +990,33 @@ $ git cat-file -p 68aba6
 当执行git ls-file -s的时候，很容易就可以看到树对象已经捕获了索引中的信息。
 
 #### <a id='4.3.4' href='#c4.3.4'>4.3.4　对Git使用SHA1的一点说明</a>
+
+NOTE:git write-tree命令
+
+```text
+命名
+git-write-tree  - 从当前索引创建一个树形对象
+
+概要
+git write-tree [--missing-ok] [--prefix=<prefix>/]
+描述
+使用当前索引创建树对象。新树对象的名称被打印到标准输出。
+
+索引必须处于完全合并状态。
+
+从概念上讲，git write-treesync（）将当前索引内容同步到一组树文件中。
+为了让您的目录中的内容与您的目录匹配，您需要先完成一个git update-index阶段git write-tree。
+
+选项
+   --missing-ok   
+
+通常git write-tree确保目标引用的对象存在于对象数据库中。该选项禁用此检查。
+
+   --prefix=<prefix>/   
+
+写一个表示子目录的树对象<prefix>。这可以用于为位于指定子目录中的子项目编写树对象。
+
+```
 
 在更详细地讲解树对象的内容之前，让我们先来看看SHA1散列的一个重要特性。
 
