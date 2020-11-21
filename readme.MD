@@ -188,8 +188,9 @@
 
 
 重点：命令行格式，基础命令（即git这个命令），子命令，选项（子命令选项）,专用子命令选项，命令参数，长选项，短选项
-
+```text
 NOTE：这些东西多用就熟悉并能融会贯通，没必要死记硬背。
+```
 
 * "git --选项"，选项包括：version,help等十来个，记得前面带上"--"，如：git --version；
 
@@ -304,9 +305,11 @@ $ git add 文件名
 用status命令查看，文件颜色是绿色的，否则是红色;
 
 4. deleted:被删除
-
+```text
 NOTE:git add并不仅仅只是添加新文件,当文件状态是modified的时候，git add可以将改变的文件重新暂存。可以这样理解：staged状态的文件，暂存起来
 的内容和正在编辑的内容是一样的，它们随时可以提交。
+```
+
 
 ##### git status
 
@@ -329,7 +332,11 @@ Changes not staged for commit:
 
 
 ```
+
+```text
 NOTE:根据命令提示，(use "git restore --staged <file>..." to unstage)，我尝试将一个已暂存的文件a.txt移出版本库：
+```
+
 ```text
 # 从版本库中移除a.txt，使其变为untracked状态
 $ git restore --staged a.txt
@@ -346,8 +353,9 @@ git commit [-a | --interactive | --patch] [-s] [-v] [-u<mode>] [--amend]
                   [--allow-empty-message] [--no-verify] [-e] [--author=<author>]
                   [--date=<date>] [--cleanup=<mode>] [--[no-]status]
 ```
-
+```text
 NOTE:commit提交那些被add的文件，add之后如果文件有变化，这些变化不会被提交到版本库。所以除非特殊情况，commit之前确认是否add可能是个好习惯。
+```
 
 如果git add --all（添加所有）后commit,用git status查看：
 ```text
@@ -370,8 +378,9 @@ $ git config user.email "trump4moreyears@donald.com"
 也可以设置环境变量GIT_AUTHOR_NAME和GIT_AUTHOR_EMAIL.
 
 #### <a id='3.2.4' href='#c3.2.4'>3.2.4 再次提交</a>
-
+```text
 NOTE:记得add! 书上说文件已经添加到版本库就没必要add，这与我使用的结果不一样。这是版本差异还是作者错了？
+```
 
 #### <a id='3.2.5' href='#c3.2.5'>3.2.5 查看提交</a>
 
@@ -465,8 +474,10 @@ $ git clone 源版本库目录全路径 目的版本库目录全路径
 如：git clone ~/a_project ~/b_project。这个操作和copy文件夹是不一样的。
 
 ### <a id='3.3' href='#c3.3'>3.3 配置文件</a>
-
+```text
 NOTE:这个先不重点学习
+
+```
 
 有几个地方可以找到配置文件，并有不同的优先级。
 
@@ -481,8 +492,9 @@ NOTE:这个先不重点学习
 
 
 ## <a id='4' href='#c4'>第四章 基本的Git概念</a>
-
+```text
 NOTE:本章多为概念和原理，所以先照抄一遍。
+```
 
 ### <a id='4.1' href='#c4.1'>4.1 基本概念</a>
 
@@ -767,8 +779,9 @@ $ find .git/objects
 所有这一切看起来很神秘。其实不然，下面各节会慢慢解释原因。
 
 #### <a id='4.3.2' href='#c4.3.2'>4.3.2　对象、散列和blob</a>
-
+```text
 NOTE:散列值就是文件blob对象的40位字符串表示法。
+```
 
 当为hello.txt 创建一个对象的时候，Git并不关心hello.txt 的文件名。Git只关心文件里面的内容：表示“hello world”的12个字节和换行符（跟之前创建的blob一样）。Git对这个blob执行一些操作，计算它的SHA1散列值，把散列值的十六进制表示作为文件名它放进对象库中。
 
@@ -990,8 +1003,9 @@ $ git cat-file -p 68aba6
 当执行git ls-file -s的时候，很容易就可以看到树对象已经捕获了索引中的信息。
 
 #### <a id='4.3.4' href='#c4.3.4'>4.3.4　对Git使用SHA1的一点说明</a>
-
+```text
 NOTE:git write-tree命令，大致这样理解吧：git仓库中有个索引，根据这个索引可以生成一个树形对象。根据前面的研究，树可以包含(引用)其它的树，所以我猜测，
+```
 这个树应该是根目录树。
 
 我来证实一下我的猜测：
@@ -1110,6 +1124,10 @@ $ git cat-file -p 4924132693
 注意到不寻常之处了吗？仔细看subdir 的对象名。是你的老朋友，68aba62e560c0 ebc3396e8ae9335232cd93a3f60！
 
 刚刚发生了什么？subdir 的新树只包含一个文件hello.txt ，该文件跟旧的“hello world”内容相同。所以subdir 树跟以前的顶级树是完全一样的！当然它就有跟之前一样的SHA1对象名了。
+
+```text
+NOTE:所以一个目录的SHA1值跟目录的名称没什么关系，只跟里面的内容有关系。
+```
 
 让我们来看看.git/objects 目录，看看最近的更改有哪些影响。
 
