@@ -991,7 +991,36 @@ $ git cat-file -p 68aba6
 
 #### <a id='4.3.4' href='#c4.3.4'>4.3.4　对Git使用SHA1的一点说明</a>
 
-NOTE:git write-tree命令
+NOTE:git write-tree命令，大致这样理解吧：git仓库中有个索引，根据这个索引可以生成一个树形对象。根据前面的研究，树可以包含(引用)其它的树，所以我猜测，
+这个树应该是根目录树。
+
+我来证实一下我的猜测：
+```text
+$ git write-tree
+6ab6f1e2bd40b2a0440de63c2e235c22c3201a91
+$ find .git/objects
+.git/objects
+.git/objects/3b
+.git/objects/3b/18e512dba79e4c8300dd08aeb37f8e728b8dad
+.git/objects/6a
+.git/objects/6a/b6f1e2bd40b2a0440de63c2e235c22c3201a91
+.git/objects/.DS_Store
+.git/objects/pack
+.git/objects/19
+.git/objects/19/cfe1593d7232f7ee419a9a171d09ae309fdc48
+.git/objects/info
+.git/objects/c4
+.git/objects/c4/a1f291510b4b1a7065e4e18143b8af822d5bbb
+.git/objects/8d
+.git/objects/8d/0e41234f24b6da002d962a26c2495ea16a425f
+
+$ git cat-file -p 6ab6f1e2bd40b2a0440de63c2e235c22c3201a91 
+100644 blob 3b18e512dba79e4c8300dd08aeb37f8e728b8dad	a.txt
+100644 blob 8d0e41234f24b6da002d962a26c2495ea16a425f	b.txt
+040000 tree c4a1f291510b4b1a7065e4e18143b8af822d5bbb	t
+```
+没错，根据索引生成的tree的散列值(SHA1)就是根目录的散列值。
+
 
 ```text
 命名
@@ -1017,6 +1046,7 @@ git write-tree [--missing-ok] [--prefix=<prefix>/]
 写一个表示子目录的树对象<prefix>。这可以用于为位于指定子目录中的子项目编写树对象。
 
 ```
+
 
 * 原文
 
