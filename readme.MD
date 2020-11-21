@@ -1083,6 +1083,50 @@ Git依赖于SHA1散列函数的另一个后果：你是如何得到称为68aba62
 最后，我们在上一段中的声明可以推出散列函数的强大应用：它提供了一种有效的方法来比较两个对象，甚至是两个非常大而复杂的数据结构 ③ ，而且并不需要完全传输。
 
 #### <a id='4.3.5' href='#c4.3.5'>4.3.5　树层次结构</a>
+* 原文
+
+只有单个文件的信息是很好管理的，就像上一节所讲的一样，但项目包含复杂而且深层嵌套的目录结构，并且会随着时间的推移而重构和移动。通过创建一个新的子目录，该目录包含hello.txt 的一个完全相同的副本，让我们看看Git是如何处理这个问题的。
+
+```text
+$ pwd
+/tmp/hello
+
+$ mkdir subdir
+
+$ cp hello.txt subdir/
+
+$ git add subdir/hello.txt
+
+$ git write-tree
+492413269336d21fac079d4a4672e55d5d2147ac
+
+$ git cat-file -p 4924132693
+100644 blob 3b18e512dba79e4c8300dd08aeb37f8e728b8dad　　hello.txt
+040000 tree 68aba62e560c0ebc3396e8ae9335232cd93a3f60　　subdir
+
+```
+新的顶级树包含两个条目：原始的hello.txt 以及新的 子目录 ，子目录是 树 而不是blob。
+
+注意到不寻常之处了吗？仔细看subdir 的对象名。是你的老朋友，68aba62e560c0 ebc3396e8ae9335232cd93a3f60！
+
+刚刚发生了什么？subdir 的新树只包含一个文件hello.txt ，该文件跟旧的“hello world”内容相同。所以subdir 树跟以前的顶级树是完全一样的！当然它就有跟之前一样的SHA1对象名了。
+
+让我们来看看.git/objects 目录，看看最近的更改有哪些影响。
+
+```text
+$ find .git/objects
+.git/objects
+.git/objects/49
+.git/objects/49/2413269336d21fac079d4a4672e55d5d2147ac
+.git/objects/68
+.git/objects/68/aba62e560c0ebc3396e8ae9335232cd93a3f60
+.git/objects/pack
+.git/objects/3b
+.git/objects/3b/18e512dba79e4c8300dd08aeb37f8e728b8dad
+.git/objects/info
+
+```
+这只有三个唯一的对象：一个包含“hello world”的blob；一棵包含hello.txt 的树，文件里是“hello world”加一个换行；还有第一棵树旁边包含hello.txt 的另一个索引的另一棵树。
 
 #### <a id='4.3.6' href='#c4.3.6'>4.3.6　提交</a>
 
