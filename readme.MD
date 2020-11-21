@@ -1,8 +1,4 @@
-<style>
-code {
-  white-space : pre-wrap !important;
-}
-</style>
+
 # Git版本控制管理
 
 参考书籍：《Git版本控制管理》(Jon Loeliger & Mattbew McCullough)
