@@ -1149,6 +1149,21 @@ $ find .git/objects
 这只有三个唯一的对象：一个包含“hello world”的blob；一棵包含hello.txt 的树，文件里是“hello world”加一个换行；还有第一棵树旁边包含hello.txt 的另一个索引的另一棵树。
 
 #### <a id='4.3.6' href='#c4.3.6'>4.3.6　提交</a>
+```text
+NOTE:根据作者的意思，使用git commit-tree提交与git commit提交效果应该是一样的，
+然而当我这样做以后，使用git status查看，发现文件未被提交：
+
+$ git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   readme.MD
+
+no changes added to commit (use "git add" and/or "git commit -a")
+```
 
 * 原文
 
@@ -1156,8 +1171,7 @@ $ find .git/objects
 
 ```text
 # echo -n 不换行输出
-$ echo -n "Commit a file that says hello\n" \
-    | git commit-tree 492413269336d21fac079d4a4672e55d5d2147ac
+$ echo -n "Commit a file that says hello\n" | git commit-tree 492413269336d21fac079d4a4672e55d5d2147ac
 3ede4622cc241bcb09683af36360e7413b9ddf6c
 ```
 结果如下所示。
@@ -1169,7 +1183,9 @@ committer Jon Loeliger <jdl@example.com> 1220233277 -0500
 
 Commit a file that says hello
 ```
-如果你在计算机上按步骤操作，你可能会发现你生成的提交对象跟书上的名字不一样。如果你已经理解了目前为止的一切内容，那原因就很明显了：这是不同的提交。提交包含你的名字和创建提交的时间，尽管这区别很微小，但依然是不同的。另一方面，你的提交确实有相同的树。这就是提交对象与它们的树对象分开的原因：不同的提交经常指向同一棵树。当这种情况发生时，Git能足够聪明地只传输新的提交对象，这是非常小的，而不是很可能很大的树和blob对象。
+如果你在计算机上按步骤操作，你可能会发现你生成的提交对象跟书上的名字不一样。如果你已经理解了目前为止的一切内容，那原因就很明显了：这是不同的提交。
+提交包含你的名字和创建提交的时间，尽管这区别很微小，但依然是不同的。另一方面，你的提交确实有相同的树。这就是提交对象与它们的树对象分开的原因：
+不同的提交经常指向同一棵树。当这种情况发生时，Git能足够聪明地只传输新的提交对象，这是非常小的，而不是很可能很大的树和blob对象。
 
 在实际生活中，你可以（并且应该）跳过底层的git write-tree和git commit-tree步骤，并只使用git commit命令。成为一个完全快乐的Git用户，你不需要记住那些底层命令。
 
@@ -1191,6 +1207,8 @@ Commit a file that says hello
 
 
 #### <a id='4.3.7' href='#c4.3.7'>4.3.7　标签</a>
+
+* 原文
 
 最后，Git还管理的一个对象就是标签。尽管Git只实现了一种标签对象，但是有两种基本的标签类型，通常称为轻量级的（lightweight）和带附注的（annotated）。
 
@@ -1235,7 +1253,11 @@ Git通常给指向树对象的提交对象打标签，这个树对象包含版�
 
 ③ 　对这个数据结构更详细的描述见6.3.2节。——原注
 
+#### 总结
 
+* 记住find .git/objects可以查看到所有git库中的bolb对象的散列值
+
+* 
 
 
 ## <a id='5' href='#c5'>第5章 文件索引和管理</a>
