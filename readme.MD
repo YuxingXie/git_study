@@ -1322,6 +1322,104 @@ Git的索引不包含任何文件内容，它仅仅追踪你想要提交的那�
 
 可以用git diff的这两种形式引导你完成暂存变更的过程。最初，git diff显示所有修改的大集合，--cached则是空的。而当暂存时，前者的集合会收缩，后者会增大。如果所有修改都暂存了并准备提交，--cached将是满的，而git diff则什么都不显示。
 
+### <a id='5.2' href='#c5.2'>5.2 Git中的文件分类</a>
+
+Git将所有文件分成3类：已追踪的、被忽略的以及未追踪的。
+
+* 已追踪的（Tracked）
+已追踪的文件是指已经在版本库中的文件，或者是已暂存到索引中的文件。如果想将新文件somefile 添加为已追踪的文件，执行git add somefile 。
+
+* 被忽略的（Ignored）
+被忽略的文件必须在版本库中被明确声明为不可见或被忽略，即使它可能会在你的工作目录中出现。一个软件项目通常都会有很多被忽略的文件。普通被忽略的文件包括临时文件、个人笔记、编译器输出文件以及构建过程中自动生成的大多数文件等。Git维护一个默认忽略文件列表，也可以配置版本库来识别其他文件。被忽略的文件将会在本章后面详细讨论（见5.8节）。
+
+* 未追踪的（Untracked）
+未追踪的文件是指那些不在前两类中的文件。Git把工作目录下的所有文件当成一个集合，减去已追踪的文件和被忽略的文件，剩下的部分作为未追踪的文件。
+
+让我们通过创建一个全新的工作目录和版本库并处理一些文件来探讨这些不同类别的文件。
+
+```text
+
+$ cd /tmp/my_stuff
+
+$ git init
+
+$ git status
+
+# On branch master
+#
+# Initial commit
+#
+nothing to commit (create/copy files and use "git add" to track)
+
+$ echo "New data" > data
+
+$ git status
+# On branch master
+#
+# Initial commit
+#
+# Untracked files:
+#　 (use "git add <file>..." to include in what will be committed)
+#
+#　　　data
+nothing added to commit but untracked files present (use "git add" to track)
+
+```
+
+
+
+最初，目录里没有文件，已追踪的文件和被忽略的文件都是空的，因此未追踪的文件也是空的。一旦创建了一个data 文件，git status就会报告一个未追踪的文件。
+
+编辑器和构建环境常常会在源码文件周围遗留一些临时文件。在版本库中这些文件通常是不应被当作源文件追踪的。而为了让Git忽略目录中的文件，只需要将该文件名添加到一个特殊的文件.gitignore 中就可以了。
+```text
+
+# 手动创建一个垃圾文件
+$ touch main.o
+
+$ git status
+# On branch master
+#
+# Initial commit
+#
+# Untracked files:
+#　 (use "git add <file>..." to include in what will be committed)
+#
+#　　　 data
+#　　　 main.o
+
+$ echo main.o > .gitignore
+
+
+$ git status
+# On branch master
+#
+# Initial commit
+#
+# Untracked files:
+#　 (use "git add <file>..." to include in what will be committed)
+#
+#　　　.gitignore
+#　　　data
+
+
+```
+
+
+这样main.o 已经被忽略了，但是git status现在显示一个新的未追踪的文件.gitignore 。虽然.gitignore 文件对Git有特殊的意义，但是它和版本库中任何其他普通文件都是同样管理的。除非把.gitignore 添加到索引中，否则Git仍会把它当成未追踪的文件。
+
+接下来的几节展示不同的方式来改变文件的追踪状态，以及如何添加或从索引中删除它。
+
+### <a href='#c5.3' id='5.3'>5.3 使用git add</a>
+### <a href='#c5.4' id='5.4'>5.4 使用git commit的一些注意事项</a>
+#### <a href='#c5.4.1' id='5.4.1'>5.4.1 使用git commit --all</a>
+#### <a href='#c5.4.2' id='5.4.2'>5.4.2 编写提交日志消息</a>
+### <a href='#c5.5' id='5.5'>5.5 使用git rm</a>
+### <a href='#c5.6' id='5.6'>5.6 使用git mv</a>
+### <a href='#c5.7' id='5.7'>5.7 追踪重命名注解</a>
+### <a href='#c5.8' id='5.8'>5.8 .gitignore文件</a>
+### <a href='#c5.9' id='5.9'>5.9 Git中对象模型和文件的详细视图</a>
+
+
 ## <a id='6' href='#c6'>第6章 提交</a>
 
 ## <a id='7' href='#c7'>第7章 分支</a>
