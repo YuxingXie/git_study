@@ -1410,10 +1410,444 @@ $ git status
 接下来的几节展示不同的方式来改变文件的追踪状态，以及如何添加或从索引中删除它。
 
 ### <a href='#c5.3' id='5.3'>5.3 使用git add</a>
+
+git add命令将暂存一个文件。就Git文件分类而言，如果一个文件是未追踪的，那么git add就会将文件的状态转化成已追踪的。如果git add作用于一个目录名，那么该目录下的文件和子目录都会递归暂存起来。
+
+让我们继续上一节的例子。
+
+```text
+$ git status
+
+
+
+
+# On branch master
+#
+# Initial commit
+#
+# Untracked files:
+#　 (use "git add <file>..." to include in what will be committed)
+#
+#　　 .gitignore
+#　　 data
+
+# Track both new files.
+$ git add data .gitignore
+
+
+
+
+
+$ git status
+
+
+
+
+# On branch master
+#
+# Initial commit
+#
+# Changes to be committed:
+#　 (use "git rm --cached <file>..." to unstage)
+#
+#　　 new file: .gitignore
+#　　 new file: data
+#
+
+```
+
+
+
+
+第一条git status命令显示有两个未追踪的文件，并提醒你要追踪一个文件，只需要使用git add就可以了。使用git add之后，暂存和追踪data和.gitignore文件，并准备在下次提交的时候加到版本库中。
+
+在Git的对象模型方面，在发出git add命令时每个文件的全部内容都将被复制到对象库中，并且按文件的SHA1名来索引。暂存一个文件也称作缓存（caching）一个文件 ② ，或者叫“把文件放进索引”。
+
+可以使用git ls-files命令查看隐藏在对象模型下的东西，并且可以找到那些暂存文件的SHA1值。
+
+```text
+$ git ls-files --stage
+
+
+
+
+100644 0487f44090ad950f61955271cf0a2d6c6a83ad9a 0　　　 .gitignore
+100644 534469f67ae5ce72a7a274faf30dee3c2ea1746d 0　　　 data
+
+
+```
+
+
+
+版本库中大多数的日常变化可能只是简单的编辑。在任何编辑之后，提交变更之前，请执行git add命令，用最新版本的文件去更新索引。如果不这么做，你将会得到两个不同版本的文件：一个是在对象库里被捕获并被索引引用的，另一个则在你的工作目录下。
+
+继续上面的例子，让我们改变data文件，使之有别于索引中的那个文件，然后使用一条神秘的命令git hash-object file （你几乎不会直接调用它）来直接计算和输出这个新版本的SHA1散列值。
+
+```text
+$ git ls-files --stage
+
+
+
+
+100644 0487f44090ad950f61955271cf0a2d6c6a83ad9a 0　　　 .gitignore
+100644 534469f67ae5ce72a7a274faf30dee3c2ea1746d 0　　　 data
+
+# 编辑"data"来包含...
+$ cat data
+
+
+
+
+New data
+And some more data now
+
+$ git hash-object data
+
+
+
+
+e476983f39f6e4f453f0fe4a859410f63b58b500
+
+
+
+```
+
+
+在略做修改之后就会发现，保存在对象库和索引中的那个文件的上一个版本的SHA1值是534469f67ae5ce72a7a274faf30dee3c2ea1746d。然而，文件更新之后版本的SHA1值则是e476983f39f6e4f453f0fe4a859410f63b58b500。接下来，更新索引，使之包含文件的最新版本。
+
+```text
+$ git add data
+
+$ git ls-files --stage
+100644 0487f44090ad950f61955271cf0a2d6c6a83ad9a 0　　　 .gitignore
+100644 e476983f39f6e4f453f0fe4a859410f63b58b500 0　　　 data
+```
+
+
+现在索引有了更新后的文件版本。也就是说，“文件已经暂存了”，或者简单来说，“data文件在索引中”。后一种说法不是很准确，因为实际上文件存储在对象库中，索引只是指向它而已。
+
+看似无用地处理SHA1散列值和索引却带来一个关键点：与其把git add看成“添加这个文件”，不如看作“添加这个内容”。
+
+在任何情况下，最重要的事是要记住工作目录下的文件版本和索引中暂存的文件版本可能是不同步的。当提交的时候，Git会使用索引中的文件版本。
+```text
+提示
+
+对于git add或git commit而言，--interactive选项都会是探索哪个文件将为提交而暂存很有用的方式。
+```
+
 ### <a href='#c5.4' id='5.4'>5.4 使用git commit的一些注意事项</a>
+
 #### <a href='#c5.4.1' id='5.4.1'>5.4.1 使用git commit --all</a>
+
+git commit的-a或者-all选项会导致执行提交之前自动暂存所有未暂存的和未追踪的文件变化，包括从工作副本中删除已追踪的文件。
+
+下面通过创建一些有不同暂存特征的文件来看看它是怎么工作的。
+```text
+
+# 建立测试版本库
+$ mkdir /tmp/commit-all-example
+
+
+
+
+$ cd /tmp/commit-all-example
+
+
+
+
+$ git init
+
+
+
+
+Initialized empty Git repository in /tmp/commit-all-example/.git/
+
+$ echo something >> ready
+
+
+
+
+$ echo somthing else >> notyet
+
+
+
+
+$ git add ready notyet
+
+
+
+
+$ git commit -m "Setup"
+
+
+
+
+[master (root-commit) 71774a1] Setup
+ 2 files changed, 2 insertions(+), 0 deletions(-)
+ create mode 100644 notyet
+ create mode 100644 ready
+
+# 修改ready文件并用"git add"把它添加到索引中
+# 编辑ready
+$ git add ready
+
+
+
+
+
+# 修改notyet文件，保持它是未暂存的
+# 编辑notyet
+
+# 在一个子目录里添加一个新文件，但不要对它执行add命令
+$ mkdir subdir
+
+
+
+
+$ echo Nope >> subdir/new
+
+```
+
+
+
+
+
+
+
+使用git status命令来看看一个常规提交（不带命令行参数）会做什么事情。
+
+```text
+
+$ git status
+
+
+
+
+# On branch master
+# Changes to be committed:
+#　 (use "git reset HEAD <file>..." to unstage)
+#
+#　　　modified: ready
+#
+# Changed but not updated:
+#　 (use "git add <file>..." to update what will be committed)
+#
+#　　　modified: notyet
+#
+# Untracked files:
+#　 (use "git add <file>..." to include in what will be committed)
+#
+#　　　subdir/
+
+
+
+
+这里，索引准备提交ready 文件，因为只有它暂存了。
+
+但是，如果执行git commit --all命令，Git会递归遍历整个版本库，暂存所有已知的和修改的文件，然后提交它们。在这种情况下，当编辑器展示出提交消息模板的时候，它应该指明被修改的和已知的notyet 文件事实上也会提交。
+
+# Please enter the commit message for your changes.
+# (Comment lines starting with '#' will not be included)
+# On branch master
+# Changes to be committed:
+#　 (use "git reset HEAD <file>..." to unstage)
+#
+#　　　modified: notyet
+#　　　modified: ready
+#
+# Untracked files:
+#　 (use "git add <file>..." to include in what will be committed)
+#
+#　　　subdir/
+```
+
+
+
+最后，由于subdir /是一个全新的目录，而且该目录下没有任何文件名或路径是已追踪的，所以，即使是-all选项也不能将其提交。
+```text
+
+Created commit db7de5f: Some --all thing.
+ 2 files changed, 2 insertions(+), 0 deletions(-)
+```
+
+
+
+虽然Git会递归遍历整个版本库，查找修改的和删除的文件，但是全新的文件目录subdir /及其中所有文件还是不会成为提交的一部分 ③ 。
 #### <a href='#c5.4.2' id='5.4.2'>5.4.2 编写提交日志消息</a>
+如果不通过命令行直接提供日志消息，Git会启动编辑器，并提示你写一个。编辑器的选取根据配置文件中的设定，具体描述请见3.3节。
+
+如果你是在编辑器中编写提交日志消息，并出于某种原因，决定中止此次操作，只要不保存退出编辑器即可；这将导致一条空日志消息。
+如果那太迟了，因为你已经保存了，那只要删除整条日志消息，然后重新保存就可以了。Git不会处理空（无文本）提交。
 ### <a href='#c5.5' id='5.5'>5.5 使用git rm</a>
+
+git rm命令自然是与git add相反的命令。它会在版本库和工作目录中同时删除文件。然而，由于删除文件比添加文件问题更多（如果出现错误），Git对移除文件更多一点关注。
+
+Git可以从索引或者同时从索引和工作目录中删除一个文件。Git不会只从工作目录中删除一个文件，普通的rm命令可用于这一目的。
+
+从工作目录和索引中删除一个文件，并不会删除该文件在版本库中的历史记录。文件的任何版本，只要是提交到版本库的历史记录的一部分，就会留在对象库里并保存历史记录。
+
+继续这个例子，引进一个不应该暂存的“意外”文件，看看怎么将其删除。
+
+```text
+
+$ echo "Random stuff" > oops
+
+
+
+
+
+# 无法对Git认为是"other"的文件执行 "git rm"
+# 应该只使用 "rm oops"
+$ git rm oops
+
+
+
+
+fatal: pathspec 'oops' did not match any files
+
+
+```
+
+
+因为git rm也是一条对索引进行操作的命令，所以它对没有添加到版本库或索引中的文件是不起作用的；Git必须先认识到文件才行。所以下面偶然地暂存oops 文件。
+```text
+
+# 意外暂存"oops"文件
+$ git add oops
+
+
+
+
+
+$ git status
+
+
+
+
+# On branch master
+#
+# Initial commit
+#
+# Changes to be committed:
+#　 (use "git rm --cached <file>..." to unstage)
+#
+#　　　new file: .gitignore
+#　　　new file: data
+#　　　new file: oops
+#
+
+
+```
+
+
+另外，要将一个文件由已暂存的转化成未暂存的，可以使用git rm --cached命令。
+
+```text
+
+$ git ls-files --stage
+
+
+
+
+100644 0487f44090ad950f61955271cf0a2d6c6a83ad9a 0　　　.gitignore
+100644 e476983f39f6e4f453f0fe4a859410f63b58b500 0　　　data
+100644 fcd87b055f261557434fa9956e6ce29433a5cd1c 0　　　oops
+
+$ git rm --cached oops
+
+
+
+
+rm 'oops'
+
+$ git ls-files --stage
+
+
+
+
+100644 0487f44090ad950f61955271cf0a2d6c6a83ad9a 0　　　.gitignore
+100644 e476983f39f6e4f453f0fe4a859410f63b58b500 0　　　data
+
+```
+
+
+
+git rm --cached会删除索引中的文件并把它保留工作目录中，而git rm则会将文件从索引和工作目录中都删除。
+
+警告 　警告
+
+使用git rm --cached会把文件标记为未追踪的，却在工作目录下仍留有一份副本，这是很危险的。因为你也许会忘记这个文件是不再被追踪的。Git要检查工作文件的内容是最新的，使用这种方法则无视了这个检查。所以要谨慎使用。
+
+如果想要移除一个已提交的文件，通过简单的git rm filename 命令来暂存这一请求。
+
+```text
+
+$ git commit -m "Add some files"
+
+
+
+
+Created initial commit 5b22108: Add some files
+ 2 files changed, 3 insertions(+), 0 deletions(-)
+ create mode 100644 .gitignore
+ create mode 100644 data
+
+$ git rm data
+
+
+
+
+rm 'data'
+
+$ git status
+
+
+
+
+# On branch master
+# Changes to be committed:
+#　 (use "git reset HEAD <file>..." to unstage)
+#
+#　　　deleted: data
+#
+```
+
+Git在删除一个文件之前，它会先进行检查以确保工作目录下该文件的版本与当前分支中的最新版本（Git命令调用HEAD的版本）是匹配的。这个验证会防止文件的修改（由于你的编辑）意外丢失。
+
+```text
+
+提示
+
+还可以使用git rm -f来强制删除文件。强制就是明确授权，即使从上次提交以来你已经修改了该文件，还是会删除它。
+```
+
+万一你真的想保留那个不小心删除的文件，只要再把它添加回来就行了。
+
+```text
+
+$ git add data
+fatal: pathspec 'data' did not match any files
+
+```
+
+
+Git把工作目录下的文件也删除了。不过不用担心。版本控制系统擅长恢复文件的旧版本。
+
+```text
+
+$ git checkout HEAD -- data
+
+$ cat data
+New data
+And some more data now
+
+$ git status
+
+# On branch master
+nothing to commit (working directory clean)
+
+```
+
 ### <a href='#c5.6' id='5.6'>5.6 使用git mv</a>
 ### <a href='#c5.7' id='5.7'>5.7 追踪重命名注解</a>
 ### <a href='#c5.8' id='5.8'>5.8 .gitignore文件</a>
