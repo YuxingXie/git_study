@@ -1476,8 +1476,6 @@ NOTE:关于暂存,这里停顿思考一下。根据前面介绍，当commit的�
 当我们修改了一个文件，不使用add直接commit的时候，git会告诉我们Changes not staged for commit，
 所以我暂且认为暂存是将工作区的内容和git仓库某个临时的地方同步，然后commit是把这个临时地方的内容和版本库正式内容同步。
 
-在本人程序开发中，我使用JetBrain的一些IDE,它集成了可视化的git工具。当我修改代码后，我会commit,或者commit and push。
-隐藏在这个动作背后的一个动作，其实是IDE帮我进行了git add。
 ```
 
 让我们继续上一节的例子。
