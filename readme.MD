@@ -2080,6 +2080,47 @@ $ cat .gitignore
 
 初始状态如图5-1所示。在这里，工作目录包含file1 和file2 两个文件，分别包含内容“foo”和“bar,”。
 ![](https://github.com/YuxingXie/git_study/raw/master/assets/image/05-09-01.jpg) 
+图5-1　初始文件和对象
+
+除了工作目录下的file1 和file2 之外，master分支还有一个提交，它记录了跟file1和file2内容完全一样的“foo”和“bar,”的树。此外，
+该索引记录两个SHA1值a23bf和9d3a2，与那两个文件分别对应。工作目录、索引以及对象库都是同步和一致的。没有什么是脏的。
+
+图5-2显示了在工作目录中对file1 编辑后的变化，现在它的内容包含“quux.”。索引和对象库中没有变化，但是工作目录现在是脏的。
+![](https://github.com/YuxingXie/git_study/raw/master/assets/image/05-09-02.jpg) 
+
+图5-2　编辑file1之后
+
+当使用git add file1来暂存file1 的编辑时，一些有趣的变化发生了。
+
+如图5-3所示，Git首先取出工作目录中file1 的版本，为它的内容计算一个SHA1的散列ID（bd71363），然后把那个ID保存在对象库中。接下来，
+Git就会记录在索引中的file1 路径名已更新为新的bd71363的SHA1值。
+![](https://github.com/YuxingXie/git_study/raw/master/assets/image/05-09-03.jpg) 
+图5-3　在git add之后
+
+由于file2 的内容未发生改变而且没有任何git add来暂存file2 ，因此索引继续指向原始blob对象。
+
+此时，你已经在索引中暂存了file1 文件，而且工作目录和索引是一致的。不过，就HEAD而言，索引是脏的，
+因为索引中的树跟在master分支的HEAD提交的树在对象库里是不一样的 ④ 。
+
+最后，当所有变更都暂存到索引中后，一个提交将它们应用到版本库中。git commit的作用如图5-4所示。
+
+![](https://github.com/YuxingXie/git_study/raw/master/assets/image/05-09-04.jpg) 
+图5-4　在git commit之后
+
+如图5-4所示，提交启动了三个步骤。首先，虚拟树对象（即索引）在转换成一个真实的树对象后，会以SHA1命名，然后放到对象库中。其次，
+用你的日志消息创建一个新的提交对象。新的提交将会指向新创建的树对象以及前一个或父提交。最后，
+master分支的引用从最近一次提交移动到新创建的提交对象，成为新的master HEAD。
+
+一个有趣的细节是，工作目录、索引和对象库（由master分支的HEAD表示）再次同步，变得一致了，就如同它们在图5-1中一样。
+
+① 　我有确实可靠的证据证明，本章实际的标题应该是“Bart Massey讨厌Git的地方”。——原注
+
+② 　你肯定在git status命令的输出里看到--cached了，对吧？——原注
+
+③ 　要包括subdir及其中所有文件，可以先执行git add.，然后执行commit-a。——译者注
+
+④ 　无论工作目录的状态，都可以在其他方向上得到脏的索引。将一个非HEAD提交从对象库中读取出来并放进索引中，但不把相应的文件检出到工作目录中，
+那么你就制造出这样一种情况：索引和工作目录不一致，就HEAD而言，索引仍是脏的。——原注
 
 ## <a id='6' href='#c6'>第6章 提交</a>
 
