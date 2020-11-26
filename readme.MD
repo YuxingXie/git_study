@@ -1717,11 +1717,16 @@ Created commit db7de5f: Some --all thing.
 
 
 虽然Git会递归遍历整个版本库，查找修改的和删除的文件，但是全新的文件目录subdir /及其中所有文件还是不会成为提交的一部分 ③ 。
+
+**NOTE:简单说就是：git commit --all会暂存和提交所有已追踪的文件，未追踪的不管。**
+
 #### <a href='#c5.4.2' id='5.4.2'>5.4.2 编写提交日志消息</a>
+
 如果不通过命令行直接提供日志消息，Git会启动编辑器，并提示你写一个。编辑器的选取根据配置文件中的设定，具体描述请见3.3节。
 
 如果你是在编辑器中编写提交日志消息，并出于某种原因，决定中止此次操作，只要不保存退出编辑器即可；这将导致一条空日志消息。
 如果那太迟了，因为你已经保存了，那只要删除整条日志消息，然后重新保存就可以了。Git不会处理空（无文本）提交。
+
 ### <a href='#c5.5' id='5.5'>5.5 使用git rm</a>
 
 git rm命令自然是与git add相反的命令。它会在版本库和工作目录中同时删除文件。然而，由于删除文件比添加文件问题更多（如果出现错误），
@@ -1787,44 +1792,33 @@ $ git status
 ```
 
 
-另外，要将一个文件由已暂存的转化成未暂存的，可以使用git rm --cached命令。
+**另外，要将一个文件由已暂存的转化成未暂存的，可以使用git rm --cached命令。**
 
 ```text
 
 $ git ls-files --stage
-
-
-
-
 100644 0487f44090ad950f61955271cf0a2d6c6a83ad9a 0　　　.gitignore
 100644 e476983f39f6e4f453f0fe4a859410f63b58b500 0　　　data
 100644 fcd87b055f261557434fa9956e6ce29433a5cd1c 0　　　oops
 
 $ git rm --cached oops
-
-
-
-
 rm 'oops'
 
 $ git ls-files --stage
-
-
-
-
 100644 0487f44090ad950f61955271cf0a2d6c6a83ad9a 0　　　.gitignore
 100644 e476983f39f6e4f453f0fe4a859410f63b58b500 0　　　data
 
 ```
 
+**git rm --cached会删除索引中的文件并把它保留工作目录中，而git rm则会将文件从索引和工作目录中都删除。**
 
-
-git rm --cached会删除索引中的文件并把它保留工作目录中，而git rm则会将文件从索引和工作目录中都删除。
-
-警告 　警告
+```text
+警告
 
 使用git rm --cached会把文件标记为未追踪的，却在工作目录下仍留有一份副本，这是很危险的。因为你也许会忘记这个文件是不再被追踪的。
 Git要检查工作文件的内容是最新的，使用这种方法则无视了这个检查。所以要谨慎使用。
+```
+
 
 如果想要移除一个已提交的文件，通过简单的git rm filename 命令来暂存这一请求。
 
@@ -1863,6 +1857,26 @@ $ git status
 Git在删除一个文件之前，它会先进行检查以确保工作目录下该文件的版本与当前分支中的最新版本（Git命令调用HEAD的版本）是匹配的。
 这个验证会防止文件的修改（由于你的编辑）意外丢失。
 
+**NOTE:怎么理解前面这句话？大概是这样子的：我修改了一个文件b.txt，然后觉得应该删除它，我使用git rm b.txt删除:**
+```text
+$ git rm b.txt
+error: the following file has local modifications:
+    b.txt
+(use --cached to keep the file, or -f to force removal)
+```
+喔，错误！文件被修改！它给出了两个方法：use --cached to keep the file, or -f to force removal.
+```text
+git rm b.txt --cached
+rm 'b.txt'
+```
+文件还在工作区，但变成了未追踪状态。重新add它，然后编辑一下，再如下操作：
+```text
+$ git rm b.txt -f
+rm 'b.txt'
+
+```
+现在b.txt已经从工作区也消失了。
+
 ```text
 
 提示
@@ -1871,6 +1885,7 @@ Git在删除一个文件之前，它会先进行检查以确保工作目录下�
 ```
 
 万一你真的想保留那个不小心删除的文件，只要再把它添加回来就行了。
+**NOTE:前面这句话指的是使用--cached选项删除，如果使用-f删除是不能恢复了,因为它从工作区消失了。**
 
 ```text
 
@@ -1896,6 +1911,14 @@ $ git status
 nothing to commit (working directory clean)
 
 ```
+**NOTE:我自己的测试：**
+```text
+$ git checkout HEAD -- b.txt
+```
+文件真的恢复了，在我前面的操作中，我在b.txt里面新加了一些文字，然后使用git rm -f删除了它，恢复后它变成了我编辑前的样子，添加的文字没有出现，
+也就是说git rm -f执行的时候是不会给新内容建立索引的。
+
+**NOTE:到现在为止，虽然我也像作者一样使用"索引"这个词，但我还是不知道索引具体是什么。**
 
 ### <a href='#c5.6' id='5.6'>5.6 使用git mv</a>
 ### <a href='#c5.7' id='5.7'>5.7 追踪重命名注解</a>
