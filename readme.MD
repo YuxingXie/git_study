@@ -1591,6 +1591,7 @@ $ git ls-files --stage
 
 ### <a href='#c5.4' id='5.4'>5.4 使用git commit的一些注意事项</a>
 
+
 #### <a href='#c5.4.1' id='5.4.1'>5.4.1 使用git commit --all</a>
 
 git commit的-a或者-all选项会导致执行提交之前自动暂存所有未暂存的和未追踪的文件变化，包括从工作副本中删除已追踪的文件。
