@@ -1921,7 +1921,106 @@ $ git checkout HEAD -- b.txt
 **NOTE:到现在为止，虽然我也像作者一样使用"索引"这个词，但我还是不知道索引具体是什么。**
 
 ### <a href='#c5.6' id='5.6'>5.6 使用git mv</a>
+
+假设你需要移动或者重命名文件。可以对旧文件使用git rm命令，然后用git add命令添加新文件，或者可以直接使用git mv命令。给定一个版本库，
+其中有一个stuff 文件，你想要将它重命名为newstuff 。下面的一系列命令就是等价的Git操作。
+
+```text
+$ mv stuff newstuff
+$ git rm stuff
+$ git add newstuff
+```
+和
+```text
+$ git mv stuff newstuff
+```
+
+无论哪种情况，Git都会在索引中删除stuff 的路径名，并添加newstuff 的路径名，至于stuff 的原始内容，则仍保存在对象库中，
+然后才会将它与newstuff 重新关联。
+
+在示例版本库中找回了data这个文件，下面重命名它，然后提交变更。
+```text
+$ git mv data mydata
+
+$ git status
+# On branch master
+# Changes to be committed:
+#　 (use "git reset HEAD <file>..." to unstage)
+#
+#　　　renamed: data -> mydata
+#
+
+$ git commit -m "Moved data to mydata"
+Created commit ec7d888: Moved data to mydata
+ 1 files changed, 0 insertions(+), 0 deletions(-)
+ rename data => mydata (100%)
+```
+
+
+如果你碰巧检查这个文件的历史记录，你可能会不安地看到Git很明显丢失了原始data 文件的历史记录，只记得它从data 重命名为当前文件名。
+
+```text
+$ git log mydata
+commit ec7d888b6492370a8ef43f56162a2a4686aea3b4
+Author: Jon Loeliger <jdl@example.com>
+Date:　 Sun Nov 2 19:01:20 2008 -0600
+
+Moved data to mydata
+
+```
+
+Git其实是记得全部历史记录的，但是显示要限制于在命令中指定的文件名。--follow选项会让Git在日志中回溯并找到内容相关联的整个历史记录。
+
+```text
+$ git log --follow mydata
+commit ec7d888b6492370a8ef43f56162a2a4686aea3b4
+Author: Jon Loeliger <jdl@example.com>
+Date:　 Sun Nov 2 19:01:20 2008 -0600
+
+Moved data to mydata
+
+commit 5b22108820b6638a86bf57145a136f3a7ab71818
+Author: Jon Loeliger <jdl@example.com>
+Date:　 Sun Nov 2 18:38:28 2008 -0600
+
+Add some files
+```
+**NOTE:git log不带选项的话，是显示提交历史列表。这里展示了git log另外的用法，可以带上文件名,还可以带上--follow选项。**
+
+VCS的经典问题之一就是文件重命名会导致它们丢失对文件历史记录的追踪。而Git即使经历过重命名，也仍然能保留此信息。
+
 ### <a href='#c5.7' id='5.7'>5.7 追踪重命名注解</a>
+下面详细讨论关于Git是如何追踪文件重命名。
+
+作为传统版本控制系统的典型，SVN对文件重命名和移动做了很多追踪工作。为什么呢？这是由于它只追踪文件之间的差异才导致的。例如，如果移动一个文件，
+这本质上就相当于从旧文件中删除所有行，然后把它们添加到新的文件中。但是任何时侯，你哪怕就做一个简单的重命名，
+也需要再次传输和存储文件的全部内容，这将变得非常低效；想象一下重命名一个拥有数以千记的文件的子目录，那该是多可怕的事情。
+
+为缓解这种情况，SVN显式追踪每一次重命名。如果你想将hello.txt 重命名为subdir/hello.txt ，你必须对文件使用svn mv，
+而不能使用svn rm和svn add。否则，SVN将不能识别出这是一个重命名，只能像刚才描述的那样进行低效的删除/添加步骤。
+
+接着，要有追踪重命名这个特殊功能，SVN服务器需要一个特殊协议来告诉它的客户端，“请将hello.txt 移动到subdir/hello.txt ”。此外，
+每一个SVN客户端必须确保该操作（相对罕见）执行的正确性。
+
+另一方面，Git则不追踪重命名。可以将hello.txt 移动或复制到任何地方，这么做只会影响树对象而已（但请记住，树对象保存内容间的关系，
+而内容本身保存在blob中）。查看两棵树间的差异，我们可以很容易发现叫3b18e5...的blob已经移动到一个新地方。而且即使你没有明确检查差异，
+系统中的每个部分都知道它已经有了那个blob，不再需要它的另一个副本了。
+
+在这种情况下，像在很多其他地方一样，Git基于散列的简单存储系统简化了许多其他RCS被难倒的或者选择回避的事情。
+```text
+重命名追踪的困难
+
+版本控制系统的开发人员间常年争论追踪文件重命名问题。
+
+一次简单的重命名也足以产生一次争吵。当文件名改变之后，内容也改变了，这时大家的争论更加白热化了。
+然后这个情景的讨论就由实用上升到哲学层面：“新”文件单纯只是一次重命名，还是它与旧文件仅仅相似而已？
+在把它们定义为相同的文件之前，新文件和原来文件到底有多相似？如果你应用某人的补丁，删除一个文件，
+然后在其他地方再创建一个相似的文件，这又是如何管理的呢？如果在不同分支中对同一个文件进行不同方式的重命名，会发生什么呢？
+在这种情况下，是选择像Git一样自动检测重命名发生的错误少，还是像SVN那样要求用户显式标识重命名的错误少呢？
+
+在现实生活的使用中，似乎Git的系统处理文件重命名的方式更优越一点，因为有太多的方式去重命名一个文件，
+而人类的聪明程度不够以确保让SVN知道所有情况。但是还没有能完美处理文件重命名的系统。
+```
 ### <a href='#c5.8' id='5.8'>5.8 .gitignore文件</a>
 ### <a href='#c5.9' id='5.9'>5.9 Git中对象模型和文件的详细视图</a>
 
