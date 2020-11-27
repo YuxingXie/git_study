@@ -2326,7 +2326,7 @@ HEAD始终指向当前分支的最近提交。当切换分支时，HEAD会更新
 
 * FETCH_HEAD
 
-当使用远程库时，git fetch命令将所有抓取分支的头记录到.git/FETCH_HEAD 中。FETCH_HEAD是最近抓取（fetch）的分支HEAD的简写，
+**当使用远程库时，git fetch命令将所有抓取分支的头记录到.git/FETCH_HEAD 中**。FETCH_HEAD是最近抓取（fetch）的分支HEAD的简写，
 并且仅在刚刚抓取操作之后才有效。使用这个符号引用，哪怕是一个对没有指定分支名的匿名抓取操作，都可以也在git fetch时找到提交的HEAD。
 抓取操作将在第12章详细讲到。
 
@@ -2343,10 +2343,76 @@ HEAD始终指向当前分支的最近提交。当切换分支时，HEAD会更新
 虽然可以使用这些特殊的名字（例如HEAD）来创建你自己的分支，但这不是个好主意。
 ```
 
-Git中有一个特殊符号集来指代引用名。两个最常见的符号“^”和符号“～”将会在下一节中讲述。在转向另一个引用时，
-冒号“：”可以用来指向一个产生合并冲突的文件的替代版本。第9章介绍这一过程。
+**Git中有一个特殊符号集来指代引用名。两个最常见的符号“^”和符号“～”将会在下一节中讲述。在转向另一个引用时，
+冒号“:”可以用来指向一个产生合并冲突的文件的替代版本**。第9章介绍这一过程。
 
 #### <a href='#c6.2.3' id='6.2.3'>6.2.3 相对提交名</a>
+
+Git还提供一种机制来确定相对于另一个引用的提交，通常是分支的头。
+
+你应该已经见过了一些这样的例子，比如，master和master^，其中master^始终指的是在master分支中的倒数第二个提交。还有一些其他的方法，
+例如master^^、master～2，甚至像master～10^2～2^2这样复杂的名字。
+
+除了第一个根提交之外 ② ，每一个提交都来自至少一个比它更早的提交，这其中的直接祖先称作该提交的父提交。若某一提交存在多个父提交，
+那么它必定是由合并操作产生的。其结果是，每个分支都有一个父提交贡献给合并提交。
+
+在同一代提交中，插入符号^是用来选择不同的父提交的。给定一个提交C，C^1是其第一个父提交，C^2是其第二个父提交，C^3是其第三个父提交，
+等等，如图6-1所示。
+
+![](https://github.com/YuxingXie/git_study/raw/master/assets/image/06-02-03-01.jpg) 
+图6-1　多个父提交名
+
+波浪线～用于返回父提交之前并选择上一代提交。同样，给定一个提交C，C～1是其第一个父提交，C～2是其第一个祖父提交，C～3是第一个曾祖父提交。
+当在同一代中存在多个父提交时，紧跟其后的是第一个父提交的第一个父提交。你可能会注意到，C^1和C～1都指的是C的第一个父提交，两个名字都是对的，
+如图6-2所示。
+
+![](https://github.com/YuxingXie/git_study/raw/master/assets/image/06-02-03-02.jpg) 
+图6-2　多个父提交名
+
+Git也支持其他形式的简写和组合。如C^和C～两种简写形式分别等同于C^1和C～1。另外，C^^与C^1^1相同，因为这代表提交C的第一父提交的第一父提交，
+它也可以写做C～2。
+
+通过把引用与“^”和“～”组合，就可以从引用的提交历史图中选出任意提交。不过要注意，这些名字都相对于引用的当前值。如果当前引用指向一个新提交，
+那么提交历史图将变为“新版本”，所有父提交“辈分”都会上升一层。
+
+下面这个例子来自Git自身的历史，那是当Git的master分支处于提交1fbb58b4153e90 eda08c2b022ee32d90729582e6的时候。使用命令：
+
+```text
+git show-branch --more=35
+```
+
+
+并限制输出最后10行，可以检查提交历史图并研究一个复杂的分支合并结构。
+
+```text
+$ git rev-parse master
+1fbb58b4153e90eda08c2b022ee32d90729582e6
+
+$ git show-branch --more=35 | tail -10
+-- [master~15] Merge branch 'maint'
+-- [master~3^2^] Merge branch 'maint-1.5.4' into maint
++* [master~3^2^2^] wt-status.h: declare global variables as extern
+-- [master~3^2~2] Merge branch 'maint-1.5.4' into maint
+-- [master~16] Merge branch 'lt/core-optim'
++* [master~16^2] Optimize symlink/directory detection
++* [master~17] rev-parse --verify: do not output anything on error
++* [master~18] rev-parse: fix using "--default" with "--verify"
++* [master~19] rev-parse: add test script for "--verify"
++* [master~20] Add svn-compatible "blame" output format to git-svn
+
+$ git rev-parse master~3^2^2^
+32efcd91c6505ae28f87c0e9a3e2b3c0115017d8
+
+```
+
+
+在master～15到master～16之间，进行了一次合并操作，该合并引入了一些其他的合并操作，像名为master～3^2^2^的简单提交。
+这恰好是提交32efcd91c6505ae28f87c0e9a 3e2b3c0115017d8。
+
+git rev-parse命令最终决定把任何形式的提交名——标签、相对名、简写或绝对名称——转换成对象库中实际的、绝对的提交散列ID。
+
+
+
 ### <a href='#c6.3' id='6.3'>6.3 提交历史记录</a>
 #### <a href='#c6.3.1' id='6.3.1'>6.3.1 查看旧提交</a>
 #### <a href='#c6.3.2' id='6.3.2'>6.3.2 提交图</a>
