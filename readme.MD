@@ -2283,10 +2283,18 @@ refs/heads/ref 代表本地分支，refs/remotes/ref 代表远程跟踪分支，
 .git/refs/remotes/ref
 .git/refs/remotes/ref/HEAD
 ```
+第一条规则通常只适用随后讲到的几个引用：HEAD、ORIG_HEAD、FETCH_HEAD、CHERRY_PICK_HEAD和MERGE_HEAD。
 
 **NOTE:用本项目试一试。可以看到有点不一样，
 我猜应该是git版本差异，因为像.git/refs/ref、.git/refs/heads/ref这种目录结构似乎有点啰嗦，所以git新版本(我的2.23.0)去掉里层的ref目录。**
+
+.git/refs目录下有heads、remotes、tags三个目录，可以合理推测一下：
+* heads存放本地git库的所有分支的引用
+* tags存放本地git库的所有tag的引用
+* remotes存放中央git库的分支的引用
 ```text
+
+
 $ find .git/refs
 .git/refs
 .git/refs/heads
@@ -2298,7 +2306,6 @@ $ find .git/refs
 .git/refs/remotes/origin/master
 
 ```
-第一条规则通常只适用随后讲到的几个引用：HEAD、ORIG_HEAD、FETCH_HEAD、CHERRY_PICK_HEAD和MERGE_HEAD。
 
 ```text
 提示
