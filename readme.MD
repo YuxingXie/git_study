@@ -2238,7 +2238,7 @@ $ git log -1 --pretty=oneline 1fbb58
 ```
 虽然标签名并不是全局唯一的，但它会明确的指向一个唯一的提交，这种指向是不会随着时间而改变的（当然，除非你明确地修改它）。
 
-**NOTE:到目前所学为止，我们是不能给自己的提交命个别名什么的，但是可以给个tag。给tag实际生产了一个tag对象，并明确的指向一次提交。**
+**NOTE:到目前所学为止，我们是不能给自己的提交命个别名什么的，但是可以给个tag。给tag实际产生了一个tag对象，并明确的指向一次提交。**
 
 **NOTE:自己试试**
 ```text
@@ -2248,6 +2248,14 @@ f432c3130c595c22792b356836b8d3b718c21cd2 (origin/master) clear
 751b1be8abe23ce95b74e264da7f36ac156c930b clear
 af64db73cb2fe437b39141a1d3aee5f2fdf6a7cd clear
 70d1384fea52a62654dbe842117a7a7082422205 clear
+
+$ git log V1.0 -1
+commit 9168c3dbd65dc2b32dfcbcdc87c4b5a8a1f6e63e (tag: V1.0)
+Author: yuxingxie <185246042@qq.com>
+Date:   Mon Nov 23 14:07:23 2020 +0800
+
+    clear
+
 
 ```
 
@@ -2269,20 +2277,27 @@ refs/heads/ref 代表本地分支，refs/remotes/ref 代表远程跟踪分支，
 
 ```text
 .git/ref
-
 .git/refs/ref
-
 .git/refs/tags/ref
-
 .git/refs/heads/ref
-
 .git/refs/remotes/ref
-
-.git/refs/remotes/ref
-
-/HEAD
+.git/refs/remotes/ref/HEAD
 ```
 
+**NOTE:用本项目试一试。可以看到有点不一样，
+我猜应该是git版本差异，因为像.git/refs/ref、.git/refs/heads/ref这种目录结构似乎有点啰嗦，所以git新版本(我的2.23.0)去掉里层的ref目录。**
+```text
+$ find .git/refs
+.git/refs
+.git/refs/heads
+.git/refs/heads/master
+.git/refs/tags
+.git/refs/tags/V1.0
+.git/refs/remotes
+.git/refs/remotes/origin
+.git/refs/remotes/origin/master
+
+```
 第一条规则通常只适用随后讲到的几个引用：HEAD、ORIG_HEAD、FETCH_HEAD、CHERRY_PICK_HEAD和MERGE_HEAD。
 
 ```text
