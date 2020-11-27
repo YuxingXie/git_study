@@ -2283,7 +2283,7 @@ refs/heads/ref 代表本地分支，refs/remotes/ref 代表远程跟踪分支，
 .git/refs/remotes/ref
 .git/refs/remotes/ref/HEAD
 ```
-第一条规则通常只适用随后讲到的几个引用：HEAD、ORIG_HEAD、FETCH_HEAD、CHERRY_PICK_HEAD和MERGE_HEAD。
+第一条规则通常只适用随后讲到的几个引用：HEAD、ORIG_HEAD、FETCH_HEAD、CHERRY_PICK_HEAD和MERGE_HEAD(note:这句有点不明所以)。
 
 **NOTE:用本项目试一试。可以看到有点不一样，
 我猜应该是git版本差异，因为像.git/refs/ref、.git/refs/heads/ref这种目录结构似乎有点啰嗦，所以git新版本(我的2.23.0)去掉里层的ref目录。**
@@ -2328,6 +2328,9 @@ HEAD始终指向当前分支的最近提交。当切换分支时，HEAD会更新
 当一个合并操作正在进行时，其他分支的头暂时记录在MERGE_HEAD中。换言之，MERGE_HEAD是正在合并进HEAD的提交。
 
 所有这些符号引用都可以用底层命令git symbolic-ref进行管理。
+
+第一条规则通常只适用随后讲到的几个引用：HEAD、ORIG_HEAD、FETCH_HEAD、CHERRY_PICK_HEAD和MERGE_HEAD(note:我怀疑这句应该放这里)。
+
 ```text
 警告
 
