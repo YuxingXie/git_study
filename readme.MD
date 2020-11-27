@@ -2283,7 +2283,10 @@ refs/heads/ref 代表本地分支，refs/remotes/ref 代表远程跟踪分支，
 .git/refs/remotes/ref
 .git/refs/remotes/ref/HEAD
 ```
-第一条规则通常只适用随后讲到的几个引用：HEAD、ORIG_HEAD、FETCH_HEAD、CHERRY_PICK_HEAD和MERGE_HEAD(note:这句有点不明所以)。
+第一条规则通常只适用随后讲到的几个引用：HEAD、ORIG_HEAD、FETCH_HEAD、CHERRY_PICK_HEAD和MERGE_HEAD。
+
+**NOTE:前面这句有点不明所以？是因为作者思维跳跃了，他根本没想到我们不会把HEAD、ORIG_HEAD、FETCH_HEAD、CHERRY_PICK_HEAD和MERGE_HEAD
+这几个词和"符号引用"（symbolic reference）联系起来。没错，它们都称为"符号引用"。**
 
 **NOTE:用本项目试一试。可以看到有点不一样，
 我猜应该是git版本差异，因为像.git/refs/ref、.git/refs/heads/ref这种目录结构似乎有点啰嗦，所以git新版本(我的2.23.0)去掉里层的ref目录。**
@@ -2310,26 +2313,29 @@ $ find .git/refs
 从技术角度来说，Git的目录名.git这个名字是可以改变的。因此，Git的内部文档都使用变量$GIT_DIR，而不是字面量.git。
 ```
 
-Git自动维护几个用于特定目的的特殊符号引用。这些引用可以在使用提交的任何地方使用。
+Git自动维护几个用于特定目的的特殊**符号引用**。这些引用可以在使用提交的任何地方使用。
 
 * HEAD
+
 HEAD始终指向当前分支的最近提交。当切换分支时，HEAD会更新为指向新分支的最近提交。
 
 * ORIG_HEAD
+
 某些操作，例如合并（merge）和复位（reset），会把调整为新值之前的先前版本的HEAD记录到ORIG_HEAD中。
 可以使用ORIG_HEAD来恢复或回滚到之前的状态或者做一个比较。
 
 * FETCH_HEAD
+
 当使用远程库时，git fetch命令将所有抓取分支的头记录到.git/FETCH_HEAD 中。FETCH_HEAD是最近抓取（fetch）的分支HEAD的简写，
 并且仅在刚刚抓取操作之后才有效。使用这个符号引用，哪怕是一个对没有指定分支名的匿名抓取操作，都可以也在git fetch时找到提交的HEAD。
 抓取操作将在第12章详细讲到。
 
 * MERGE_HEAD
+
 当一个合并操作正在进行时，其他分支的头暂时记录在MERGE_HEAD中。换言之，MERGE_HEAD是正在合并进HEAD的提交。
 
 所有这些符号引用都可以用底层命令git symbolic-ref进行管理。
 
-第一条规则通常只适用随后讲到的几个引用：HEAD、ORIG_HEAD、FETCH_HEAD、CHERRY_PICK_HEAD和MERGE_HEAD(note:我怀疑这句应该放这里)。
 
 ```text
 警告
