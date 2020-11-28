@@ -2417,6 +2417,142 @@ git rev-parse命令最终决定把任何形式的提交名——标签、相对�
 
 ### <a href='#c6.3' id='6.3'>6.3 提交历史记录</a>
 #### <a href='#c6.3.1' id='6.3.1'>6.3.1 查看旧提交</a>
+
+显示提交历史记录的主要命令是git log。比起ls，它有更多的选项、参数、着色器、选择器、格式化器、铃铛口哨和其他小玩意等 ③ 。不过不用担心，
+就像使用ls一样，你不需要了解所有的细节。
+
+在参数形式上，git log跟git log HEAD是一样的，输出每一个可从HEAD找到的历史记录中的提交日志消息。变更从HEAD提交开始显示，并从提交图中回溯。
+它们大致按照时间逆序显示，但是要注意当回溯历史记录的时候，Git是依附于提交图的，而不是时间。
+
+如果你提供一个提交名（如git log commit），那么这个日志将从该提交开始回溯输出。这种形式的命令对于查看某个分支的历史记当是非常有用的。
+
+```text
+$ git log master
+commit 1fbb58b4153e90eda08c2b022ee32d90729582e6
+Merge: 58949bb... 76bb40c...
+Author: Junio C Hamano <gitster@pobox.com>
+Date: Thu May 15 01:31:15 2008 -0700
+
+Merge git://repo.or.cz/git-gui
+
+* git://repo.or.cz/git-gui:
+　git-gui: Delete branches with 'git branch -D' to clear config
+　git-gui: Setup branch.remote,merge for shorthand git-pull
+　git-gui: Update German translation
+　git-gui: Don't use '$$cr master' with aspell earlier than 0.60
+　git-gui: Report less precise object estimates for database compression
+
+commit 58949bb18a1610d109e64e997c41696e0dfe97c3
+Author: Chris Frey <cdfrey@foursquare.net>
+Date:　 Wed May 14 19:22:18 2008 -0400
+
+Documentation/git-prune.txt: document unpacked logic
+
+Clarifies the git-prune manpage, documenting that it only
+prunes unpacked objects.
+
+Signed-off-by: Chris Frey <cdfrey@foursquare.net>
+Signed-off-by: Junio C Hamano <gitster@pobox.com>
+
+commit c7ea453618e41e05a06f05e3ab63d555d0ddd7d9
+
+...
+```
+
+日志记录是权威的，但是在版本库的整个提交历史记录中进行回滚是不切实际且没有意义的。通常情况下，一个有限的历史记录往往记录了更多的信息。
+限制历史记录的一种技术是使用since..until这样的形式来指定提交的范围。给定一个范围，git log将会把在since到until之间的所有提交显示出来。
+下面给出一个例子。
+
+```text
+$ git log --pretty=short --abbrev-commit master~12..master~10
+commit 6d9878c...
+Author: Jeff King <peff@peff.net>
+
+clone: bsd shell portability fix
+
+commit 30684df...
+Author: Jeff King <peff@peff.net>
+
+t5000: tar portability fix
+
+```
+
+这里，git log显示了在master～12到master～10之间的所有提交，换言之，是主分支上之前10次和第11次的提交。6.3.3节会更详细地讲述范围。
+
+前面的例子还引入了两个格式选项--pretty=short和--abbrev-commit。前者调整了每个提交的信息数量，并且还有其他的几个选项，
+包括oneline、short和full。后者只是简单地请求缩写散列ID。
+
+使用-p选项来输出提交引进的补丁或变更。
+
+```text
+$ git log -1 -p 4fe86488
+commit 4fe86488e1a550aa058c081c7e67644dd0f7c98e
+Author: Jon Loeliger <jdl@freescale.com>
+Date: Wed Apr 23 16:14:30 2008 -0500
+
+Add otherwise missing --strict option to unpack-objects summary.
+
+Signed-off-by: Jon Loeliger <jdl@freescale.com>
+Signed-off-by: Junio C Hamano <gitster@pobox.com>
+
+diff --git a/Documentation/git-unpack-objects.txt b/Documentation/git-unpack-objects.txt
+index 3697896..50947c5 100644
+--- a/Documentation/git-unpack-objects.txt
++++ b/Documentation/git-unpack-objects.txt
+@@ -8,7 +8,7 @@ git-unpack-objects - Unpack objects from a packed archive
+
+ SYNOPSIS
+ --------
+-'git-unpack-objects' [-n] [-q] [-r] <pack-file
++'git-unpack-objects' [-n] [-q] [-r] [--strict] <pack-file
+```
+
+值得注意的是，-1也是一个很不错的选择，它会将输出限制为一个提交。也可以使用-n来将输出限制为最多n个提交。
+
+--stat选项列举了提交中所更改的文件以及每个更改的文件中有多少行做了改动。
+
+```text
+
+$ git log --pretty=short --stat master~12..master~10
+commit 6d9878cc60ba97fc99aa92f40535644938cad907
+Author: Jeff King <peff@peff.net>
+
+clone: bsd shell portability fix
+
+ git-clone.sh | 3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+commit 30684dfaf8cf96e5afc01668acc01acc0ade59db
+Author: Jeff King <peff@peff.net>
+
+t5000: tar portability fix
+
+ t/t5000-tar-tree.sh | 8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+```
+
+
+```text
+提示
+
+比较git log --stat和git diff --stat的输出，其根本区别在于两者的现实。前者为指定范围中每个单独提交产生一个摘要，
+而后者输出命令行中指定的两个版本库状态差异的汇总。
+```
+
+另一个查看对象库中对象信息的命令是git show。可以使用它来查看某个提交。
+
+```text
+$ git show HEAD~2
+```
+
+或者查看某个特定的blob对象信息。
+
+```text
+$ git show origin/master:Makefile
+```
+后者显示的是origin/master分支的Makefile blob。
+
 #### <a href='#c6.3.2' id='6.3.2'>6.3.2 提交图</a>
 #### <a href='#c6.3.3' id='6.3.3'>6.3.3 提交范围</a>
 ### <a href='#c6.4' id='6.4'>6.4 查找提交</a>
