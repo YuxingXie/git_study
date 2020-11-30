@@ -2262,6 +2262,12 @@ Date:   Mon Nov 23 14:07:23 2020 +0800
 ```
 
 #### <a href='#cafter6.2.2' id='after6.2.2'>补充内容:master,head,origin等概念</a>
+
+**NOTE:作者高估了我的git基础知识，我并不那么理解诸如"origin/master"、"HEAD -> master"等一些符号的含义。
+所以我决定新开章节自行研究一下。**
+
+在stackoverflow上，有人推荐了《Git Pro》这本书，点<a href='https://git-scm.com/book/en/v2'>这里</a>可以看在线版本。
+
 #### <a href='#c6.2.2' id='6.2.2'>6.2.2 引用和符号引用</a>
 
 引用（ref）是一个SHA1散列值，指向Git对象库中的对象。虽然一个引用可以指向任何Git对象，但是它通常指向提交对象。
