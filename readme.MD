@@ -2271,13 +2271,15 @@ Date:   Mon Nov 23 14:07:23 2020 +0800
 所以我决定新开章节自行研究一下。**
 
 好在stackoverflow上，有人给出了解释，可点击
-<a href='https://stackoverflow.com/questions/8196544/what-are-the-git-concepts-of-head-master-origin'>这里</a>查看。
+<a href='https://stackoverflow.com/questions/8196544/what-are-the-git-concepts-of-head-master-origin'
+ target='_blank'>这里</a>查看。
+简书上也有一篇不错的文章，可点<a href='https://www.jianshu.com/p/4219b6f62ce3' target='_blank'>这里</a>查看。
 另外我还从中文网络寻找了一些有用的资料，总结如下：
 
 **HEAD**:一次提交
  
- 你的仓库所处的当前提交。大多数时候，HEAD指向你的当前分支的最后一次提交，但事实并非如此。HEAD真正意思是"我的版本库当前指向的东西"。
-在一个提交HEAD指向的不是任何分支的顶端的事件中，这就称为“分离头(detached head)”。
+你的仓库所处的当前提交。大多数时候，HEAD指向你的当前分支的最后一次提交，但事实并非如此。HEAD真正意思是"我的版本库当前指向的东西"。
+一个提交指向的不是任何分支的顶端时，称为“分离头(detached head)”。
 
 HEAD不是最新版本，而是当前版本。通常，它是当前分支的最新修订，但不必如此。
 
