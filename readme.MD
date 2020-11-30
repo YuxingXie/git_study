@@ -1,7 +1,11 @@
 
 # Git版本控制管理
 
-参考书籍：《Git版本控制管理》(Jon Loeliger & Mattbew McCullough)
+参考书籍：
+
+* 《Git版本控制管理》(Jon Loeliger & Mattbew McCullough)
+
+* <a href='https://git-scm.com/book/en/v2'>《Pro Git》</a>
 
 学前掌握程度：熟练
 
@@ -2266,7 +2270,39 @@ Date:   Mon Nov 23 14:07:23 2020 +0800
 **NOTE:作者高估了我的git基础知识，我并不那么理解诸如"origin/master"、"HEAD -> master"等一些符号的含义。
 所以我决定新开章节自行研究一下。**
 
-在stackoverflow上，有人推荐了《Git Pro》这本书，点<a href='https://git-scm.com/book/en/v2'>这里</a>可以看在线版本。
+好在stackoverflow上，有人给出了解释。
+
+**HEAD**: the current commit your repo is on. Most of the time HEAD points to the latest commit in your current branch, 
+but that doesn't have to be the case. HEAD really just means "what is my repo currently pointing at".
+
+In the event that the commit HEAD refers to is not the tip of any branch, this is called a "detached head".
+
+**master**: the name of the default branch that git creates for you when first creating a repo. 
+In most cases, "master" means "the main branch". Most shops have everyone pushing to master, and master is considered
+the definitive view of the repo. But it's also common for release branches to be made off of master for releasing. 
+Your local repo has its own master branch, that almost always follows the master of a remote repo.
+
+**origin**: the default name that git gives to your main remote repo. Your box has its own repo, and you most likely push 
+out to some remote repo that you and all your coworkers push to. That remote repo is almost always called origin, 
+but it doesn't have to be.
+
+HEAD is an official notion in git. HEAD always has a well-defined meaning. master and origin are common names usually 
+used in git, but they don't have to be.
+
+我用我的四级英语水平翻译一下：
+
+**HEAD**: 你的仓库所处的当前提交。大多数时候，HEAD指向你的当前分支的最后一次提交，但事实并非如此。HEAD真正意思是"我的版本库当前指向的东西"。
+在一个提交HEAD指向的不是任何分支的顶端的事件中，这就称为“分离头(detached head)”。
+
+
+**master**: 第一次创建repo时git为您创建的默认分支的名称。在大多数情况下，“master”的意思是“主分支”。
+大多数shops(商店?)都要求每个人都使用master, master被认为是版本库的权威视图。
+但是发布(release)分支从master中创建来进行发布也是很常见的。本地存储库有自己的主分支，它几乎总是在远程存储库的主分支之后。
+
+**origin**: git为主远程存储库提供的默认名称。您的机器有它自己的存储库，您很可能将其推到您和所有同事推到的某个远程git库。
+这个远程git库几乎总是称为origin，但也不必如此。
+
+HEAD是git中的一个正式概念。HEAD总是有明确的含义。master和origin通常是在git中使用的常见的名字，但不必如此。
 
 #### <a href='#c6.2.2' id='6.2.2'>6.2.2 引用和符号引用</a>
 
