@@ -106,6 +106,8 @@
 >>>
 >>> <a href='#6.2.2' id='c6.2.2'>6.2.2 引用和符号引用</a>
 >>>
+>>> <a href='#after6.2.2' id='cafter6.2.2'>补充内容:master,head,origin等概念</a>
+>>>
 >>> <a href='#6.2.3' id='c6.2.3'>6.2.3 相对提交名</a>
 >>
 >> <a href='#6.3' id='c6.3'>6.3 提交历史记录</a>
@@ -2240,7 +2242,7 @@ $ git log -1 --pretty=oneline 1fbb58
 
 **NOTE:到目前所学为止，我们是不能给自己的提交命个别名什么的，但是可以给个tag。给tag实际产生了一个tag对象，并明确的指向一次提交。**
 
-**NOTE:自己试试**
+**NOTE:自己试试,"HEAD -> master"以及"origin/master"表示还不知道表示什么。**
 ```text
 $ git log -5 --pretty=oneline HEAD
 6b9e4ad0f6c447011006c6f54b1a29c53ae3e04f (HEAD -> master) clear
@@ -2259,6 +2261,7 @@ Date:   Mon Nov 23 14:07:23 2020 +0800
 
 ```
 
+#### <a href='#cafter6.2.2' id='after6.2.2'>补充内容:master,head,origin等概念</a>
 #### <a href='#c6.2.2' id='6.2.2'>6.2.2 引用和符号引用</a>
 
 引用（ref）是一个SHA1散列值，指向Git对象库中的对象。虽然一个引用可以指向任何Git对象，但是它通常指向提交对象。
