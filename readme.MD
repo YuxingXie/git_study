@@ -2282,12 +2282,14 @@ Date:   Mon Nov 23 14:07:23 2020 +0800
 
 1. HEAD:一次提交
  
-你的仓库所处的当前提交。大多数时候，HEAD指向你的当前分支的最后一次提交，但事实并非如此。HEAD真正意思是"我的版本库当前指向的东西"。
+你的仓库所处的当前提交。大多数时候，HEAD指向你的当前分支的最后一次提交，但事实并非如此。HEAD真正意思是"我的版本库当前(分支)指向的东西"。
+
 一个提交指向的不是任何分支的顶端时，称为“分离头(detached head)”。
 
 HEAD不是最新版本，而是当前版本。通常，它是当前分支的最新修订，但不必如此。
 
-一个版本库是否只有一个HEAD?No!每个分支都有自己的HEAD,切换分支以后HEAD换成当前分支的HEAD。
+一个版本库是否只有一个HEAD?我猜**应该**是的!并不是每个分支都有自己的HEAD,切换分支以后HEAD换成当前分支的最新提交，
+所以HEAD是个相对概念(**NOTE:关于这个结论我并不100%确定**)。
 
 ***
 
@@ -2322,6 +2324,8 @@ HEAD是git中的一个正式概念。HEAD总是有明确的含义。master和ori
 
 只代表一个概念，即远程分支名，是从远程拉取代码后在本地建立的一份拷贝（因此也有人把它叫作本地分支）。
 
+在下面"HEAD -> master"的研究时可以看到git log master命令会打印"origin/master"。
+
 ***
 
 6. origin/HEAD:远程版本库的HEAD(不确定)
@@ -2330,9 +2334,21 @@ HEAD是git中的一个正式概念。HEAD总是有明确的含义。master和ori
 
 ***
 
-7. HEAD -> master:分支及状态?(不确定)
+7. HEAD -> master:分支及状态表示法?(不确定)
 
 我在网上找了很久都没找到"HEAD -> master"的含义。根据一些蛛丝马迹，我暂时认为它代表master分支，并且HEAD在master上。
+
+这些证据是这样获得的：
+```text
+# git log命令实际上可以接上分支名，打印该分支的所有提交
+$ git log master
+commit 8026f37b7bdf55c5673d0d931a213450d6e2879a (HEAD -> master, origin/master)
+...
+...
+```
+根据上面命令的打印，我猜测"HEAD -> master"是想告诉我们，8026f37b7bdf55c5673d0d931a213450d6e2879a这次提交是master分支的HEAD。
+
+在这里"分支"和"提交"两个概念有点含混不清了，期待后面获得清晰的概念。
 
 #### <a href='#c6.2.2' id='6.2.2'>6.2.2 引用和符号引用</a>
 
@@ -2360,8 +2376,8 @@ refs/heads/ref 代表本地分支，refs/remotes/ref 代表远程跟踪分支，
 ```
 第一条规则通常只适用随后讲到的几个引用：HEAD、ORIG_HEAD、FETCH_HEAD、CHERRY_PICK_HEAD和MERGE_HEAD。
 
-**NOTE:前面这句有点不明所以？是因为作者思维跳跃了，他根本没想到我们不会把HEAD、ORIG_HEAD、FETCH_HEAD、CHERRY_PICK_HEAD和MERGE_HEAD
-这几个词和"符号引用"（symbolic reference）联系起来。没错，它们都称为"符号引用"。**
+**NOTE:根据前面我自己的研究知道，HEAD表示当前分支的最新提交，它虽然有个ID，但用HEAD指代它。
+这些常用的对象都可以用叫做"符号引用"的东西来指代它们。**
 
 **NOTE:用本项目试一试。可以看到有点不一样，
 我猜应该是git版本差异，因为像.git/refs/ref、.git/refs/heads/ref这种目录结构似乎有点啰嗦，所以git新版本(我的2.23.0)去掉里层的ref目录。**
