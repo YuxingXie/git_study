@@ -2273,7 +2273,9 @@ Date:   Mon Nov 23 14:07:23 2020 +0800
 好在stackoverflow上，有人给出了解释，可点击
 <a href='https://stackoverflow.com/questions/8196544/what-are-the-git-concepts-of-head-master-origin'
  target='_blank'>这里</a>查看。
+ 
 简书上也有一篇不错的文章，可点<a href='https://www.jianshu.com/p/4219b6f62ce3' target='_blank'>这里</a>查看。
+
 另外我还从中文网络寻找了一些有用的资料，总结如下：
 
 **HEAD**:一次提交
@@ -2282,6 +2284,8 @@ Date:   Mon Nov 23 14:07:23 2020 +0800
 一个提交指向的不是任何分支的顶端时，称为“分离头(detached head)”。
 
 HEAD不是最新版本，而是当前版本。通常，它是当前分支的最新修订，但不必如此。
+
+思考一下：一个版本库是否只有一个HEAD，切换分支以后是否HEAD就换了?
 
 **master**: 一个分支名
 
@@ -2299,6 +2303,26 @@ git为主远程存储库提供的默认名称。您的机器有它自己的存�
 origin通常是主远程仓库的名称,是另一个您可以从其中提取和推入的git库，比如github这样的服务器上的git库。
 
 HEAD是git中的一个正式概念。HEAD总是有明确的含义。master和origin通常是在git中使用的常见的名字，但不必如此。
+
+***
+
+那么"origin master"、"origin/master"、"HEAD -> master"、"origin/HEAD"是什么意思呢？
+
+**origin master**:两个概念
+
+代表着两个概念，前面的 origin 代表远程名，后面的 master 代表远程分支名。
+
+**origin/master**:远程仓库的master分支
+
+只代表一个概念，即远程分支名，是从远程拉取代码后在本地建立的一份拷贝（因此也有人把它叫作本地分支）。
+
+**origin/HEAD**:远程HEAD
+
+代表origin版本库的HEAD。
+
+**HEAD -> master**:分支及状态?(不确定)
+
+我在网上找了很久都没找到"HEAD -> master"的含义。根据一些蛛丝马迹，我暂时认为它代表master分支，并且HEAD在master上。
 
 #### <a href='#c6.2.2' id='6.2.2'>6.2.2 引用和符号引用</a>
 
