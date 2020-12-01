@@ -2405,26 +2405,26 @@ $ find .git/refs
 ```
 
 Git自动维护几个用于特定目的的特殊**符号引用**。这些引用可以在使用提交的任何地方使用。
-
+***
 * HEAD
 
 HEAD始终指向当前分支的最近提交。当切换分支时，HEAD会更新为指向新分支的最近提交。
-
+***
 * ORIG_HEAD
 
 某些操作，例如合并（merge）和复位（reset），会把调整为新值之前的先前版本的HEAD记录到ORIG_HEAD中。
 可以使用ORIG_HEAD来恢复或回滚到之前的状态或者做一个比较。
-
+***
 * FETCH_HEAD
 
 **当使用远程库时，git fetch命令将所有抓取分支的头记录到.git/FETCH_HEAD 中**。FETCH_HEAD是最近抓取（fetch）的分支HEAD的简写，
 并且仅在刚刚抓取操作之后才有效。使用这个符号引用，哪怕是一个对没有指定分支名的匿名抓取操作，都可以也在git fetch时找到提交的HEAD。
 抓取操作将在第12章详细讲到。
-
+***
 * MERGE_HEAD
 
 当一个合并操作正在进行时，其他分支的头暂时记录在MERGE_HEAD中。换言之，MERGE_HEAD是正在合并进HEAD的提交。
-
+***
 所有这些符号引用都可以用底层命令git symbolic-ref进行管理。
 
 
