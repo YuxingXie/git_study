@@ -3152,9 +3152,80 @@ $ git branch
 ```
 执行git bisect reset命令来回到原来的分支上。
 #### <a href='#c6.4.2' id='6.4.2'>6.4.2 使用git blame</a>
+有助于识别特定提交的另一工具是git blame。此命令可以告诉你一个文件中的每一行最后是谁修改的和哪次提交做出了变更。
+
+```text
+$ git blame -L 35, init/version.c
+4865ecf1 (Serge E. Hallyn 2006-10-02 02:18:14 -0700 35)　　　　 },
+^1da177e (Linus Torvalds　2005-04-16 15:20:36 -0700 36) };
+4865ecf1 (Serge E. Hallyn 2006-10-02 02:18:14 -0700 37) EXPORT_SYMBOL_GPL(init_uts_ns);
+3eb3c740 (Roman Zippel　　2007-01-10 14:45:28 +0100 38)
+c71551ad (Linus Torvalds　2007-01-11 18:18:04 -0800 39) /* FIXED STRINGS! 
+　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　Don't touch! */
+c71551ad (Linus Torvalds　2007-01-11 18:18:04 -0800 40) const char linux_banner[] =
+3eb3c740 (Roman Zippel　　2007-01-10 14:45:28 +0100 41)　　　　 "Linux version "
+　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 UTS_RELEASE "
+3eb3c740 (Roman Zippel　　2007-01-10 14:45:28 +0100 42)　　　　 (" LINUX_COMPILE_BY "@"
+3eb3c740 (Roman Zippel 2007-01-10 14:45:28 +0100 43)　　　　　　LINUX_COMPILE_HOST ")
+3eb3c740 (Roman Zippel 2007-01-10 14:45:28 +0100 44)　　　　　　(" LINUX_COMPILER ") 
+3eb3c740 (Roman Zippel 2007-01-10 14:45:28 +0100 45)　　　　　　" UTS_VERSION "\n";
+3eb3c740 (Roman Zippel 2007-01-10 14:45:28 +0100 46)
+3eb3c740 (Roman Zippel 2007-01-10 14:45:28 +0100 47) const char linux_proc_banner[] =
+3eb3c740 (Roman Zippel 2007-01-10 14:45:28 +0100 48)　　　　 "%s version %s"
+3eb3c740 (Roman Zippel 2007-01-10 14:45:28 +0100 49)　　　　 " (" LINUX_COMPILE_BY
+　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　"@"
+3eb3c740 (Roman Zippel 2007-01-10 14:45:28 +0100 50)　　　　 LINUX_COMPILE_HOST ")"
+3eb3c740 (Roman Zippel 2007-01-10 14:45:28 +0100 51)　　　　 " (" LINUX_COMPILER ")
+　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　%s\n";
+
+```
+
+
 #### <a href='#c6.4.3' id='6.4.3'>6.4.3 使用Pickaxe</a>
+git blame命令告诉你文件的当前状态，git log -Sstring则根据给定的string沿着文件的差异历史搜索。通过搜索修订版本间的实际差异，
+这条命令可以找到那些执行改变（增加或删除）的提交。
+
+```text
+
+$ git log -Sinclude --pretty=oneline --abbrev-commit init/version.c
+cd354f1... [PATCH] remove many unneeded #includes of sched.h
+4865ecf... [PATCH] namespaces: utsname: implement utsname namespaces
+63104ee... kbuild: introduce utsrelease.h
+1da177e... Linux-2.6.12-rc2
+```
+
+
+
+
+排列在左侧的每个提交（例如cd354f1）都添加或删除了那些包含include的行。但是要注意，如果某个提交添加和删除了相同数量的含关键词的行，
+它将不会显示出来。该提交必须有添加和删除数量上的变化才能计数。
+
+带有-S选项的git log命令称为pickaxe，对你来说这是一种暴力考古。
+
+① 　Git还会记录每个文件的可执行模式标识。标识的改变也算是变更集的一部分。——原注
+
+② 　是的，你其实可以把多个根提交引入一个版本库中。例如，当两个不同的项目和两个完整的版本库合并成一个时，就会出现这种情况。——原注
+
+③ 　原文是It has more options, parameters, bells, whistles, colorizers, selectors, formatters, and doodads than the fabled ls。——译者注
+
+④ 　是的，因为这是极少几个不被视为Git子命令的命令之一，所以gitk可以直接使用而不是git gitk。——原注
+
+⑤ 　即并集减交集。——译者注
+
+⑥ 　即A ...B 等价于B ...A 。——译者注
+
+⑦ 　对于好奇的读者，可能想重复这个例子，这里的HEAD提交是49fdf6785fd660e18a1eb4588928f47e9 fa29a9a。——原注
+
+⑧ 　不，这个提交并不一定带来问题，而这是“好”与“坏”的答案都是虚构的。——原注
 
 ## <a id='7' href='#c7'>第7章 分支</a>
+分支是在软件项目中启动一条单独的开发线的基本方法。分支是从一种统一的、原始的状态分离出来的，使开发能在多个方向上同时进行，
+并可能产生项目的不同版本。通常情况下，分支会被调解并与其他分支合并，来重聚不同的力量。
+
+Git允许很多分支，因此在同一个版本库中可以有许多不同的开发线。Git的分支系统是轻量级的、简单的。此外，Git对合并的支持是一流的。
+所以，大多数Git用户把分支作为日常使用。
+
+本章将揭示如何选择、创建、查看和删除分支。同时还提供一些最佳实践，防止分支扭曲成类似于灌木丛（manzanita）的样子 ① 。
 
 ## <a id='8' href='#c8'>第8章 diff</a>
 
