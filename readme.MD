@@ -4,8 +4,8 @@
 参考书籍：
 
 * 《Git版本控制管理》(Jon Loeliger & Mattbew McCullough)
-
-* <a href='https://git-scm.com/book/en/v2'>《Pro Git》</a>
+* <a href='https://git-scm.com/book/en/v2'>《Pro Git》（英）</a>
+* <a href='https://git-scm.com/book/zh/v2'>《Pro Git》(中)</a>
 
 学前掌握程度：熟练
 
@@ -14,6 +14,9 @@
 略过背景、安装、与svn结合等内容。
 
 本内容目录与书中的目录一样，有些地方也会抄一抄书，但我的目的并不是要把这本书抄一遍，主要目的应该是记录自己的学习理解心得。
+本人学习体会一般标记"**NOTE**"。
+
+较基础的内容参考前面提到的《Pro Git》，本内容主要还是参考《Git版本控制管理》。
 
 #### 目录
 
