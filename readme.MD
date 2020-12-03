@@ -4,8 +4,8 @@
 参考书籍：
 
 * 《Git版本控制管理》(Jon Loeliger & Mattbew McCullough)
-* <a href='https://git-scm.com/book/en/v2'>《Pro Git》（英）</a>
-* <a href='https://git-scm.com/book/zh/v2'>《Pro Git》(中)</a>
+* <a target='_blank' href='https://git-scm.com/book/en/v2'>《Pro Git》（英）</a>
+* <a target='_blank' href='https://git-scm.com/book/zh/v2'>《Pro Git》(中)</a>
 
 学前掌握程度：熟练
 
@@ -3381,7 +3381,8 @@ $ git branch prs/pr-1138
 
 这条命令的基本形式是：
 ```text
-git branch [starting-commit]
+# git branch 分支名 初始提交
+$ git branch branch [starting-commit]
 ```
 
 如果没有指定的starting-commit ，就默认为当前分支上的最近提交。换言之，默认是在你现在工作的地方启动一个新的分支。
@@ -3393,7 +3394,7 @@ git branch [starting-commit]
 也没有做出新的提交。这条命令只是在给定的提交上创建一个命名的分支。可以不在这个分支上开始工作，直到切换到它，正如7.7节所述。
 
 有时候，你想指定不同的提交作为一个分支的开始。例如，假设你的项目给每一个bug创建一个新的分支，然后你得知某个发布版本中有个bug。
-这时可方便地使用starting-commit 参数把你的工作目录到切换到发布分支。
+这时可方便地使用starting-commit参数把你的工作目录到切换到发布分支。
 
 通常，你的项目会有约定，让你来指定一个确定的开始提交。例如，为了在软件的2.3发布版本上修复一个bug，可以指定一个名为rel-2.3的分支作为开始提交：
 
