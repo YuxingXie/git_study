@@ -3386,19 +3386,16 @@ $ git branch prs/pr-1138 rel-2.3
 提示
 
 能够确保提交名是唯一的就只有散列ID了。如果你知道一个散列ID，就可以直接使用它：
-```
-
-```text
 
 $ git branch prs/pr-1138 db7de5feebef8bcd18c5356cb47c337236b50c13
 
 ```
 
+
 ### <a id='7.5' href='#c7.5'>7.5　列出分支名</a>
 git branch命令列出版本库中的分支名。
 
 ```text
-
 $ git branch
 　bug/pr-1
 　dev
