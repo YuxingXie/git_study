@@ -4,8 +4,8 @@
 参考书籍：
 
 * 《Git版本控制管理》(Jon Loeliger & Mattbew McCullough)
-* <a target='_blank' href='https://git-scm.com/book/en/v2'>《Pro Git》（英）</a>
-* <a target='_blank' href='https://git-scm.com/book/zh/v2'>《Pro Git》(中)</a>
+* 《Pro Git》<a target='_blank' href='https://git-scm.com/book/en/v2'>（英）</a> |
+<a target='_blank' href='https://git-scm.com/book/zh/v2'>(中)</a>
 
 学前掌握程度：熟练
 
