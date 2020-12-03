@@ -2777,7 +2777,8 @@ gitk程序可以做许多事情，但现在让我们把目光聚焦在DAG上。�
 
 双句点（..）形式就表示一个范围，如“开始..结束”，其中“开始”和“结束”在都可以用6.2节的知识指定。通常情况下，提交范围用来检查某个分支或分支的一部分。
 
-6.3.1节展示了如何在git log命令中使用提交范围。当时的例子是通过master～12..master～10来指定主分支上倒数第11次和倒数第10次之间的提交。为了可视化这个范围，查看图6-8所示的提交历史图。使用部分线性的提交历史记录来显示分支M。
+6.3.1节展示了如何在git log命令中使用提交范围。当时的例子是通过master～12..master～10来指定主分支上倒数第11次和倒数第10次之间的提交。
+为了可视化这个范围，查看图6-8所示的提交历史图。使用部分线性的提交历史记录来显示分支M。
 
 ![](https://github.com/YuxingXie/git_study/raw/master/assets/image/06-03-03-01.jpg) 
 
@@ -2839,18 +2840,21 @@ A节点的所有可达节点就组成A节点的可达节点集。
 
 在这个例子中，范围topic..master依旧代表在master分支但不在topic分支的那些提交，即master分支上V之前且包括V、W、X、Y和Z的提交集合。
 
-但是，我们必须更加仔细地看待topic分支的全部提交历史记录。考虑这种情况，master分支先分出一个分支，然后该分支又再次合并入master分支，如图6-13所示。
+但是，我们必须更加仔细地看待topic分支的全部提交历史记录。考虑这种情况，master分支先分出一个分支，然后该分支又再次合并入master分支，
+如图6-13所示。
 
 
 ![](https://github.com/YuxingXie/git_study/raw/master/assets/image/06-03-03-06.jpg) 
 
 图6-13　分支与合并
 
-在这种情况下，topic..master只包含提交W、X、Y和Z。记住，给定的范围将排除从topic可达的（即从图中向后或向左回溯）所有提交（即，D、C、B、A以及更早的提交）以及V、U和比B的另一个父提交更早的提交。结果是仅剩W～Z。
+在这种情况下，topic..master只包含提交W、X、Y和Z。记住，给定的范围将排除从topic可达的（即从图中向后或向左回溯）所有提交
+（即，D、C、B、A以及更早的提交）以及V、U和比B的另一个父提交更早的提交。结果是仅剩W～Z。
 
 还有其他两种范围表示方式，如果省略start或者end，就默认用HEAD替代。因此，..end 等价于HEAD..end ，start ..等价于start ..HEAD。
 
-最后需要强调一点，只有形如start ..end 的范围才代表集合减法运算，而A ...B （三个句点）则表示A 和B 之间的对称差（symmetric difference） ⑤ ，也就是A 或B 可达但又不是A 和B 同时可达的提交集合。由于...方法的对称性，哪个提交都没法看成开始或结束。在这个意义上，A 和B 是等价的 ⑥ 。
+最后需要强调一点，只有形如start ..end 的范围才代表集合减法运算，而A ...B （三个句点）则表示A 和B 之间的对称差（symmetric difference） ⑤ ，
+也就是A 或B 可达但又不是A 和B 同时可达的提交集合。由于...方法的对称性，哪个提交都没法看成开始或结束。在这个意义上，A 和B 是等价的 ⑥ 。
 
 更正式地说，要得到A 和B 之间的对称差中的修订集合，A ... B，可以执行以下命令。
 
@@ -3267,11 +3271,10 @@ Git也有追踪分支（tracking branch）的概念，或者保持一个版本�
 或只是没法重新组织了，那么你可以使用这种斜杠语法给你的分支名引进某种结构。
 
 ```text
-
 提示
 
-使用层次分支命名的其中一个原因是Git就像UNIX shell一样支持通配符。例如，给定命名方案bug/pr-1023和bug/pr-17，通过智能而熟悉的简写，
-可以一次选择所有bug分支。
+使用层次分支命名的其中一个原因是Git就像UNIX shell一样支持通配符。
+例如，给定命名方案bug/pr-1023和bug/pr-17，通过智能而熟悉的简写，可以一次选择所有bug分支。
 
 git show-branch 'bug/­*'
 
@@ -3469,14 +3472,7 @@ git show-branch命令接受一组分支名作为参数，允许你限制这些�
 
 $ git branch bug/pr-2 master
 
-
-
-
 $ git show-branch
-
-
-
-
 ! [bug/pr-1] Fix Problem Report 1
  ! [bug/pr-2] Added Bob's fixes.
 　* [dev] Improve the new development
@@ -3488,11 +3484,9 @@ $ git show-branch
 ++*+ [bug/pr-2] Added Bob's fixes.
 ```
 
-
 如果你只想看bug/pr-1和bug/pr-2分支的提交历史记录，可以使用以下命令。
 
 ```text
-
 $ git show-branch bug/pr-1 bug/pr-2
 ```
 
@@ -3500,7 +3494,6 @@ $ git show-branch bug/pr-1 bug/pr-2
 使用更简单的bug/­*分支通配符名可以得到相同的结果。
 
 ```text
-
 $ git show-branch bug/pr-1 bug/pr-2
 ! [bug/pr-1] Fix Problem Report 1
  ! [bug/pr-2] Added Bob's fixes.
