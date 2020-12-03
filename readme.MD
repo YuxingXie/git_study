@@ -3398,10 +3398,9 @@ git branch [starting-commit]
 通常，你的项目会有约定，让你来指定一个确定的开始提交。例如，为了在软件的2.3发布版本上修复一个bug，可以指定一个名为rel-2.3的分支作为开始提交：
 
 ```text
-
 $ git branch prs/pr-1138 rel-2.3
-
 ```
+
 ```text
 提示
 
