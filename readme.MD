@@ -3336,6 +3336,7 @@ $ git merge-base original-branch new-branch
 
 我前一节自己的例子中创建了两个分支："bug/pr_1"和"bug/pr_2"，现在我使用如下命令：
 ```text
+# 需要原分支和新分支名，所以你一定要知道分支从哪里来的，可以从.git/refs/heads下查看。
 $ git merge-base master bug/pr_1
 19cfe1593d7232f7ee419a9a171d09ae309fdc48
 
@@ -3378,22 +3379,14 @@ Git支持任意复杂的分支结构，包括分支的分支和从同一个提�
 $ git branch prs/pr-1138
 ```
 
-
-
-
-
-
-
-
 这条命令的基本形式是：
 ```text
-git branch branch
- [starting-commit
-
-]
+git branch [starting-commit]
 ```
 
 如果没有指定的starting-commit ，就默认为当前分支上的最近提交。换言之，默认是在你现在工作的地方启动一个新的分支。
+
+**NOTE**:starting-commit参数除了是一个commit外，还可以是分支名，就如作者的例子"git branch prs/pr-1138",指向prs/pr-1138的HEAD。
 
 需要注意的是，git branch命令只是把分支名引进版本库。并没有改变工作目录去使用新的分支。没有工作目录文件发生变化，没有隐式分支环境发生变化，
 也没有做出新的提交。这条命令只是在给定的提交上创建一个命名的分支。可以不在这个分支上开始工作，直到切换到它，正如7.7节所述。
