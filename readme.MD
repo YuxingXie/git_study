@@ -3662,6 +3662,14 @@ $ git show-branch master fixes mhf
   + [mhf~8] Start adding the $GIT_DIR/remotes/ support.
 *++ [master] Add 'git show-branch'.
 ```
+These three branches all forked from a common commit, \[master], whose commit message is "Add 'git show-branch'". 
+这三个分支都是从一个公共提交\[master]派生出来的，它的提交消息是“添加‘git show-branch’”。
+
+The "fixes" branch adds one commit "Introduce "reset type" flag to "git reset"". 
+“fixes”分支在“git reset”中添加了一个提交“介绍”“reset type”标记。
+
+The "mhf" branch adds many other commits. The current branch is "master".
+“mhf”分支添加了许多其他提交。当前的分支是“master”。
 
 ### <a id='7.6' href='#c7.6'>7.6　查看分支</a>
 
