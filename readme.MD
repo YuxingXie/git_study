@@ -3472,7 +3472,9 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 
 任意扩展的SHA-1表达式(请参阅<a href=' https://git-scm.com/docs/gitrevisions'>gitrevisions\[7]</a>)，
 通常用于命名分支头或标签。
+
 ***
+
 **\<glob>**
 
 匹配refs/下的分支或tag名称的通配符模式。
@@ -3480,6 +3482,7 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 例如，如果在refs/heads/topic下有很多topic分支，给出topic/*就会显示(refs/heads/topic下的)所有的分支。
 
 ***
+
 **-r**
 
 **--remotes**
@@ -3487,6 +3490,7 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 显示远程跟踪分支
 
 ***
+
 **-a**
 
 **--all**
@@ -3494,6 +3498,7 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 显示远程跟踪分支和本地分支。
 
 ***
+
 **--current**
 
 使用此选项，命令将当前分支包含到未在命令行中给出的rev列表中。
@@ -3550,6 +3555,7 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 在给定的<reference>中，只显示其他任何<reference>无法到达的部分。
 
 ***
+
 **--no-name**
 
 不为每次提交显示命名字符串。
@@ -3570,6 +3576,7 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 当给定“git show-branch -topics master topic1 topic2”时，这将显示“git rpm -list ^master topic1 topic2”给出的修订。
 
 ***
+
 **-g**
 
 **--reflog\[=\<n>\[,\<base>]] \[\<ref>]**
@@ -3579,6 +3586,7 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 当没有给出显式的\<ref>参数时，它默认为当前分支(如果是分离的，则为HEAD)。
 
 ***
+
 **--color\[=<when>]**
 
 给状态标志上色(其中之一:* ! + -)与它所在的分支对应的每个commit。
@@ -3586,6 +3594,7 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 该值必须是always(默认值)、never或auto。
 
 ***
+
 **--no-color**
 
 关闭彩色输出，即使配置文件提供了默认的彩色输出。
