@@ -3468,102 +3468,78 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 
 #### <a id='before7.6.3' href='#cbefore7.6.3'>选项</a>
 
-```text
-<rev>
+**\<rev>**
 
-任意扩展的SHA-1表达式(请参阅gitrevisions[7] https://git-scm.com/docs/gitrevisions)，
+任意扩展的SHA-1表达式(<a href=' https://git-scm.com/docs/gitrevisions'>请参阅gitrevisions[7]</a>)，
 通常用于命名分支头或标签。
-```
-```text
-<glob>
+
+**\<glob>**
 
 匹配refs/下的分支或tag名称的通配符模式。
 
 例如，如果在refs/heads/topic下有很多topic分支，给出topic/*就会显示(refs/heads/topic下的)所有的分支。
-```
-```text
--r
---remotes
 
+
+**-r**
+**--remotes**
 显示远程跟踪分支
-```
-```text
--a
---all
 
+
+**-a**
+**--all**
 显示远程跟踪分支和本地分支。
 
-```
-```text
---current
 
+**--current**
 使用此选项，命令将当前分支包含到未在命令行中给出的rev列表中。
-```
-```text
---topo-order
 
+
+**--topo-order**
 默认情况下，分支及其提交按反时间顺序显示。
-
 此选项使它们按照拓扑顺序出现(例如，子代提交显示在父提交之前)。
 
-```
-```text
---date-order
 
+**--date-order**
 这个选项类似于--topo-order，除非没有父节点在所有子节点之前，否则提交将根据它们的提交日期进行排序。
-```
-```text
---sparse
 
+**--sparse**
 默认情况下，输出会省略仅显示的一个tip中可以到达的合并。
 
 此选项使它们可见。
-```
-```text
---more=<n>
 
+**--more=<n>**
 通常，该命令在显示提交(所有分支的共同祖先)时停止输出。
-
 这个标志告诉命令执行<n>以上的常见提交。
-
 当<n>为负数时，只显示给出的<reference>s，而不显示提交祖先树。
 
-```
-```text
---list
+
+**--list**
 
 --more=-1的同义词
-```
-```text
---merge-base
+
+**--merge-base**
 
 不是显示提交列表，而是为指定的提交确定可能的合并基。
 
 所有的合并基将包含在所有指定的提交中。
 
-这与基于git合并的[1]处理三个或更多提交的情况不同。
+这与基于git合并的\[1]处理三个或更多提交的情况不同。
 
-```
-```text
---independent
+**--independent**
 
 在给定的<reference>中，只显示其他任何<reference>无法到达的部分。
-```
-```text
---no-name
+
+**--no-name**
 
 不为每次提交显示命名字符串。
-```
-```text
---sha1-name
+
+**--sha1-name**
 
 不是使用从头到达的路径来命名提交(例如。“master~2”表示“master”的祖父母)，
 
 而是使用对象名称的惟一前缀来命名它们。
 
-```
-```text
---topics
+**--topics**
 
 只显示给定的第一个分支上没有的提交。
 
@@ -3571,16 +3547,18 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 
 当给定“git show-branch -topics master topic1 topic2”时，
 这将显示“git rpm -list ^master topic1 topic2”给出的修订。
-```
-```text
--g
---reflog[=<n>[,<base>]] [<ref>]
 
-显示<n>给定ref的最近的ref-log条目。
+**-g**
+**--reflog\[=<n>\[,<base>]] \[<ref>]**
 
-如果给定了<base>，则从该条目返回<n个>项。
+Shows <n> most recent ref-log entries for the given ref. 
+If <base> is given, <n> entries going back from that entry. <base> can be specified as count or date. 
+When no explicit <ref> parameter is given, it defaults to the current branch (or HEAD if it is detached).
+为给定的ref显示最近的<n>个ref-log条目。
 
-<base>可以指定为count或date。
+如果给定了\<base>，则从该条目返回<n个>项。
+
+\<base>可以指定为count或date。
 
 当没有给出显式的<ref>参数时，它默认为当前分支(如果是分离的，则为HEAD)。
 ```
