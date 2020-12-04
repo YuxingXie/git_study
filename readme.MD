@@ -145,6 +145,8 @@
 >>
 >> <a href='#7.5' id='c7.5'>7.5 列出分支名</a>
 >>
+>> <a href='#before7.6' id='cbefore7.6'>基础补充:git show-branch</a>
+>>
 >> <a href='#7.6' id='c7.6'>7.6 查看分支</a>
 >>
 >> <a href='#7.7' id='c7.7'>7.7 检出分支</a>
@@ -3428,8 +3430,8 @@ $ git branch
 可以用-r选项列出那些远程追踪分支。也可以用-a选项把特性分支和远程分支都列出来。
 
 
-### <a id='7.6' href='#c7.6'>7.6　查看分支</a>
-***
+### <a id='before7.6' href='#cbefore7.6'>基础补充:git show-branch</a>
+
 **NOTE:这一小节主要是git show-branch命令的用法，我感觉理解起来有点障碍，所以补充一下基础知识。**
 
 参考自<a href='https://git-scm.com/docs/git-show-branch'>https://git-scm.com/docs/git-show-branch</a>
@@ -3621,7 +3623,37 @@ Same as --color=never.
 Note that --more, --list, --independent and --merge-base options are mutually exclusive.
 注意，--more、--list、--independent和--merge-base选项是互斥的。
 
-***
+**输出**:
+
+Given N <references>, the first N lines are the one-line description from their commit message. The branch head that is pointed at by $GIT_DIR/HEAD is prefixed with an asterisk * character while other heads are prefixed with a ! character.
+给定N <references>，前N行是提交消息的一行描述。$GIT_DIR/ head指向的分支头前缀为星号*字符，而其他分支头前缀为!的性格。
+
+Following these N lines, one-line log for each commit is displayed, indented N places. If a commit is on the I-th branch, the I-th indentation character shows a + sign; otherwise it shows a space. Merge commits are denoted by a - sign. Each commit shows a short name that can be used as an extended SHA-1 to name that commit.
+在这N行之后，将显示每个提交的单行日志，并缩进N个位置。如果commit在第i个分支上，第i个缩进字符显示加号;否则它显示一个空格。合并提交用-号表示。每个提交都显示一个短名称，可以用作扩展的SHA-1来命名提交。
+
+The following example shows three branches, "master", "fixes" and "mhf":
+下面的例子展示了三个分支，“master”、“fixes”和“mhf”:
+```text
+$ git show-branch master fixes mhf
+* [master] Add 'git show-branch'.
+ ! [fixes] Introduce "reset type" flag to "git reset"
+  ! [mhf] Allow "+remote:local" refspec to cause --force when fetching.
+---
+  + [mhf] Allow "+remote:local" refspec to cause --force when fetching.
+  + [mhf~1] Use git-octopus when pulling more than one heads.
+ +  [fixes] Introduce "reset type" flag to "git reset"
+  + [mhf~2] "git fetch --force".
+  + [mhf~3] Use .git/remote/origin, not .git/branches/origin.
+  + [mhf~4] Make "git pull" and "git fetch" default to origin
+  + [mhf~5] Infamous 'octopus merge'
+  + [mhf~6] Retire git-parse-remote.
+  + [mhf~7] Multi-head fetch.
+  + [mhf~8] Start adding the $GIT_DIR/remotes/ support.
+*++ [master] Add 'git show-branch'.
+```
+
+### <a id='7.6' href='#c7.6'>7.6　查看分支</a>
+
 
 git show-branch命令提供比git branch更详细的输出，按时间以递序的形式列出对一个或多个分支有贡献的提交。
 与git branch一样，没有选项则列出特性分支，-r显示远程追踪分支，-a显示所有分支。
