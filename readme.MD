@@ -3470,7 +3470,7 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 ***
 **\<rev>**
 
-任意扩展的SHA-1表达式(请参阅<a href=' https://git-scm.com/docs/gitrevisions'>gitrevisions\[7]</a>)，
+任意扩展的SHA-1表达式(请参阅<a href='https://git-scm.com/docs/gitrevisions'>gitrevisions\[7]</a>)，
 通常用于命名分支头或标签。
 
 ***
@@ -3487,7 +3487,7 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 
 **--remotes**
 
-显示远程跟踪分支
+显示远程跟踪分支。
 
 ***
 
@@ -3536,7 +3536,7 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 
 **--list**
 
---more=-1的同义词
+--more=-1的同义词。
 
 ***
 
@@ -3573,6 +3573,7 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 **--topics**
 
 只显示给定的第一个分支上没有的提交。这有助于通过隐藏已经在开发主线上的任何提交来跟踪主题分支。
+
 当给定“git show-branch -topics master topic1 topic2”时，这将显示“git rpm -list ^master topic1 topic2”给出的修订。
 
 ***
@@ -3583,6 +3584,7 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 
 为给定的ref显示最近的\<n>个ref-log条目。
 如果给定了\<base>，则从该条目返回\<n>个项。\<base>可以指定为count或date。
+
 当没有给出显式的\<ref>参数时，它默认为当前分支(如果是分离的，则为HEAD)。
 
 ***
@@ -3598,6 +3600,7 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 **--no-color**
 
 关闭彩色输出，即使配置文件提供了默认的彩色输出。
+
 与 --color=never 相同。
 
 ***
