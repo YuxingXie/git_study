@@ -64,6 +64,7 @@
 >> <a href='#4.2' id='c4.2'>4.2 对象库图示</a>
 >>
 >> <a href='#4.3' id='c4.3'>4.3 Git在工作时的概念</a>
+>>>
 >>> <a href='#4.3.1' id='c4.3.1'>4.3.1 进入.git目录</a>
 >>>
 >>> <a href='#4.3.2' id='c4.3.2'>4.3.2 对象、散列和blob</a>
@@ -148,9 +149,13 @@
 >> <a href='#before7.6' id='cbefore7.6'>基础补充:git show-branch</a>
 >>>
 >>> <a href='#before7.6.1' id='cbefore7.6.1'>语法</a>
+>>>
 >>> <a href='#before7.6.2' id='cbefore7.6.2'>描述</a>
+>>>
 >>> <a href='#before7.6.3' id='cbefore7.6.3'>选项</a>
+>>>
 >>> <a href='#before7.6.4' id='cbefore7.6.4'>输出</a>
+>>>
 >>> <a href='#before7.6.5' id='cbefore7.6.5'>示例</a>
 >>
 >> <a href='#7.6' id='c7.6'>7.6 查看分支</a>
@@ -3663,6 +3668,7 @@ $ git show-branch master fixes mhf
 *++ [master] Add 'git show-branch'.
 ```
 These three branches all forked from a common commit, \[master], whose commit message is "Add 'git show-branch'". 
+
 这三个分支都是从一个公共提交\[master]派生出来的，它的提交消息是“添加‘git show-branch’”。
 
 The "fixes" branch adds one commit "Introduce "reset type" flag to "git reset"". 
@@ -3670,6 +3676,23 @@ The "fixes" branch adds one commit "Introduce "reset type" flag to "git reset"".
 
 The "mhf" branch adds many other commits. The current branch is "master".
 “mhf”分支添加了许多其他提交。当前的分支是“master”。
+
+#### <a id='before7.6.5' href='#cbefore7.6.5'>示例</a>
+If you keep your primary branches immediately under refs/heads, and topic branches in subdirectories of it, having the following in the configuration file may help:
+```text
+[showbranch]
+	default = --topo-order
+	default = heads/*
+```
+
+With this, git show-branch without extra parameters would show only the primary branches. In addition, if you happen to be on your topic branch, it is shown as well.
+```text
+$ git show-branch --reflog="10,1 hour ago" --list master
+```
+
+shows 10 reflog entries going back from the tip as of 1 hour ago. Without --list, the output also shows how these tips are topologically related with each other.
+
+
 
 ### <a id='7.6' href='#c7.6'>7.6　查看分支</a>
 
