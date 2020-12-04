@@ -3429,6 +3429,200 @@ $ git branch
 
 
 ### <a id='7.6' href='#c7.6'>7.6　查看分支</a>
+***
+**NOTE:这一小节主要是git show-branch命令的用法，我感觉理解起来有点障碍，所以补充一下基础知识。**
+
+参考自<a href='https://git-scm.com/docs/git-show-branch'>https://git-scm.com/docs/git-show-branch</a>
+
+**git-show-branch** - 显示分支和它们的提交
+
+**语法**：
+```text
+git show-branch [-a|--all] [-r|--remotes] [--topo-order | --date-order]
+		[--current] [--color[=<when>] | --no-color] [--sparse]
+		[--more=<n> | --list | --independent | --merge-base]
+		[--no-name | --sha1-name] [--topics]
+		[(<rev> | <glob>)…​]
+git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
+```
+**描述**：
+```text
+半直观地显示从命名为<rev>s或<glob>s的提交(或refs/heads和/或refs/标签下的所有refs)开始的提交祖先图。
+
+它一次不能显示超过29个分支并提交。
+
+如果命令行上没有给出<rev>或<glob>，则使用showbranch.default多值配置项。
+```
+**选项**：
+
+```text
+<rev>
+
+Arbitrary extended SHA-1 expression (see gitrevisions[7]) that typically names a branch head or a tag.
+任意扩展的SHA-1表达式(请参阅gitrevisions[7] https://git-scm.com/docs/gitrevisions)，通常用于命名分支头或标签。
+```
+```text
+<glob>
+
+A glob pattern that matches branch or tag names under refs/. 
+匹配refs/下的分支或tag名称的通配符模式。
+
+For example, if you have many topic branches under refs/heads/topic, giving topic/* would show all of them.
+例如，如果在refs/heads/topic下有很多topic分支，给出topic/*就会显示(refs/heads/topic下的)所有的分支。
+```
+```text
+-r
+--remotes
+
+Show the remote-tracking branches.
+显示远程跟踪分支
+```
+```text
+-a
+--all
+
+Show both remote-tracking branches and local branches.
+显示远程跟踪分支和本地分支。
+
+```
+```text
+--current
+
+With this option, the command includes the current branch to the list of revs to be shown when it is not given on the command line.
+使用此选项，命令将当前分支包含到未在命令行中给出的rev列表中。
+```
+```text
+--topo-order
+
+By default, the branches and their commits are shown in reverse chronological order. 
+默认情况下，分支及其提交按反时间顺序显示。
+
+This option makes them appear in topological order (i.e., descendant commits are shown before their parents).
+此选项使它们按照拓扑顺序出现(例如，子代提交显示在父提交之前)。
+
+```
+```text
+--date-order
+
+This option is similar to --topo-order in the sense that no parent comes before all of its children, but otherwise commits are ordered according to their commit date.
+
+这个选项类似于--topo-order，除非没有父节点在所有子节点之前，否则提交将根据它们的提交日期进行排序。
+```
+```text
+--sparse
+
+By default, the output omits merges that are reachable from only one tip being shown.
+默认情况下，输出会省略仅显示的一个tip中可以到达的合并。
+
+This option makes them visible.
+此选项使它们可见。
+```
+```text
+--more=<n>
+
+Usually the command stops output upon showing the commit that is the common ancestor of all the branches.
+通常，该命令在显示提交(所有分支的共同祖先)时停止输出。
+
+This flag tells the command to go <n> more common commits beyond that. 
+这个标志告诉命令执行<n>以上的常见提交。
+
+When <n> is negative, display only the <reference>s given, without showing the commit ancestry tree.
+当<n>为负数时，只显示给出的<reference>s，而不显示提交祖先树。
+
+```
+```text
+--list
+
+Synonym to --more=-1
+--more=-1的同义词
+```
+```text
+--merge-base
+
+
+Instead of showing the commit list, determine possible merge bases for the specified commits.
+不是显示提交列表，而是为指定的提交确定可能的合并基。
+
+All merge bases will be contained in all specified commits. 
+所有的合并基将包含在所有指定的提交中。
+
+This is different from how git-merge-base[1] handles the case of three or more commits.
+这与基于git合并的[1]处理三个或更多提交的情况不同。
+
+```
+```text
+--independent
+
+Among the <reference>s given, display only the ones that cannot be reached from any other <reference>.
+在给定的<reference>中，只显示其他任何<reference>无法到达的部分。
+```
+```text
+--no-name
+
+Do not show naming strings for each commit.
+不为每次提交显示命名字符串。
+```
+```text
+--sha1-name
+
+Instead of naming the commits using the path to reach them from heads (e.g. "master~2" to mean the grandparent of "master"), 
+不是使用从头到达的路径来命名提交(例如。“master~2”表示“master”的祖父母)，
+
+name them with the unique prefix of their object names.
+而是使用对象名称的惟一前缀来命名它们。
+
+```
+```text
+--topics
+
+Shows only commits that are NOT on the first branch given. 
+只显示给定的第一个分支上没有的提交。
+
+This helps track topic branches by hiding any commit that is already in the main line of development. 
+这有助于通过隐藏已经在开发主线上的任何提交来跟踪主题分支。
+
+When given "git show-branch --topics master topic1 topic2", this will show the revisions given by "git rev-list ^master topic1 topic2"
+当给定“git show-branch -topics master topic1 topic2”时，这将显示“git rpm -list ^master topic1 topic2”给出的修订。
+```
+```text
+-g
+--reflog[=<n>[,<base>]] [<ref>]
+
+Shows <n> most recent ref-log entries for the given ref. 
+显示<n>给定ref的最近的ref-log条目。
+
+If <base> is given, <n> entries going back from that entry. 
+如果给定了<base>，则从该条目返回<n个>项。
+
+<base> can be specified as count or date.
+<base>可以指定为count或date。
+
+When no explicit <ref> parameter is given, it defaults to the current branch (or HEAD if it is detached).
+当没有给出显式的<ref>参数时，它默认为当前分支(如果是分离的，则为HEAD)。
+```
+```text
+--color[=<when>]
+
+Color the status sign (one of these: * ! + -) of each commit corresponding to the branch it’s in. 
+给状态标志上色(其中之一:* ! + -)与它所在的分支对应的每个commit。
+
+The value must be always (the default), never, or auto.
+该值必须是always(默认值)、never或auto。
+
+```
+```text
+--no-color
+Turn off colored output, even when the configuration file gives the default to color output.
+关闭彩色输出，即使配置文件提供了默认的彩色输出。
+
+Same as --color=never.
+与 --color=never 相同。
+```
+Note that --more, --list, --independent and --merge-base options are mutually exclusive.
+注意，--more、--list、--independent和--merge-base选项是互斥的。
+
+***
+
 git show-branch命令提供比git branch更详细的输出，按时间以递序的形式列出对一个或多个分支有贡献的提交。
 与git branch一样，没有选项则列出特性分支，-r显示远程追踪分支，-a显示所有分支。
 
@@ -3448,7 +3642,7 @@ $ git show-branch
 
 
 git show-branch的输出被一排破折号分为两部分。分隔符上方的部分列出分支名，并用方括号括起来，每行一个。每个分支名跟着一行输出，
-前面用感叹号或星号（如果它是当前分支）标记。在刚才所示的例子中，在分支bug/pr-1上的提交开始于第一列，当前分支dev中的提交开始于第二列，
+前面用感叹号(note:非当前分支)或星号（如果它是当前分支）标记。在刚才所示的例子中，在分支bug/pr-1上的提交开始于第一列，当前分支dev中的提交开始于第二列，
 分支master中的提交开始于第三列。为了便于参考，上半部分的每个分支都列出该分支最近提交的日志消息的第一行。
 
 输出的下半部分是一个表示每个分支中提交的矩阵。同样，每个提交后面跟着该提交中日志消息的第一行。如果有一个加号（+）、星号（*）或减号（−）
