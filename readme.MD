@@ -3499,22 +3499,28 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 使用此选项，命令将当前分支包含到未在命令行中给出的rev列表中。
 
 ***
+
 **--topo-order**
 
 默认情况下，分支及其提交按反时间顺序显示。
 此选项使它们按照拓扑顺序出现(例如，子代提交显示在父提交之前)。
 
 ***
+
 **--date-order**
 
 这个选项类似于--topo-order，除非没有父节点在所有子节点之前，否则提交将根据它们的提交日期进行排序。
+
 ***
+
 **--sparse**
+
 默认情况下，输出会省略仅显示的一个tip中可以到达的合并。
 
 此选项使它们可见。
 
 ***
+
 **--more=\<n>**
 
 通常，该命令在显示提交(所有分支的共同祖先)时停止输出。
@@ -3522,10 +3528,13 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 当\<n>为负数时，只显示给出的\<reference>s，而不显示提交祖先树。
 
 ***
+
 **--list**
 
 --more=-1的同义词
+
 ***
+
 **--merge-base**
 
 不是显示提交列表，而是为指定的提交确定可能的合并基。
@@ -3535,6 +3544,7 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 这与基于git合并的\[1]处理三个或更多提交的情况不同。
 
 ***
+
 **--independent**
 
 在给定的<reference>中，只显示其他任何<reference>无法到达的部分。
@@ -3545,6 +3555,7 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 不为每次提交显示命名字符串。
 
 ***
+
 **--sha1-name**
 
 不是使用从头到达的路径来命名提交(例如。“master~2”表示“master”的祖父母)，
@@ -3552,6 +3563,7 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 而是使用对象名称的惟一前缀来命名它们。
 
 ***
+
 **--topics**
 
 只显示给定的第一个分支上没有的提交。这有助于通过隐藏已经在开发主线上的任何提交来跟踪主题分支。
@@ -3559,11 +3571,12 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 
 ***
 **-g**
-**--reflog\[=<n>\[,<base>]] \[<ref>]**
+
+**--reflog\[=\<n>\[,\<base>]] \[\<ref>]**
 
 为给定的ref显示最近的\<n>个ref-log条目。
-如果给定了\<base>，则从该条目返回<n>个项。\<base>可以指定为count或date。
-当没有给出显式的<ref>参数时，它默认为当前分支(如果是分离的，则为HEAD)。
+如果给定了\<base>，则从该条目返回\<n>个项。\<base>可以指定为count或date。
+当没有给出显式的\<ref>参数时，它默认为当前分支(如果是分离的，则为HEAD)。
 
 ***
 **--color\[=<when>]**
@@ -3585,7 +3598,7 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 
 #### <a id='before7.6.4' href='#cbefore7.6.4'>输出</a>
 
-给定N <references>，前N行是提交消息的一行描述。
+给定N \<references>，前N行是提交消息的一行描述。
 $GIT_DIR/HEAD指向的分支头前缀为星号"*"字符，而其他分支头前缀为"!"字符。
 
 
