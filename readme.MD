@@ -146,6 +146,12 @@
 >> <a href='#7.5' id='c7.5'>7.5 列出分支名</a>
 >>
 >> <a href='#before7.6' id='cbefore7.6'>基础补充:git show-branch</a>
+>>>
+>>> <a href='#before7.6.1' id='cbefore7.6.1'>语法</a>
+>>> <a href='#before7.6.2' id='cbefore7.6.2'>描述</a>
+>>> <a href='#before7.6.3' id='cbefore7.6.3'>选项</a>
+>>> <a href='#before7.6.4' id='cbefore7.6.4'>输出</a>
+>>> <a href='#before7.6.5' id='cbefore7.6.5'>示例</a>
 >>
 >> <a href='#7.6' id='c7.6'>7.6 查看分支</a>
 >>
@@ -3432,13 +3438,13 @@ $ git branch
 
 ### <a id='before7.6' href='#cbefore7.6'>基础补充:git show-branch</a>
 
-**NOTE:这一小节主要是git show-branch命令的用法，我感觉理解起来有点障碍，所以补充一下基础知识。**
+**NOTE:补充一下基础知识。**
 
 参考自<a href='https://git-scm.com/docs/git-show-branch'>https://git-scm.com/docs/git-show-branch</a>
 
 **git-show-branch** - 显示分支和它们的提交
 
-**语法**：
+#### <a id='before7.6.1' href='#cbefore7.6.1'>语法</a>
 ```text
 git show-branch [-a|--all] [-r|--remotes] [--topo-order | --date-order]
 		[--current] [--color[=<when>] | --no-color] [--sparse]
@@ -3447,7 +3453,9 @@ git show-branch [-a|--all] [-r|--remotes] [--topo-order | --date-order]
 		[(<rev> | <glob>)…​]
 git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 ```
-**描述**：
+
+#### <a id='before7.6.2' href='#cbefore7.6.2'>描述</a>
+****：
 ```text
 半直观地显示从命名为<rev>s或<glob>s的提交(或refs/heads和/或refs/标签下的所有refs)开始的提交祖先图。
 
@@ -3455,7 +3463,9 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 
 如果命令行上没有给出<rev>或<glob>，则使用showbranch.default多值配置项。
 ```
-**选项**：
+
+#### <a id='before7.6.3' href='#cbefore7.6.3'>选项</a>
+****：
 
 ```text
 <rev>
@@ -3623,7 +3633,8 @@ Same as --color=never.
 Note that --more, --list, --independent and --merge-base options are mutually exclusive.
 注意，--more、--list、--independent和--merge-base选项是互斥的。
 
-**输出**:
+
+#### <a id='before7.6.4' href='#cbefore7.6.4'>输出</a>
 
 Given N <references>, the first N lines are the one-line description from their commit message. The branch head that is pointed at by $GIT_DIR/HEAD is prefixed with an asterisk * character while other heads are prefixed with a ! character.
 给定N <references>，前N行是提交消息的一行描述。$GIT_DIR/ head指向的分支头前缀为星号*字符，而其他分支头前缀为!的性格。
