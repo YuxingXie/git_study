@@ -3460,7 +3460,6 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 ```
 
 #### <a id='before7.6.2' href='#cbefore7.6.2'>描述</a>
-****：
 ```text
 半直观地显示从命名为<rev>s或<glob>s的提交(或refs/heads和/或refs/标签下的所有refs)开始的提交祖先图。
 
@@ -3470,12 +3469,12 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 ```
 
 #### <a id='before7.6.3' href='#cbefore7.6.3'>选项</a>
-****：
 
 ```text
 <rev>
 
-任意扩展的SHA-1表达式(请参阅gitrevisions[7] https://git-scm.com/docs/gitrevisions)，通常用于命名分支头或标签。
+任意扩展的SHA-1表达式(请参阅gitrevisions[7] https://git-scm.com/docs/gitrevisions)，
+通常用于命名分支头或标签。
 ```
 ```text
 <glob>
@@ -3572,7 +3571,8 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 
 这有助于通过隐藏已经在开发主线上的任何提交来跟踪主题分支。
 
-当给定“git show-branch -topics master topic1 topic2”时，这将显示“git rpm -list ^master topic1 topic2”给出的修订。
+当给定“git show-branch -topics master topic1 topic2”时，
+这将显示“git rpm -list ^master topic1 topic2”给出的修订。
 ```
 ```text
 -g
