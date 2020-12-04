@@ -3470,7 +3470,7 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 ***
 **\<rev>**
 
-任意扩展的SHA-1表达式(<a href=' https://git-scm.com/docs/gitrevisions'>请参阅gitrevisions[7]</a>)，
+任意扩展的SHA-1表达式(请参阅<a href=' https://git-scm.com/docs/gitrevisions'>gitrevisions\[7]</a>)，
 通常用于命名分支头或标签。
 ***
 **\<glob>**
