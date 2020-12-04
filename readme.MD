@@ -3460,13 +3460,11 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 ```
 
 #### <a id='before7.6.2' href='#cbefore7.6.2'>描述</a>
-```text
-半直观地显示从命名为<rev>s或<glob>s的提交(或refs/heads和/或refs/标签下的所有refs)开始的提交祖先图。
+半直观地显示从命名为\<rev>s或\<glob>s的提交(或refs/heads和/或refs/tags下的所有refs)开始的提交祖先图。
 
-它一次不能显示超过29个分支并提交。
+它一次不能显示超过29个branch和commit。
 
-如果命令行上没有给出<rev>或<glob>，则使用showbranch.default多值配置项。
-```
+如果命令行上没有给出\<rev>或\<glob>，则使用showbranch.default多值配置项。
 
 #### <a id='before7.6.3' href='#cbefore7.6.3'>选项</a>
 
