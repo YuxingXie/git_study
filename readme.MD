@@ -3443,11 +3443,10 @@ $ git branch
 
 ### <a id='before7.6' href='#cbefore7.6'>基础补充:git show-branch</a>
 
-**NOTE:如果看不懂下一小节，在这补充一下基础知识。**
-
+**NOTE**:如果看不懂下一小节，在这补充一下基础知识。
 参考自<a href='https://git-scm.com/docs/git-show-branch'>https://git-scm.com/docs/git-show-branch</a>
 
-**git-show-branch** - 显示分支和它们的提交
+**git-show-branch - 显示分支和它们的提交。**
 
 #### <a id='before7.6.1' href='#cbefore7.6.1'>语法</a>
 ```text
