@@ -3818,20 +3818,12 @@ $ git branch
 ```text
 
 $ git branch
-
-
-
-
 　bug/pr-1
 　bug/pr-2
 　dev
 * master
 
 $ git checkout dev
-
-
-
-
 error: Your local changes to the following files would be overwritten by checkout:
 　　NewStuff
 Please, commit your changes or stash them before you can switch branches.
@@ -3843,23 +3835,15 @@ Aborting
 
 在这种情况下，一条消息发出警告，某些原因造成Git停止了检出请求。什么原因？可以检查NewStuff 文件的内容，查看当前工作目录和目标分支dev。
 ```text
-
 # 显示NewStuff在工作目录中的样子
 $ cat NewStuff
-
-
-
-
 Something
 Something else
 
 # 显示文件的本地版本有额外的一行
 # 没有提交到工作目录的当前分支(master)
+
 $ git diff NewStuff
-
-
-
-
 diff --git a/NewStuff b/NewStuff
 index 0f2416e..5e79566 100644
 --- a/NewStuff
@@ -3870,10 +3854,6 @@ index 0f2416e..5e79566 100644
 
 # 显示该文件在dev分支中的样子
 $ git show dev:NewStuff
-
-
-
-
 Something
 A Change
 
@@ -3886,8 +3866,6 @@ A Change
 
 如果你真的不在乎丢失对工作目录的修改并且愿意把它们丢掉，可以通过使用-f选项强制Git执行检出。
 ```
-
-
 该错误消息可能会建议你在索引中更新文件，然后继续进行检出。然而，这还不够。使用git add更新NewStuff 的内容到索引中只是将该文件的内容放到索引中，
 它不会将它提交给任意分支。Git还是无法在检出新分支时保存修改，因此再次失败。
 
