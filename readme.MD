@@ -3812,8 +3812,202 @@ $ git branch
 
 #### <a id='7.7.2' href='#c7.7.2'>7.7.2　有未提交的更改时进行检出</a>
 
+如果不明确请求，Git会排除本地工作树中数据的删除和修改。工作目录中的未被追踪的文件和目录始终会置之不管；Git不会删除或修改它们。
+但是，如果一个文件的本地修改不同于新分支上的变更，Git发出如下错误消息，并拒绝检出目标分支。
+
+```text
+
+$ git branch
+
+
+
+
+　bug/pr-1
+　bug/pr-2
+　dev
+* master
+
+$ git checkout dev
+
+
+
+
+error: Your local changes to the following files would be overwritten by checkout:
+　　NewStuff
+Please, commit your changes or stash them before you can switch branches.
+Aborting
+```
+
+
+
+
+在这种情况下，一条消息发出警告，某些原因造成Git停止了检出请求。什么原因？可以检查NewStuff 文件的内容，查看当前工作目录和目标分支dev。
+```text
+
+# 显示NewStuff在工作目录中的样子
+$ cat NewStuff
+
+
+
+
+Something
+Something else
+
+# 显示文件的本地版本有额外的一行
+# 没有提交到工作目录的当前分支(master)
+$ git diff NewStuff
+
+
+
+
+diff --git a/NewStuff b/NewStuff
+index 0f2416e..5e79566 100644
+--- a/NewStuff
++++ b/NewStuff
+@@ -1 +1,2 @@
+ Something
++Something else
+
+# 显示该文件在dev分支中的样子
+$ git show dev:NewStuff
+
+
+
+
+Something
+A Change
+
+```
+
+如果Git草率兑现了检出分支dev的要求，在工作目录中NewStuff 文件的本地修改将被dev中的版本覆盖。默认情况下，Git会检测到这种潜在的损失，并防止它发生。
+
+```text
+提示
+
+如果你真的不在乎丢失对工作目录的修改并且愿意把它们丢掉，可以通过使用-f选项强制Git执行检出。
+```
+
+
+该错误消息可能会建议你在索引中更新文件，然后继续进行检出。然而，这还不够。使用git add更新NewStuff 的内容到索引中只是将该文件的内容放到索引中，
+它不会将它提交给任意分支。Git还是无法在检出新分支时保存修改，因此再次失败。
+
+```text
+$ git add NewStuff
+
+$ git checkout dev
+error: Your local changes to the following files would be overwritten by checkout:
+　　NewStuff
+Please, commit your changes or stash them before you can switch branches.
+Aborting
+```
+
+事实上，它仍然会被覆盖。显然，只将它添加到索引中是不够的。
+
+这时可以发出git commit命令来提交修改到当前分支（主分支）。但是假如你希望变更作用于新的dev分支上。你似乎被卡住了：
+你不能在检出前把变更放在dev分支上，但Git不让你检出，因为变更已经存在。
+
+幸运的是，有办法走出这种两难境地。一种方法是第11章介绍的使用stash。另一种方法在7.7.3节介绍。
 
 #### <a id='7.7.3' href='#c7.7.3'>7.7.3　合并变更到不同分支</a>
+
+在上一节中，工作目录的当前状态与你想切换到的分支相冲突。我们需要的是一个合并：工作目录中的改变必须和被检出的文件合并。
+
+如果可能，或者如果使用-m选项特别要求，Git通过在你的本地修改和对目标分支之间进行一次合并操作，尝试将你的本地修改加入到新工作目录中。
+
+```text
+
+$ git checkout -m dev
+M　　　 NewStuff
+Switched to branch "dev"
+
+```
+
+在这里，Git已经修改NewStuff 文件，并成功检出dev分支。
+
+本次合并操作完全发生在工作目录中。它在任何分支上都引入合并提交。这有点类似cvs update命令，本地修改与目标分支合并，并留在工作目录中。
+
+然而，在这些情况下，一定要小心。虽然它看起来像合并得很干净并且一切都没问题，Git已经简单地修改了文件并留下其中的合并冲突指示。还必须解决存在的冲突：
+
+```text
+
+$ cat NewStuff
+
+
+
+
+Something
+<<<<<<< dev:NewStuff
+A Change
+=======
+Something else
+>>>>>>> local:NewStuff
+
+```
+
+请参阅第9章，以了解更多有关合并和解决合并冲突的有用技巧。
+
+如果Git可以检出一个分支，改变它，并且在没有任何合并冲突的情况下清晰地合并本地修改，那么检出请求就成功了。
+
+假设你在开发版本库的master分支，并对NewStuff 文件进行了一些修改。然后，你发现你所做的更改其实应该在另一分支，也许是因为修复了问题报告#1，
+所以应该提交到bug/pr-1分支。
+
+设置如下。首先在master分支上。对某些文件进行更改，这里通过添加文本“Some bug fix”到NewStuff文件表示。
+
+```text
+$ git show-branch
+! [bug/pr-1] Fix Problem Report 1
+ ! [bug/pr-2] Added Bob's fixes.
+　! [dev] Started developing NewStuff
+　 * [master] Added Bob's fixes.
+----
+　+ [dev] Started developing NewStuff
+　+ [dev^] Improve the new development
+　+ [dev~2] Start some new development.
+　+ [bug/pr-1] Fix Problem Report 1
++++* [bug/pr-2] Added Bob's fixes.
+
+$ echo "Some bug fix" >> NewStuff
+
+$ cat NewStuff
+Something
+Some bug fix
+```
+
+这时，你会发现这一切工作都应提交到bug/pr-1分支而不是master分支上。作为参考，这是NewStuff 文件在bug/pr-1分支中下一步检出之前的样子。
+
+```text
+$ git show bug/pr-1:NewStuff
+Something
+```
+
+为了将修改放入所需的分支中，只须试图对它进行检出。
+
+```text
+
+$ git checkout bug/pr-1
+M　　　 NewStuff
+Switched to branch "bug/pr-1"
+
+$ cat NewStuff
+Something
+Some bug fix
+```
+
+在这里，Git能够正确地合并工作目录和目标分支的变化，并把它们放在新工作目录结构中。你可能想验证合并是否符合你的预期，可以使用git diff。
+
+```text
+
+$ git diff
+diff --git a/NewStuff b/NewStuff
+index 0f2416e..b4d8596 100644
+--- a/NewStuff
++++ b/NewStuff
+@@ -1 +1,2 @@
+ Something
++Some bug fix
+```
+新添加的一行是正确的。
+
 #### <a id='7.7.4' href='#c7.7.4'>7.7.4　创建并检出新分支</a>
 #### <a id='7.7.5' href='#c7.7.5'>7.7.5　分离HEAD分支</a>
 ### <a id='7.8' href='#c7.8'>7.8　删除分支</a>
