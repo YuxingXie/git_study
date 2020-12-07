@@ -3983,7 +3983,6 @@ Something
 为了将修改放入所需的分支中，只须试图对它进行检出。
 
 ```text
-
 $ git checkout bug/pr-1
 M　　　 NewStuff
 Switched to branch "bug/pr-1"
@@ -3996,7 +3995,6 @@ Some bug fix
 在这里，Git能够正确地合并工作目录和目标分支的变化，并把它们放在新工作目录结构中。你可能想验证合并是否符合你的预期，可以使用git diff。
 
 ```text
-
 $ git diff
 diff --git a/NewStuff b/NewStuff
 index 0f2416e..b4d8596 100644
