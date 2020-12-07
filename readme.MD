@@ -3614,13 +3614,13 @@ $GIT_DIR/HEAD指向的分支头前缀为星号"*"字符，而其他分支头前�
 
 **NOTE**:以下面的例子说明，git show-branch master fixes mhf显示“master”、“fixes”和“mhf”分支的提交：
 
-* 第一行显示master分支的提交的message:***Add 'git show-branch'***;
-* 第二行显示fixes分支的提交的message:***Introduce "reset type" flag to "git reset"***;
-* 第三行显示mhf分支的提交的message:***Allow "+remote:local" refspec to cause --force when fetching.***。
+* 第一行显示master分支的(HEAD)提交的message:***Add 'git show-branch'***;
+* 第二行显示fixes分支的(HEAD)提交的message:***Introduce "reset type" flag to "git reset"***;
+* 第三行显示mhf分支的(HEAD)提交的message:***Allow "+remote:local" refspec to cause --force when fetching.***。
 
-在这N行之后，将显示每个提交的单行日志，并缩进N个位置。
+在这N行之后，将显示每个(分支的)提交的单行日志(**NOTE**:并且不会按照给定的N个分支的顺序显示，具体按什么排序目前未知)，并缩进N个位置。
 如果commit在第i个分支上，第i个缩进字符显示+;否则它显示一个空格。合并提交用-号表示。
-每个提交都显示一个短名称，可以用作扩展的SHA-1来命名提交。
+每个提交都显示一个短名称(**NOTE:相对提交名**)，可以用作扩展的SHA-1来命名提交。
 
 
 下面的例子展示了三个分支，“master”、“fixes”和“mhf”:
