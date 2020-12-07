@@ -3612,6 +3612,11 @@ git show-branch (-g|--reflog)[=<n>[,<base>]] [--list] [<ref>]
 给定N \<references>，前N行是提交消息的一行描述。
 $GIT_DIR/HEAD指向的分支头前缀为星号"*"字符，而其他分支头前缀为"!"字符。
 
+**NOTE**:以下面的例子说明，git show-branch master fixes mhf显示“master”、“fixes”和“mhf”分支的提交：
+
+* 第一行显示master分支的提交的message:***Add 'git show-branch'***;
+* 第二行显示fixes分支的提交的message:***Introduce "reset type" flag to "git reset"***;
+* 第三行显示mhf分支的提交的message:***Allow "+remote:local" refspec to cause --force when fetching.***。
 
 在这N行之后，将显示每个提交的单行日志，并缩进N个位置。
 如果commit在第i个分支上，第i个缩进字符显示+;否则它显示一个空格。合并提交用-号表示。
