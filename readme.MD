@@ -3985,7 +3985,7 @@ index 0f2416e..b4d8596 100644
 
 #### <a id='7.7.4' href='#c7.7.4'>7.7.4　创建并检出新分支</a>
 
-另一种比较常见的情况，当你想创建一个新的分支并同时切换到它。Git提供了一个快捷方式-b ***new-branch*** 选项来处理这种情况。
+另一种比较常见的情况，当你想创建一个新的分支并同时切换到它。Git提供了一个快捷方式(git checkout)-b ***new-branch*** 选项来处理这种情况。
 
 让我们从与前面的例子中相同的设置开始，除了现在你必须开始一个新的分支，而不是把变更应用到现有分支上。换句话说，你在master分支中编辑文件，
 突然意识到你希望将所有修改提交到一个名为bug/pr-3的全新分支。顺序如下所示。
@@ -4028,13 +4028,63 @@ $ git checkout -b new-branch start-point
 $ git branch new-branch start-point
 $ git checkout new-branch
 ```
-
-
-
-
-
+**NOTE**:目前不知道***start-point***代表什么，但我猜测最大可能是当前分支的某次提交。
 
 #### <a id='7.7.5' href='#c7.7.5'>7.7.5　分离HEAD分支</a>
+
+通常情况下，通过直接指出分支名来检出分支的头部是明智的。因此，默认情况下，git checkout会改变期望的分支的头部。
+
+然而，可以检出任何提交。在这样的情况下，Git会自动创建一种匿名分支，称为一个分离的HEAD（detached HEAD）。
+在下面的情况下，Git会创建一个分离的HEAD。
+
+* 检出的提交不是分支的头部。
+* 检出一个追踪分支。为了探索最近有什么变更从远程版本库带入到你的版本库中你可能会这样做。
+* 检出标签引用的提交。为了将基于文件标签的版本放在一起发布你可能会这样做。
+* 启动一个git bisect的操作，在6.4.1节中有描述。
+* 使用git submodule update命令。
+在这些情况下，Git会告诉你，你已经移动到了一个分离的HEAD。
+
+```text
+# 我手边有Git的源代码
+$ cd git.git
+
+$ git checkout v1.6.0
+Note: moving to "v1.6.0" which isn't a local branch
+If you want to create a new branch from this checkout, you may do so
+(now or later) by using -b with the checkout command again. Example:
+　git checkout -b <new_branch_name>
+HEAD is now at ea02eef... GIT 1.6.0
+
+```
+如果你发现自己在一个分离的头部，然后你决定在该点用新的提交留住它们，那么你必须首先创建一个新分支：
+
+```text
+
+$ git checkout -b new_branch
+```
+
+这会给你一个基于分离的HEAD所在提交的新的正确分支。然后，你可以继续正常开发。从本质上讲，命名的分支以前是匿名的。
+
+为了得知你是否在一个分离的HEAD上，只须问：
+
+```text
+$ git branch
+* (no branch)
+　master
+```
+
+另一方面，如果你在分离的HEAD上处理完了，想简单地放弃这种状态，你只须输入git checkout branch，就可以转换为一个命名的分支。
+
+```text
+$ git checkout master
+Previous HEAD position was ea02eef... GIT 1.6.0
+Checking out files: 100% (608/608), done.
+Switched to branch "master"
+
+$ git branch
+* master
+```
+
 ### <a id='7.8' href='#c7.8'>7.8　删除分支</a>
 
 ## <a id='8' href='#c8'>第8章 diff</a>
