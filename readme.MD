@@ -2699,6 +2699,7 @@ $ git show HEAD~2
 或者查看某个特定的blob对象信息。
 
 ```text
+# git show 分支名:文件名
 $ git show origin/master:Makefile
 ```
 后者显示的是origin/master分支的Makefile blob。
