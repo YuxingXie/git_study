@@ -3959,6 +3959,7 @@ Something
 为了将修改放入所需的分支中，只须试图对它进行检出。
 
 ```text
+# NOTE:这里作者是否遗漏了'-m'选项？
 $ git checkout bug/pr-1
 M　　　 NewStuff
 Switched to branch "bug/pr-1"
@@ -3983,6 +3984,56 @@ index 0f2416e..b4d8596 100644
 新添加的一行是正确的。
 
 #### <a id='7.7.4' href='#c7.7.4'>7.7.4　创建并检出新分支</a>
+
+另一种比较常见的情况，当你想创建一个新的分支并同时切换到它。Git提供了一个快捷方式-b ***new-branch*** 选项来处理这种情况。
+
+让我们从与前面的例子中相同的设置开始，除了现在你必须开始一个新的分支，而不是把变更应用到现有分支上。换句话说，你在master分支中编辑文件，
+突然意识到你希望将所有修改提交到一个名为bug/pr-3的全新分支。顺序如下所示。
+
+```text
+
+$ git branch
+　bug/pr-1
+　bug/pr-2
+　dev
+* master
+
+$ git checkout -b bug/pr-3
+M　　　 NewStuff
+Switched to a new branch "bug/pr-3"
+
+$ git show-branch
+! [bug/pr-1] Fix Problem Report 1
+ ! [bug/pr-2] Added Bob's fixes.
+　* [bug/pr-3] Added Bob's fixes.
+　 ! [dev] Started developing NewStuff
+! [master] Added Bob's fixes.
+-----
+　 + [dev] Started developing NewStuff
+　 + [dev^] Improve the new development
+　 + [dev~2] Start some new development.
++　　[bug/pr-1] Fix Problem Report 1
+++*++ [bug/pr-2] Added Bob's fixes.
+
+```
+除非一些问题阻止检出命令完成，命令：
+
+```text
+$ git checkout -b new-branch start-point
+```
+
+与两个命令序列是完全等价的。
+
+```text
+$ git branch new-branch start-point
+$ git checkout new-branch
+```
+
+
+
+
+
+
 #### <a id='7.7.5' href='#c7.7.5'>7.7.5　分离HEAD分支</a>
 ### <a id='7.8' href='#c7.8'>7.8　删除分支</a>
 
