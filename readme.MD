@@ -4030,13 +4030,13 @@ $ git checkout -b new-branch start-point
 $ git branch new-branch start-point
 $ git checkout new-branch
 ```
-**NOTE**:目前不知道***start-point***代表什么，但我猜测最大可能是目标分支的某次提交。
+**NOTE**:start-point参数见<a href='#7.4'>7.4 创建分支</a>，表示分支在某次提交上创建。
 
 #### <a id='7.7.5' href='#c7.7.5'>7.7.5　分离HEAD分支</a>
 
 通常情况下，通过直接指出分支名来检出分支的头部是明智的。因此，默认情况下，git checkout会改变期望的分支的头部。
 
-然而，可以检出任何提交(**NOTE**:这个提交猜测应该是上面命令中的***start-point***参数引用的提交)。
+然而，可以检出任何提交。
 在这样的情况下，Git会自动创建一种匿名分支，称为一个分离的HEAD（detached HEAD）。
 在下面的情况下，Git会创建一个分离的HEAD。
 
@@ -4096,53 +4096,6 @@ $ git branch
 
 #### <a id='after7.7.5' href='#cafter7.7.5'>补充:关于分离HEAD分支的一些研究</a>
 
-现在，我要制造一个分离HEAD分支。
-
-```text
-$ git add --all
-$ git commit -m '我计划在这次提交这里创建一个匿名分支'
-[master 2a35971] 我计划在这次提交这里创建一个匿名分支
- 1 file changed, 3 insertions(+), 1 deletion(-)
-$ git status
-On branch master
-nothing to commit, working tree clean
-$ git log
-commit 2a35971d5477a1e8630029b69a44edfc7f041322 (HEAD -> master)
-Author: xxx <xxx@xx.com>
-Date:   Tue Dec 8 17:00:15 2020 +0800
-
-    我计划在这次提交这里创建一个匿名分支
-
-commit 7e42c0c6503e359f8285585ba17c9f0e46a2f772 (bug/pr3)
-Author: xxx <xxx@xx.com>
-Date:   Tue Dec 8 11:58:30 2020 +0800
-
-    can checkout to other branch after change on master?
-
-commit 0d3d79c1aa066d9e1783fc35725768e781b88f59
-Author: xxx <xxx@xx.com>
-Date:   Mon Dec 7 15:08:42 2020 +0800
-
-    commit on master 1
-
-commit d3367b27b9654a2046ab7d4966f538ad92ba81d5
-Author: xxx <xxx@xx.com>
-Date:   Tue Dec 1 15:48:20 2020 +0800
-
-    commit on master
-$ git add --all
-$ git commit '即将制造头分离'
-error: pathspec '即将制造头分离' did not match any file(s) known to git
-$ git commit -m '即将制造头分离'
-[master c46c03a] 即将制造头分离
- 1 file changed, 3 insertions(+), 1 deletion(-)
-$ git checkout bug/pr_2
-Switched to branch 'bug/pr_2'
-$ git checkout master 2a35971d5477a1e8630029b69a44edfc7f041322
-error: pathspec '2a35971d5477a1e8630029b69a44edfc7f041322' did not match any file(s) known to git
-$ git checkout master master^
-error: pathspec 'master^' did not match any file(s) known to git
-```
 
 ### <a id='7.8' href='#c7.8'>7.8　删除分支</a>
 
