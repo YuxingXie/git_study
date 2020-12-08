@@ -171,6 +171,8 @@
 >>> <a href='#7.7.4' id='c7.7.4'>7.7.4 创建并检出分支</a>
 >>>
 >>> <a href='#7.7.5' id='c7.7.5'>7.7.5 分离HEAD分支</a>
+>>>
+>>> <a href='#after7.7.5' id='cafter7.7.5'>补充:关于分离HEAD分支的一些研究</a>
 >>
 >> <a href='#7.8' id='c7.8'>7.8 删除分支</a>
 >
@@ -420,13 +422,13 @@ $ git config user.email "trump4moreyears@donald.com"
 $ git log
 
 commit 5fda9bdf727db118dd41cf00267cbec39d8e54e0 (HEAD -> master)
-Author: yuxingxie <185246042@qq.com>
+Author: xxx <xxx@xx.com>
 Date:   Tue Nov 10 15:00:21 2020 +0800
 
     must add before commit?
 
 commit 39f1662f767217bea2055927fe153524c0ca2895
-Author: yuxingxie <185246042@qq.com>
+Author: xxx <xxx@xx.com>
 Date:   Tue Nov 10 14:55:43 2020 +0800
 
     ds
@@ -439,7 +441,7 @@ Date:   Tue Nov 10 14:55:43 2020 +0800
 ```text
 $ git show d89dc2fedea05fa019a8edc846b0a000f53755e8
 commit d89dc2fedea05fa019a8edc846b0a000f53755e8 (HEAD -> master)
-Author: yuxingxie <185246042@qq.com>
+Author: xxx <xxx@xx.com>
 Date:   Tue Nov 10 15:16:40 2020 +0800
 
     add exists file a.txt
@@ -980,8 +982,8 @@ $ git cat-file -p 6ab6f1e2bd40b2a0440de63c2e235c22c3201a91
 
 $ git cat-file -p 19cfe1593d7232f7ee419a9a171d09ae309fdc48
 tree 6ab6f1e2bd40b2a0440de63c2e235c22c3201a91
-author yuxingxie <185246042@qq.com> 1605601275 +0800
-committer yuxingxie <185246042@qq.com> 1605601275 +0800
+author xxx <xxx@xx.com> 1605601275 +0800
+committer xxx <xxx@xx.com> 1605601275 +0800
 
 sss
 
@@ -2280,7 +2282,7 @@ af64db73cb2fe437b39141a1d3aee5f2fdf6a7cd clear
 
 $ git log V1.0 -1
 commit 9168c3dbd65dc2b32dfcbcdc87c4b5a8a1f6e63e (tag: V1.0)
-Author: yuxingxie <185246042@qq.com>
+Author: xxx <xxx@xx.com>
 Date:   Mon Nov 23 14:07:23 2020 +0800
 
     clear
@@ -3356,7 +3358,7 @@ $ git merge-base master bug/pr_1
 
 $ git log HEAD
 commit 19cfe1593d7232f7ee419a9a171d09ae309fdc48 (HEAD -> newBranch, bug/pr_2, bug/pr_1)
-Author: yuxingxie <185246042@qq.com>
+Author: xxx <xxx@xx.com>
 Date:   Tue Nov 17 16:21:15 2020 +0800
 
     sss
@@ -4034,7 +4036,7 @@ $ git checkout new-branch
 
 通常情况下，通过直接指出分支名来检出分支的头部是明智的。因此，默认情况下，git checkout会改变期望的分支的头部。
 
-然而，可以检出任何提交(**NOTE**:这个提交猜测应该是上面命令中的***start-point***参数)。
+然而，可以检出任何提交(**NOTE**:这个提交猜测应该是上面命令中的***start-point***参数引用的提交)。
 在这样的情况下，Git会自动创建一种匿名分支，称为一个分离的HEAD（detached HEAD）。
 在下面的情况下，Git会创建一个分离的HEAD。
 
@@ -4042,7 +4044,8 @@ $ git checkout new-branch
 * 检出一个追踪分支。为了探索最近有什么变更从远程版本库带入到你的版本库中你可能会这样做。
 * 检出标签引用的提交。为了将基于文件标签的版本放在一起发布你可能会这样做。
 * 启动一个git bisect的操作，在<a href='#6.4.1'>6.4.1</a>节中有描述。
-* 使用git submodule update命令。
+* 使用**git submodule update**命令。
+
 在这些情况下，Git会告诉你，你已经移动到了一个分离的HEAD。
 
 ```text
@@ -4089,6 +4092,56 @@ Switched to branch "master"
 
 $ git branch
 * master
+```
+
+#### <a id='after7.7.5' href='#cafter7.7.5'>补充:关于分离HEAD分支的一些研究</a>
+
+现在，我要制造一个分离HEAD分支。
+
+```text
+$ git add --all
+$ git commit -m '我计划在这次提交这里创建一个匿名分支'
+[master 2a35971] 我计划在这次提交这里创建一个匿名分支
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+$ git status
+On branch master
+nothing to commit, working tree clean
+$ git log
+commit 2a35971d5477a1e8630029b69a44edfc7f041322 (HEAD -> master)
+Author: xxx <xxx@xx.com>
+Date:   Tue Dec 8 17:00:15 2020 +0800
+
+    我计划在这次提交这里创建一个匿名分支
+
+commit 7e42c0c6503e359f8285585ba17c9f0e46a2f772 (bug/pr3)
+Author: xxx <xxx@xx.com>
+Date:   Tue Dec 8 11:58:30 2020 +0800
+
+    can checkout to other branch after change on master?
+
+commit 0d3d79c1aa066d9e1783fc35725768e781b88f59
+Author: xxx <xxx@xx.com>
+Date:   Mon Dec 7 15:08:42 2020 +0800
+
+    commit on master 1
+
+commit d3367b27b9654a2046ab7d4966f538ad92ba81d5
+Author: xxx <xxx@xx.com>
+Date:   Tue Dec 1 15:48:20 2020 +0800
+
+    commit on master
+$ git add --all
+$ git commit '即将制造头分离'
+error: pathspec '即将制造头分离' did not match any file(s) known to git
+$ git commit -m '即将制造头分离'
+[master c46c03a] 即将制造头分离
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+$ git checkout bug/pr_2
+Switched to branch 'bug/pr_2'
+$ git checkout master 2a35971d5477a1e8630029b69a44edfc7f041322
+error: pathspec '2a35971d5477a1e8630029b69a44edfc7f041322' did not match any file(s) known to git
+$ git checkout master master^
+error: pathspec 'master^' did not match any file(s) known to git
 ```
 
 ### <a id='7.8' href='#c7.8'>7.8　删除分支</a>
