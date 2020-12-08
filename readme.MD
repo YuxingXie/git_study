@@ -4028,7 +4028,7 @@ $ git checkout -b new-branch start-point
 $ git branch new-branch start-point
 $ git checkout new-branch
 ```
-**NOTE**:目前不知道***start-point***代表什么，但我猜测最大可能是当前分支的某次提交。
+**NOTE**:目前不知道***start-point***代表什么，但我猜测最大可能是目标分支的某次提交。
 
 #### <a id='7.7.5' href='#c7.7.5'>7.7.5　分离HEAD分支</a>
 
@@ -4054,8 +4054,13 @@ If you want to create a new branch from this checkout, you may do so
 (now or later) by using -b with the checkout command again. Example:
 　git checkout -b <new_branch_name>
 HEAD is now at ea02eef... GIT 1.6.0
-
 ```
+**NOTE**:并不能检出一个并不存在的分支，见下：
+```text
+$ git checkout whatever
+error: pathspec 'whatever' did not match any file(s) known to git
+```
+
 如果你发现自己在一个分离的头部，然后你决定在该点用新的提交留住它们，那么你必须首先创建一个新分支：
 
 ```text
