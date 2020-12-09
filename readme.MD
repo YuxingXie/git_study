@@ -4289,7 +4289,249 @@ git diff commit1 commit2
 这个变更已经用git add file1暂存到了暂存区中，但是还没有提交。
 
 ![](https://github.com/YuxingXie/git_study/raw/master/assets/image/08-01-01.jpg)  
+图8-1　比较不同版本的文件
+
+file1 文件在工作目录、索引和HEAD中的每个版本都标识出来了。虽然file1 的版本bd71363已经在索引中了，但是它实际上作为blob对象储存在对象库中，
+这个对象是通过虚拟树对象（索引）间接引用的。与此类似，文件的HEAD版本a23bf，也经过多个步骤被间接引用。
+
+这个例子表面上看是对file1 文件的比较。但图8-1中粗体箭头指向树或者虚拟树对象，这提醒你这些比较实际上是建立在整个树上的，而不是单独的文件上。
+
+通过图8-1，你可以看出如何利用没有参数的git diff命令来验证下次提交的准备状态。只要这条命令有输出，你就有工作目录中已经编辑或修改的东西没有暂存。
+检查每个文件的编辑情况。当你对你的工作满意的时候，你可以利用git add命令暂存该文件。一旦将更改的文件暂存了，git diff命令就不会再为该文件输出diff。
+利用这一点，可以一步步地去处理“脏文件”，直到这条命令没有输出为止，此时，所有文件都暂存到索引中了。但是也不要忘记检查新增的文件和删除的文件。
+在暂存过程中的任何时候，git diff-cached命令会显示下次提交时索引中的额外变更或已暂存的变更。
+当完成了所有工作时，git commit命令捕获索引中的所有变更，并把它们加到新的提交中。
+
+不需要为一次提交而暂存工作目录中的所有修改。实际上，如果你发现工作目录中有不同逻辑概念上的修改，应该放到不同的提交中，你就应该一次暂存一部分，
+把另外的部分留在工作目录中。一个提交只捕获你暂存的变更。重复这个过程，为接下来的提交暂存合适的变更。
+
+细心的读者可能已经发现，虽然git diff命令有4种基本形式，但图8-1中只有三种形式用加粗的箭头突出显示了，那么第4个呢？这里只有一个代表工作目录的树对象，
+并且只有一个代表索引的树对象。在例子中，对象库中树旁边只有一个提交。然而，一个对象库应该有许多提交，这些提交被不同的分支和标签命名，
+所有这些都有可以用git diff命令来进行比较的树。因此，第4种形式的git diff命令可以用来比较对象库中任意两个提交（树）。
+
+除了上述4种基本形式的git diff命令之外，还有很多选项。以下是一些比较有用的选项，供大家参考。
+
+--M
+这个选项可以用来查找重命名并且生成一个简化的输出，只简单地记录文件重命名而不是先删除再添加。如果文件不是纯的重命名，同时还有内容上的更改，
+那么Git也会将它们调出了。
+
+-w或者--ignore-all-space
+这两个选项令比较时忽略空白字符。
+
+--stat
+这个选项会显示针对两个树状态之间差异的统计数据。报告用简洁的语法显示有多少行发生了改变，有多少行添加了，有多少行删除了。
+
+--color
+这个选项会使输出结果使用多种颜色显示，一种颜色显示diff中的一种变化。
+
+最后，git diff命令可限定为显示一组指定文件和目录间的差异。
+
+```text
+警告
+
+-a选项对于git diff命令没有意义，这和-a选项对于git commit完全不同。要显示暂存的和未暂存的差异，需要使用git diff HEAD。
+这种不对称的设计是非常遗憾且与直觉不符的。
+```
+
+
 ### <a href='#c8.2' id='8.2'>8.2 简单的git diff例子</a>
+
+这里还利用图8-1中的场景，我们将在这个场景中使用多种不同形式的git diff命令。首先，我们从建立有两个文件的简单版本库开始。
+
+```text
+
+$ mkdir /tmp/diff_example
+
+$ cd /tmp/diff_example
+
+$ git init
+Initialized empty Git repository in /tmp/diff_example/.git/
+
+$ echo "foo" > file1
+
+$ echo "bar" > file2
+
+$ git add file1 file2
+
+$ git commit -m "Add file1 and file2"
+[master (root-commit)]: created fec5ba5: "Add file1 and file2"
+ 2 files changed, 2 insertions(+), 0 deletions(-)
+ create mode 100644 file1
+ create mode 100644 file2
+```
+
+接下来，将file1 中的foo替换为quux。
+
+```text
+$ echo "quux" > file1
+```
+
+file1 在工作目录中已经修改，但是还没有暂存。这个状态和图8-1中的不一致，但是你仍然可以进行比较操作。
+如果你用索引或者已有的HEAD版本跟工作目录做比较，你应该期望有输出。但是，索引和HEAD版本应该没有差异，因为还没有东西暂存
+（或者说，暂存的还是当前HEAD版本的树）。
+
+```text
+# 工作目录与索引
+$ git diff
+
+
+
+
+diff --git a/file1 b/file1
+index 257cc56..d90bda0 100644
+--- a/file1
++++ b/file1
+@@ -1 +1 @@
+-foo
++quux
+
+# 工作目录与HEAD版本
+$ git diff HEAD
+
+
+
+
+diff --git a/file1 b/file1
+index 257cc56..d90bda0 100644
+--- a/file1
++++ b/file1
+@@ -1 +1 @@
+-foo
++quux
+
+# 索引与HEAD版本，还是相同的
+$ git diff --cached
+
+$
+```
+
+应用刚刚提到的准则，因为git diff产生了输出，所以file1 可以暂存。让我们现在就这么做。
+
+```text
+
+$ git add file1
+
+$ git status
+# On branch master
+# Changes to be committed:
+# (use "git reset HEAD <filed>..." to unstage)
+#
+#　　　modified:　　file1
+```
+
+现在的情形就和图8-1中的一样了。因为file1 已经暂存了，所以工作目录和索引就同步了，应该不会显示差异。然而，现在HEAD版本和工作目录以及索引中的暂存区版本有差异了。
+```text
+
+# 工作目录与索引
+$ git diff
+
+
+
+
+
+# 工作目录与HEAD
+$ git diff HEAD
+
+
+
+
+diff --git a/file1 b/file1
+index 257cc56..d90bda0 100644
+--- a/file1
++++ b/file1
+@@ -1 +1 @@
+-foo
++quux
+
+# 索引与HEAD
+$ git diff --cached
+
+
+
+
+diff --git a/file1 b/file1
+index 257cc56..d90bda0 100644
+--- a/file1
++++ b/file1
+@@ -1 +1 @@
+-foo
++quux
+```
+
+如果你现在执行git commit命令，新的提交会把上述最后一条命令git diff –cached（如前所述，现在它和命令git diff –staged同义）显示的暂存的更改包括进去。
+
+现在，让我们添点乱子，如果在提交操作之前你再次编辑了file1 文件，会发生什么呢？让我们看看！
+
+```text
+$ echo "baz" > file1
+# 工作目录与索引
+$ git diff
+diff --git a/file1 b/file1
+index d90bda0..7601807 100644
+--- a/file1
++++ b/file1
+@@ -1 +1 @@
+-quux
++baz
+
+# 工作目录与HEAD
+$ git diff HEAD
+diff --git a/file1 b/file1
+index 257cc56..7601807 100644
+--- a/file1
++++ b/file1
+@@ -1 +1 @@
+-foo
++baz
+
+# 索引与HEAD
+$ git diff --cached
+diff --git a/file1 b/file1
+index 257cc56..d90bda0 100644
+--- a/file1
++++ b/file1
+@@ -1 +1 @@
+-foo
++quux
+```
+
+现在所有三个diff操作都显示了某种差异！但是会提交哪个版本呢？请记住，git commit捕获索引中出现的状态。索引里有什么呢？
+那就是git diff --cached命令或者git diff --staged命令显示的内容，也就是包含quux的那个版本！
+
+```text
+$ git commit -m "quux uber alles"
+[master]: created f8ae1ec: "quux uber alles"
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+```
+
+既然对象库里面有两个提交，就再试试git diff命令的一般形式。
+
+```text
+# 当前HEAD版本与前一个HEAD版本
+$ git diff HEAD^ HEAD
+diff --git a/file1 b/file1
+index 257cc56..d90bda0 100644
+--- a/file1
++++ b/file1
+@@ -1 +1 @@
+-foo
++quux
+```
+从上面的显示可以看出，用quux代替foo的更改已经提交。
+
+所以一切都同步了吗？不，在工作目录里的file1 还包含baz。
+
+```text
+$ git diff
+diff --git a/file1 b/file1
+index d90bda0..7601807 100644
+--- a/file1
++++ b/file1
+@@ -1 +1 @@
+-quux
++baz
+```
+
 ### <a href='#c8.3' id='8.3'>8.3 git diff和提交范围</a>
 ### <a href='#c8.4' id='8.4'>8.4 路径限制的git diff</a>
 ### <a href='#c8.5' id='8.5'>8.5 比较SVN和Git如何产生diff</a>
