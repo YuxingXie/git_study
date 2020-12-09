@@ -4288,6 +4288,7 @@ git diff commit1 commit2
 让我们来看看这些命令的不同形式如何作用于Git的对象模型。下面的例子（见图8-1）显示包含两个文件的项目目录。file1 文件已经在工作目录中更改（从foo改为quux）。
 这个变更已经用git add file1暂存到了暂存区中，但是还没有提交。
 
+![](https://github.com/YuxingXie/git_study/raw/master/assets/image/08-01-01.jpg)  
 ### <a href='#c8.2' id='8.2'>8.2 简单的git diff例子</a>
 ### <a href='#c8.3' id='8.3'>8.3 git diff和提交范围</a>
 ### <a href='#c8.4' id='8.4'>8.4 路径限制的git diff</a>
