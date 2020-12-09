@@ -4373,10 +4373,6 @@ file1 在工作目录中已经修改，但是还没有暂存。这个状态和�
 ```text
 # 工作目录与索引
 $ git diff
-
-
-
-
 diff --git a/file1 b/file1
 index 257cc56..d90bda0 100644
 --- a/file1
@@ -4387,10 +4383,6 @@ index 257cc56..d90bda0 100644
 
 # 工作目录与HEAD版本
 $ git diff HEAD
-
-
-
-
 diff --git a/file1 b/file1
 index 257cc56..d90bda0 100644
 --- a/file1
