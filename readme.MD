@@ -4096,8 +4096,98 @@ $ git branch
 
 #### <a id='after7.7.5' href='#cafter7.7.5'>补充:关于分离HEAD分支的一些研究</a>
 
+我想测试一下如果指定新分支的起始提交是不是会制造一次头分离。
+我在master分支使用git branch ***branchName*** ***starting-commit***指定一个新分支的起始提交，这个提交并不是master的HEAD,
+而是它的前一次提交。当我切换到这个新分支后，并未出现头分离。
 
 ### <a id='7.8' href='#c7.8'>7.8　删除分支</a>
+命令git branch -d branch 从版本库中删除分支。Git阻止你删除当前分支。
+
+```text
+$ git branch -d bug/pr-3
+error: Cannot delete the branch 'bug/pr-3' which you are currently on.
+```
+
+删除当前分支将导致Git无法确定工作目录树应该是什么样的。相反，必须始终选择一个非当前分支。
+
+但是还有另外一个微妙的问题。Git不会让你删除一个包含不存在于当前分支中的提交的分支。
+也就是说，如果分支被删除则开发的提交部分就会丢失，Git会阻止你意外删除提交中的开发。
+
+```text
+$ git checkout master
+Switched to branch "master"
+
+$ git branch -d bug/pr-3
+error: The branch 'bug/pr-3' is not an ancestor of your current HEAD.
+If you are sure you want to delete it, run 'git branch -D bug/pr-3'.
+
+```
+
+在git show-branch输出中，提交“Added a bug fix for pr-3”只出现在bug/pr-3分支中。如果该分支被删除，就没有其他方式访问该提交了。
+
+通过声明bug/pr-3分支不是当前HEAD的祖先，Git告知你bug/pr-3分支代表的开发线没有贡献给当前master分支的开发。
+
+Git不强制要求所有分支在可以删除之前合并到master分支。请记住，分支只是简单的名称或指向有实际内容的提交的指针。
+相反，Git防止你在不合并到当前分支的分支被删除时，不小心丢失其内容。
+
+如果已删除分支的内容已经存在于另一个分支里，那就可检出该分支，然后要求从上下文中删除分支。
+另一种方法是把你要删除分支的内容合并到当前分支（见第9章）中。然后其他分支可以安全删除了。
+
+```text
+$ git merge bug/pr-3
+Updating 7933438..401b78d
+Fast forward
+ NewStuff | 1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+$ git show-branch
+! [bug/pr-1] Fix Problem Report 1
+ ! [bug/pr-2] Added Bob's fixes.
+　! [bug/pr-3] Added a bug fix for pr-3.
+　 ! [dev] Started developing NewStuff
+* [master] Added a bug fix for pr-3.
+-----
+　+ * [bug/pr-3] Added a bug fix for pr-3.
+　 + [dev] Started developing NewStuff
+　 + [dev^] Improve the new development
+　 + [dev~2] Start some new development.
++　　[bug/pr-1] Fix Problem Report 1
+++++* [bug/pr-2] Added Bob's fixes.
+
+$ git branch -d bug/pr-3
+Deleted branch bug/pr-3.
+
+$ git show-branch
+! [bug/pr-1] Fix Problem Report 1
+ ! [bug/pr-2] Added Bob's fixes.
+　! [dev] Started developing NewStuff
+　 * [master] Added a bug fix for pr-3.
+----
+　 * [master] Added a bug fix for pr-3.
+　+ [dev] Started developing NewStuff
+　+ [dev^] Improve the new development
+　+ [dev~2] Start some new development.
++　　[bug/pr-1] Fix Problem Report 1
++++* [bug/pr-2] Added Bob's fixes.
+```
+
+最后，正如错误消息提示的，可以通过使用-D而不是-d来覆盖Git的安全检查。只有你确定不需要该分支额外的内容时才可以这样做。
+
+Git不会保持任何形式的关于分支名创建、移动、操纵、合并或删除的历史记录。一旦某个分支名删除了，它就没了。
+
+然而，该分支上的提交历史记录是一个独立的问题。Git最终始终会删除那些不再被引用的提交和不能从某些命名的引用（如分支或标签名）可达的提交。
+如果你想保留那些提交，你必须将它们合并到不同的分支，为它们创建一个分支，或用标签指向它们。
+否则，如果没有对它们的引用和提交，blob是不可达的，最终将被git gc工具当成垃圾回收。
+
+```text
+提示
+
+意外删除分支或其他引用后，可以使用git reflog命令恢复它。
+其他命令（如git fsck和配置选项[如gc.reflogExpire和gc.pruneExpire]）同样可以帮助恢复丢失的提交、文件和分支的头部。
+```
+
+***① 　这是一个棵小、浓密且拥有很多分支的灌木树。或许更好的比喻是一棵榕树。——原注***
+
 
 ## <a id='8' href='#c8'>第8章 diff</a>
 ### <a href='#c8.1' id='8.1'>8.1 git diff命令的格式</a>
