@@ -4400,7 +4400,6 @@ $
 应用刚刚提到的准则，因为git diff产生了输出，所以file1 可以暂存。让我们现在就这么做。
 
 ```text
-
 $ git add file1
 
 $ git status
@@ -4418,15 +4417,8 @@ $ git status
 $ git diff
 
 
-
-
-
 # 工作目录与HEAD
 $ git diff HEAD
-
-
-
-
 diff --git a/file1 b/file1
 index 257cc56..d90bda0 100644
 --- a/file1
@@ -4437,10 +4429,6 @@ index 257cc56..d90bda0 100644
 
 # 索引与HEAD
 $ git diff --cached
-
-
-
-
 diff --git a/file1 b/file1
 index 257cc56..d90bda0 100644
 --- a/file1
@@ -4456,6 +4444,7 @@ index 257cc56..d90bda0 100644
 
 ```text
 $ echo "baz" > file1
+
 # 工作目录与索引
 $ git diff
 diff --git a/file1 b/file1
