@@ -4233,7 +4233,7 @@ $ diff -u initial rewrite
 另外，diff还可以显示多个文件之间和整个目录层次结构的差异。
 
 UNIX系统中的diff命令可以计算两个目录结构中所有对应的两个文件间的差异。diff –r命令会通过路径名
-（如，original/src/main.c 和new/src/main.c ）遍历每个目录的文件，
+（如，***original/src/main.c*** 和***new/src/main.c*** ）遍历每个目录的文件，
 并总结每对文件的差异。利用diff -r –u会为两个目录层次结构产生一个合并格式的diff。
 
 Git同样有自己的diff工具，该工具同样也能产生差异摘要。Git中的命令git diff像UNIX系统中的diff命令一样可以进行文件间的比较。
