@@ -4351,7 +4351,6 @@ file1 文件在工作目录、索引和HEAD中的每个版本都标识出来了�
 这里还利用图8-1中的场景，我们将在这个场景中使用多种不同形式的git diff命令。首先，我们从建立有两个文件的简单版本库开始。
 
 ```text
-
 $ mkdir /tmp/diff_example
 
 $ cd /tmp/diff_example
@@ -4427,7 +4426,6 @@ $ git status
 
 # 工作目录与索引
 $ git diff
-
 
 # 工作目录与HEAD
 $ git diff HEAD
