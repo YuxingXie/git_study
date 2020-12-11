@@ -4564,6 +4564,89 @@ index d90bda0..7601807 100644
 ```
 
 ### <a href='#c8.3' id='8.3'>8.3 git diff和提交范围</a>
+
+还有两种形式的git diff命令需要进行解释，特别是要和git log命令进行对比。
+
+git diff命令支持两点语法来显示两个提交之间的不同。因此，下面两条命令是等价的：
+
+```text
+$ git diff master bug/pr-1
+
+$ git diff master..bug/pr-1
+```
+
+遗憾的是，两点语法在git diff中的用法和你在第6章学到的"git log"中的语法有很大不同。我们需要对这两条命令进行比较，
+以便我们可以明确这两条命令和版本库中的变更的关系。下面是关于接下来的例子我们要记住的东西。
+
+git diff不关心它比较的文件的历史，也不关心分支。
+git log特别关注一个文件是如何变成另外一个的。比如，当产生分支时，在每个分支上发生了什么。
+这两条命令执行完全不同的操作。log操作一系列提交，而diff操作两个不同的结点。
+
+考虑如下的一系列事件。
+
+1．某人从master分支创建一个新分支去修复bug pr-1，叫做bug/pr-1分支。
+
+2．同一个开发人员在bug/pr-1分支的文件里添加了一行“Fix Problem report 1”。
+
+3．同时，另外一个开发人员在master分支里修复了pr-3这个bug，并且在主分支的相同文件里添加了Fix Problem report 3。
+
+简言之，那个文件在每个分支里都添加了一行。如果从较高层的命令查看分支的变更，你会看到bug/pr-1分支是何时创建出来的，每个变更是何时发生的。
+
+```text
+
+$ git show-branch master bug/pr-1
+* [master] Added a bug fix for pr-3.
+ ! [bug/pr-1] Fix Problem Report 1
+--
+* [master] Added a bug fix for pr-3.
+ + [bug/pr-1] Fix Problem Report 1
+*+ [master^] Added Bob's fixes.
+```
+
+如果你输入git log -p master..bug/pr-1命令，你会看到一个提交。因为这条命令会显示在bug/pr-1这个分支中而不在master分支中的所有提交。
+这条命令会回溯到bug/pr-1从master分出来的那个点，但是它不会寻找从那个点之后master分支发生了什么。
+
+```text
+$ git log -p master..bug/pr-1
+commit 8f4cf5757a3a83b0b3dbecd26244593c5fc820ea
+Author: Jon Loeliger <jdl@example.com>
+Date:　 Wed May 14 17:53:54 2008 -0500
+
+Fix Problem Report 1
+
+diff --git a/ready b/ready
+index f3b6f0e..abbf9c5 100644
+--- a/ready
++++ b/ready
+@@ -1,3 +1,4 @@
+ stupid
+ znill
+ frot-less
+ +Fix Problem report 1
+```
+
+与此相反，git diff master..bug/pr-1命令则显示了master分支和bug/pr-1分支代表的两棵树之间的全部差异。历史记录不再重要，只有文件的现在状态才重要。
+
+```text
+$ git diff master..bug/pr-1
+diff --git a/ready b/ready
+index f3b6f0e..abbf9c5 100644
+--- a/ready
++++ b/ready
+@@ -1,4 +1,4 @@
+ stupid
+ znill
+ frot-less
+-Fix Problem report 3
++Fix Problem report 1
+```
+
+为了解释git diff命令的输出，可以将master分支中的该文件转变成bug/pr-1分支中的版本，只要把Fix Problem report 3删除，然后添加Fix Problem report 1即可。
+
+正如你所看到的一样，git diff命令包含两个分支中的提交。这在上述的例子中显示不出重要性，但考虑图8-2中的例子，两个分支上有更扩张的开发线。
+
+![](https://github.com/YuxingXie/git_study/raw/master/assets/image/08-03-01.jpg)  
+
 ### <a href='#c8.4' id='8.4'>8.4 路径限制的git diff</a>
 ### <a href='#c8.5' id='8.5'>8.5 比较SVN和Git如何产生diff</a>
 
