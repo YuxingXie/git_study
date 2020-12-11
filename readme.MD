@@ -4580,7 +4580,7 @@ index d90bda0..7601807 100644
 
 还有两种形式的git diff命令需要进行解释，特别是要和git log命令进行对比。
 
-git diff命令支持两点语法来显示两个提交之间的不同。因此，下面两条命令是等价的：
+git diff命令支持**两点语法来显示两个提交之间的不同**。因此，下面两条命令是等价的：
 
 ```text
 $ git diff master bug/pr-1
@@ -4606,7 +4606,6 @@ git log特别关注一个文件是如何变成另外一个的。比如，当产�
 简言之，那个文件在每个分支里都添加了一行。如果从较高层的命令查看分支的变更，你会看到bug/pr-1分支是何时创建出来的，每个变更是何时发生的。
 
 ```text
-
 $ git show-branch master bug/pr-1
 * [master] Added a bug fix for pr-3.
  ! [bug/pr-1] Fix Problem Report 1
