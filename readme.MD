@@ -4325,20 +4325,33 @@ file1 文件在工作目录、索引和HEAD中的每个版本都标识出来了�
 
 除了上述4种基本形式的git diff命令之外，还有很多选项。以下是一些比较有用的选项，供大家参考。
 
---M
+---
+
+**--M**
+
 这个选项可以用来查找重命名并且生成一个简化的输出，只简单地记录文件重命名而不是先删除再添加。如果文件不是纯的重命名，同时还有内容上的更改，
 那么Git也会将它们调出了。
 
--w或者--ignore-all-space
+---
+
+**-w或者--ignore-all-space**
+
 这两个选项令比较时忽略空白字符。
 
---stat
+---
+
+**--stat**
+
 这个选项会显示针对两个树状态之间差异的统计数据。报告用简洁的语法显示有多少行发生了改变，有多少行添加了，有多少行删除了。
 
---color
-这个选项会使输出结果使用多种颜色显示，一种颜色显示diff中的一种变化。
+---
 
+**--color**
+
+这个选项会使输出结果使用多种颜色显示，一种颜色显示diff中的一种变化。
 最后，git diff命令可限定为显示一组指定文件和目录间的差异。
+
+---
 
 ```text
 警告
@@ -4646,6 +4659,21 @@ index f3b6f0e..abbf9c5 100644
 正如你所看到的一样，git diff命令包含两个分支中的提交。这在上述的例子中显示不出重要性，但考虑图8-2中的例子，两个分支上有更扩张的开发线。
 
 ![](https://github.com/YuxingXie/git_study/raw/master/assets/image/08-03-01.jpg)  
+
+图8-2　更大的git diff历史
+
+在这个例子中，git log master..maint命令显示5个单独的提交：V,W,...,Z。另一方面，git diff master..maint显示H和Z处的树之间的差异，
+累计有11个提交：C,D,...,H和V,...,Z。
+
+同样，git log和git diff这两条命令都接受commit1 ...commit2 这样的参数来产生一个对称差（symmetrical difference）。
+然而，跟之前一样，它们会产生不同的结果。
+
+如同在6.3.3节讨论的一样，命令git logcommit1 ...commit2 显示的是各自可达又不同时可达的提交。
+因此，git log master...maint在前面的例子会输出C,D,...,H和V,...,Z。
+
+对称差在git diff中会显示commit2 与commit1 的共同祖先（或者合并基础［merge base］之间的差异。给定如图8-2中的关系，
+git diff master...maint会组合V,W,...,Z中的变更。
+
 
 ### <a href='#c8.4' id='8.4'>8.4 路径限制的git diff</a>
 ### <a href='#c8.5' id='8.5'>8.5 比较SVN和Git如何产生diff</a>
