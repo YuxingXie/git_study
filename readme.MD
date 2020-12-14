@@ -4892,13 +4892,623 @@ Git并不解决冲突，这通常出现在对同一个文件的同一行进行�
 留给你（也就是开发人员）来处理。当Git无法自动合并时，你需要在所有冲突都解决后做一次最终提交。
 
 ### <a id='9.1' href='#c9.1'>9.1 合并的例子</a>
+为了把other_branch合并到branch中，你应该检出目标分支并把其他分支合并进去，如下所示：
+```text
+$ git checkout branch
+
+$ git merge other_branch
+```
+
+让我们完成一对合并的例子，一个是没有冲突的，另一个是有大量冲突的。为了简化本章的例子，我们将使用多个分支对应第7章出现的技术。
 #### <a id='9.1.1' href='#c9.1.1'>9.1.1 为合并做准备</a>
+在开始合并之前，最好整理一下工作目录。在正常合并结束的时候，Git会创建新版本的文件并把它们放到工作目录中。
+此外，Git在操作的时候还用索引来存储文件的中间版本。
+
+如果已经修改了工作目录中的文件，或者已经通过git add或git rm修改了索引，那么版本库里就已经有了一个脏的工作目录或者索引。
+如果在脏的状态下开始合并，Git可能无法一次合并所有分支及工作目录或索引的的修改。
+
+**提示**
+
+*不必从干净的目录启动合并。例如，当受合并操作影响的文件和工作目录的脏文件无关的时候，Git才进行合并。
+然而，作为一般规则，如果每次合并都从干净的工作目录和索引开始，那么关于Git的操作将会容易得多。*
+
 #### <a id='9.1.2' href='#c9.1.2'>9.1.2 合并两个分支</a>
+对于最简单的场景，建立一个只含一个文件的版本库，然后创建两个分支，再把这对分支合并在一起。
+
+```text
+$ git init
+Initialized empty Git repository in /tmp/conflict/.git/
+
+$ git config user.email "jdl@example.com"
+
+$ git config user.name "Jon Loeliger"
+
+$ cat > file
+Line 1 stuff
+Line 2 stuff
+Line 3 stuff
+^D
+
+$ git add file
+
+$ git commit -m "Initial 3 line file"
+Created initial commit 8f4d2d5: Initial 3 line file
+1 files changed, 3 insertions(+), 0 deletions(-)
+create mode 100644 file
+```
+
+在主分支上创建另一个提交。
+
+```text
+$ cat > other_file
+Here is stuff on another file!
+^D
+
+$ git add other_file
+
+$ git commit -m "Another file"
+Created commit 761d917: Another file
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+ create mode 100644 other_file
+```
+
+到目前为止，版本库里已经有一个包含两次提交的分支，每次提交引入一个新文件。接下来，切换到一个不同的分支，修改第一个文件。
+
+```text
+
+$ git checkout -b alternate master^
+Switched to a new branch "alternate"
+
+$ git show-branch
+* [alternate] Initial 3 line file
+ ! [master] Another file
+--
+ + [master] Another file
+*+ [alternate] Initial 3 line file
+```
+
+这里，alternate分支是从master^提交初始派生来的，也就是当前头指针后面的一个提交。
+
+对文件做一点小小的修改便于你有内容来合并，然后提交它。请记住，最好提交明显的改动，并在工作目录干净的时候开始合并。
+
+```text
+$ cat >> file
+Line 4 alternate stuff
+^D
+
+$ git commit -a -m "Add alternate's line 4"
+Created commit b384721: Add alternate's line 4
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+```
+
+现在有两个分支了，每个分支都有不同的开发工作。第二个文件已经添加到master分支中，alternate分支也已经做了一次改动。
+因为这两个修改并不影响相同文件的相同部分，所以合并应该会顺利进行，不会发生事故。
+
+git merge操作是区分上下文的。当前分支始终是目标分支，其他一个或多个分支始终合并到当前分支。在这种情况下，
+因为alternate分支应该合并到master分支，所以在继续之前必须检出后者。
+
+```text
+
+$ git checkout master
+Switched to branch "master"
+
+$ git status
+# On branch master
+nothing to commit (working directory clean)
+
+# 好了，准备合并
+$ git merge alternate
+Merge made by recursive.
+ file | 1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+```
+
+可以用另一个提交图查看工具来看看都做了什么，那是git log的一部分。
+
+```text
+$ git log --graph --pretty=oneline --abbrev-commit
+*　 1d51b93... Merge branch 'alternate'
+|\
+| * b384721... Add alternate's line 4
+* | 761d917... Another file
+|/
+* 8f4d2d5... Initial 3 line file
+```
+
+这在概念上是之前在6.3.2节中描述的提交图，除了这张图是侧过来的，最近的提交在上边而不是右边。两个分支在初始提交8f4d2d5处分开；
+每个分支显示一个提交（761d917和b384721）；两个分支在提交1d51b93处合并。
+
+
+**提示**
+
+*使用git log --graph命令是图形工具很好的替代品，比如gitk。git log --graph提供的可视化非常适合哑终端。*
+
+从技术上讲，Git对称地执行每次合并来产生一个相同的、合并后的提交，并添加到当前分支中。另一个分支不受合并影响。因为合并提交只添加到当前分支中，
+所以你可以说，“我把一些其他分支合并到了这个分支里”。
+
 #### <a id='9.1.3' href='#c9.1.3'>9.1.3 有冲突的合并</a>
+合并操作本质上是有问题的，因为它必然会从不同开发线上带来可能变化和冲突的修改。一个分支上的修改可能与一个不同分支上的相似或完全不同。
+修改可能会改变相同的或无关的文件。Git可以处理所有这些不同的可能性，但是通常需要你的指导来解决冲突。
+
+让我们来完成一个导致冲突的合并场景。从前一节的合并结果开始，在master和alternate分支上引进独立且冲突的修改。
+然后，把alternate分支合并到master分支，面对冲突，解决它，然后提交最终结果。
+
+在master分支上，添加几行来创建一个新版本的文件，然后提交修改。
+
+```text
+$ git checkout master
+
+$ cat >> file
+Line 5 stuff
+Line 6 stuff
+^D
+
+$ git commit -a -m "Add line 5 and 6"
+
+Created commit 4d8b599: Add line 5 and 6
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+```
+
+现在，在alternate分支上，用不同的内容修改相同的文件。然而，只在master分支上进行了新提交，alternate分支还没进展。
+
+```text
+
+$ git checkout alternate
+Switched branch "alternate"
+
+$ git show-branch
+* [alternate] Add alternate's line 4
+ ! [master] Add line 5 and 6
+--
+ + [master] Add line 5 and 6
+*+ [alternate] Add alternate's line 4
+
+# 在这个分支中，"file"还停在"Line 4 alternate stuff"
+$ cat >> file
+Line 5 alternate stuff
+Line 6 alternate stuff
+^D
+
+$ cat file
+Line 1 stuff
+Line 2 stuff
+Line 3 stuff
+Line 4 alternate stuff
+Line 5 alternate stuff
+Line 6 alternate stuff
+
+$ git diff
+diff --git a/file b/file
+index a29c52b..802acf8 100644
+--- a/file
++++ b/file
+@@ -2,3 +2,5 @@ Line 1 stuff
+ Line 2 stuff
+ Line 3 stuff
+ Line 4 alternate stuff
++Line 5 alternate stuff
++Line 6 alternate stuff
+
+$ git commit -a -m "Add alternate line 5 and 6"
+Created commit e306e1d: Add alternate line 5 and 6
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+```
+
+让我们回顾下场景。当前分支的历史记录如下所示。
+
+```text
+$ git show-branch
+* [alternate] Add alternate line 5 and 6
+ ! [master] Add line 5 and 6
+--
+* [alternate] Add alternate line 5 and 6
+ + [master] Add line 5 and 6
+*+ [alternate^] Add alternate's line 4
+
+```
+
+要继续，检出master分支并尝试执行合并。
+
+```text
+$ git checkout master
+Switched to branch "master"
+
+$ git merge alternate
+Auto-merged file
+CONFLICT (content): Merge conflict in file
+Automatic merge failed; fix conflicts and then commit the result.
+```
+
+当出现合并冲突的时候，应该无一例外地使用git diff命令来调查冲突的程度。这里，一个叫file 的文件在其内容里有冲突。
+
+```text
+$ git diff
+Diff --cc file
+Index 4d77dd1,802acf8..0000000
+--- a/file
++++ b/file
+@@@ -2,5 -2,5 +2,10 @@@ Line 1 stuf
+　Line 2 stuff
+　Line 3 stuff
+　Line 4 alternate stuff
+++<<<<<<< HEAD:file
+ +Line 5 stuff
+ +Line 6 stuff
+++=======
++ Line 5 alternate stuff
++ Line 6 alternate stuff
+++>>>>>>> alternate:file
+```
+
+git diff命令显示文件在工作目录和索引间的差异。在传统的diff命令输出风格里，改变的内容显示在<<<<<<<和======之间，替代的内容在======和>>>>>>>之间。
+然而，在组合diff（combined diff）格式中使用额外的加号和减号来表示相对于最终版本的来自多个源的变化。
+
+前面的输出显示冲突覆盖了第5、6行，那是故意在两个分支里做的不同修改。然后需要你来解决冲突。当解决合并冲突时，可以自由选择你喜欢的任何解决方案。
+这包括只取一边或另一边的版本，或者两边的混合，甚至是全新的内容。虽然最后的选择可能令人疑惑，但它是一个可行的选择。
+
+在这种情况下，我从每个分支选了一行作为我的解决版本。编辑过的文件现在有如下内容：
+
+```text
+$ cat file
+Line 1 stuff
+Line 2 stuff
+Line 3 stuff
+Line 4 alternate stuff
+Line 5 stuff
+Line 6 alternate stuff
+```
+
+如果你对冲突解决很满意，你就应该用git add命令来把文件添加到索引中，并为合并提交而暂存它。
+
+```text
+
+$ git add file
+```
+
+当你已经解决了冲突，并且用git add命令在索引中暂存了每个文件的最终版本，最后终于到了用git commit命令来提交合并的时候了。Git把你带到最喜欢的编辑器里，准备了一条模板消息，如下所示。
+```text
+
+Merge branch 'alternate'
+
+Conflicts:
+　　　　file
+#
+# It looks like you may be committing a MERGE.
+# If this is not correct, please remove the file
+#　　　　.git/MERGE_HEAD
+# and try again.
+#
+
+# Please enter the commit message for your changes.
+# (Comment lines starting with '#' will not be included)
+# On branch master
+# Changes to be committed:
+#　　(use "git reset HEAD <file>..." to unstage)
+#
+#　　　 modified: file
+#
+```
+
+跟往常一样，以井号（#）开头的行是注释，只为你写消息的时候提供信息。所有注释行都会在最终提交日志消息中被忽略。
+随意改变或增加你认为合适的提交消息，也许添加关于冲突是如何解决的备注。
+
+当退出编辑器时，Git应该显示成功创建一个新的合并提交。
+
+```text
+$ git commit
+# Edit merge commit message
+Created commit 7015896: Merge branch 'alternate'
+
+$ git show-branch
+! [alternate] Add alternate line 5 and 6
+ * [master] Merge branch 'alternate'
+--
+ - [master] Merge branch 'alternate'
++* [alternate] Add alternate line 5 and 6
+```
+
+可以使用这条命令来查看合并提交的结果：
+
+```text
+$ git log
+```
 
 ### <a id='9.2' href='#c9.2'>9.2 处理合并冲突</a>
+正如前面的例子展示的，有冲突的修改不能自动合并。
+
+创建另一个合并冲突的场景，探索Git提供的帮助解决差异的工具。从一个内容只有“hello”的常规问候开始，创建两个不同的分支，各自有文件的不同变体。
+
+```text
+$ git init
+Initialized empty Git repository in /tmp/conflict/.git/
+
+$ echo hello > hello
+
+$ git add hello
+
+$ git commit -m "Initial hello file"
+Created initial commit b8725ac: Initial hello file
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+create mode 100644 hello
+
+$ git checkout -b alt
+Switched to a new branch "alt"
+
+$ echo world >> hello
+
+$ echo 'Yay!' >> hello
+
+$ git commit -a -m "One world"
+Created commit d03e77f: One world
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+$ git checkout master
+
+$ echo worlds >> hello
+
+$ echo 'Yay!' >> hello
+
+$ git commit -a -m "All worlds"
+Created commit eddcb7d: All worlds
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+```
+
+一个分支是world，而另一个分支是worlds，这是故意造成的区别。
+
+在前面的例子中，如果检出master分支并且尝试把alt分支合并进去，那么将会发生冲突。
+
+```text
+$ git merge alt
+Auto-merged hello
+CONFLICT (content): Merge conflict in hello
+Automatic merge failed; fix conflicts and then commit the result.
+```
+
+正如预期的那样，Git会警告你在hello 文件里有冲突。
+
 #### <a id='9.2.1' href='#c9.2.1'>9.2.1 定位冲突的文件</a>
+但是如果Git的帮助指令滚动到屏幕之外或者冲突的文件太多怎么办？幸运的是，Git对有问题的文件进行跟踪，并在索引中把它们标记为冲突的（conflicted）或者未合并的（unmerged）。
+
+也可以使用git status命令或者git ls-files -u命令来显示工作树中仍然未合并的一组文件。
+
+```text
+$ git status
+hello: needs merge
+# On branch master
+# Changed but not updated:
+#　 (use "git add <file>..." to update what will be committed)
+#
+#　　　 unmerged: hello
+#
+no changes added to commit (use "git add" and/or "git commit -a")
+
+$ git ls-files -u
+100644 ce013625030ba8dba906f756967f9e9ca394464a 1 hello
+100644 e63164d9518b1e6caf28f455ac86c8246f78ab70 2 hello
+100644 562080a4c6518e1bf67a9f58a32a67bff72d4f00 3 hello
+
+```
+
+可以使用git diff命令来显示没合并的内容，但是它也会显示所有血淋淋的细节！
+
 #### <a id='9.2.2' href='#c9.2.2'>9.2.2 检查冲突</a>
+
+当冲突出现时，通过三方比较或合并标记强调工作目录的每个冲突文件的副本。从例子中断处继续，有冲突的文件现在如下所示：
+
+```text
+$ cat hello
+hello
+<<<<<<< HEAD:hello
+worlds
+=======
+world
+>>>>>>> 6ab5ed10d942878015e38e4bab333daff614b46e:hello
+Yay!
+
+```
+
+合并标记划定文件冲突部分的两个可能版本。在第一个版本中，该部分是“worlds”；在另一版本中，该部分是“world”。可以简单地选择其中一个，
+移除冲突标记，然后执行git add和git commit命令，但是下面探讨Git提供的一些有助于解决冲突的其他功能。
+
+**提示**
+
+*三方合并标记线（<<<<<<<<、========和>>>>>>>>）是自动生成的，但是它们只是提供给你看的，而不（必须）是给程序看的。一旦解决了冲突，就应该在文本编辑器里删除它们。*
+
+**1．对冲突使用git diff命令**
+
+Git有一个特殊的、特定于合并的git diff变体来同时显示针对两个父版本做的修改。在这个例子中，它如下所示。
+
+```text
+$ git diff
+diff --cc hello
+index e63164d,562080a..0000000
+--- a/hello
++++ b/hello
+@@@ -1,3 -1,3 +1,7 @@@
+　hello
+++<<<<<<< HEAD:hello
+　+worlds
+++=======
++ world
+++>>>>>>> alt:hello
+　Yay!
+```
+
+这一切是什么意思呢？这只是两个diff文件的简单组合：一个对应第一个称为HEAD的父版本，另一个对应第二个称为alt的父版本
+（如果第二个父版本是代表某个其他版本库中未命名提交的绝对SHA1名，请不要感到惊讶！）。为了让事情容易点，
+Git也给第二个父版本起了一个特殊的名字——MERGE_HEAD。
+
+可以拿HEAD和MERGE_HEAD版本跟工作目录（“合并的”）版本进行比较。
+
+```text
+$ git diff HEAD
+diff --git a/hello b/hello
+index e63164d..4e4bc4e 100644
+--- a/hello
++++ b/hello
+@@ -1,3 +1,7 @@
+ hello
++<<<<<<< HEAD:hello
+ worlds
++=======
++world
++>>>>>>> alt:hello
+ Yay!
+```
+
+然后执行如下命令。
+
+```text
+$ git diff MERGE_HEAD
+diff --git a/hello b/hello
+index 562080a..4e4bc4e 100644
+--- a/hello
++++ b/hello
+@@ -1,3 +1,7 @@
+ hello
++<<<<<<< HEAD:hello
++worlds
++=======
+ world
++>>>>>>> alt:hello
+Yay!
+
+```
+
+
+**提示**
+
+*在较新版本的Git中，git diff --ours是git diff HEAD的同义词，因为它显示了“我们的”版本和合并后版本的区别。
+同样，git diff MERGE_HEAD可以写成git diff --theirs。可以用git diff --base命令来查看自合并基础之后的变更组合，否则也可以相当繁琐地写成：*
+```text
+$ git diff $(git merge-base HEAD MERGE_HEAD)
+```
+
+如果把两个diff并排放在一行，除了带“+”号的列之外，其他文本都是一样的，因此Git只输出一次正文，然后在后边接着输出带“+”号的部分。
+
+git diff命令输出的冲突中有两列信息。加号表示添加行，减号表示删除行，空格表示该行没有变化。第一列显示相对你的版本的更改，
+第二列显示相对于另一版本的更改。因为这两个版本中的冲突标记行都是新加的，所以它们都有“++”。因为world和worlds行只在一个版本里是新加的，
+所以它们在相应的行里只有一个“+”。
+
+假设你选择第三个选项来编辑这个文件，如下所示。
+
+```text
+$ cat hello
+hello
+worldly ones
+Yay!
+```
+
+然后新的git diff输出是：
+
+```text
+$ git diff
+diff --cc hello
+index e63164d,562080a..0000000
+--- a/hello
++++ b/hello
+@@@ -1,3 -1,3 +1,3 @@@
+　hello
+- worlds
+ -world
+++worldly ones
+　Yay!
+
+```
+
+或者，可以选择某个原始版本，如下所示。
+
+```text
+$ cat hello
+hello
+world
+Yay!
+
+```
+
+执行git diff的输出将如下所示。
+```text
+
+$ git diff
+diff --cc hello
+index e63164d,562080a..0000000
+--- a/hello
++++ b/hello
+```
+
+等一下！奇怪的事情发生了。添加到基础版本中的world那行显示到哪里去了？从HEAD版本中删除worlds那行又显示在哪里了？
+当你已经解决MERGE_HEAD版本中的冲突时，Git会故意忽略这些差异，因为它认为你可能不再关心那部分了。
+
+对有冲突的文件执行git diff只会显示真正有冲突的部分。在一个充满很多修改的大文件里，大部分修改是没有冲突的；只是在一边改变了一个特定的部分。
+当你试图解决冲突时，很少会在乎那些部分，因此git diff命令用一个简单的启发式算法修剪掉不感兴趣的部分：如果只有一边有变化，这部分就不显示。
+
+优化有个比较容易让人疑惑的副作用：一旦你通过选择其中一边来解决冲突，它就不再显示了。那是因为你修改的部分变成只有一边有变化（即你没选择的那一边），
+因此在Git看来这就是从来没发生冲突的部分。
+
+这不仅仅是一个刻意的功能，还是实现上带来的副作用，但是你可能会认为这很有用：git diff命令只显示仍然冲突的文件，因此可以用它来跟踪还没解决的冲突。
+
+**2．对冲突使用git log命令**
+
+在解决冲突的过程中，可以使用一些特殊的git log选项来帮助你找出变更的确切来源和原因。试试这个命令。
+
+```text
+$ git log --merge --left-right -p
+commit <eddcb7dfe63258ae4695eb38d2bc22e726791227
+Author: Jon Loeliger <jdl@example.com>
+Date: Wed Oct 22 21:29:08 2008 -0500
+
+　　All worlds
+
+diff --git a/hello b/hello
+index ce01362..e63164d 100644
+--- a/hello
++++ b/hello
+@@ -1 +1,3 @@
+ hello
++worlds
++Yay!
+
+commit >d03e77f7183cde5659bbaeef4cb51281a9ecfc79
+Author: Jon Loeliger <example@example.com>
+Date:　 Wed Oct 22 21:27:38 2008 -0500
+
+　 One world
+
+diff --git a/hello b/hello
+index ce01362..562080a 100644
+--- a/hello
++++ b/hello
+@@ -1 +1,3 @@
+ hello
++world
++Yay!
+```
+
+在合并中两个分支都影响冲突的文件，此命令将显示这两部分历史中的所有提交，并显示每次提交引入的实际变更。
+如果你想知道什么时候、为什么、如何和由谁把worlds那行添加到文件中，你可以清楚地看到哪部分变更引入了它。
+
+git log的选项如下。
+
+**--merge**：只显示跟产生冲突的文件相关的提交。
+
+**--left-right**：如果提交来自合并的“左”边则显示<（“我们的”版本，就是你开始的版本），
+如果提交来自合并的“右”边则显示>（“他们的”版本，就是你要合并到的版本）。
+
+**-p**：显示提交消息和每个提交相关联的补丁。
+
+如果版本库更加复杂而且有好几个文件发生冲突，也可以在命令行参数里指定你感兴趣的确切文件名，如下所示：
+
+```text
+$ git log --merge --left-right -p hello
+```
+
+出于演示目的，这里的例子一直保持很短小。当然，现实生活中的情况很可能是更庞大且复杂的。有一种手段可以缓解来自大合并中讨厌而繁多的冲突的痛苦，
+即使用几个包含单独概念的，定义良好的小提交。Git对小提交处理得很好，因此没有必要等到最后才提交一个又庞大又影响广泛的修改。
+小规模的提交和更频繁的合并周期可以减少解决冲突的痛苦。
+
 #### <a id='9.2.3' href='#c9.2.3'>9.2.3 Git是如何追踪冲突的</a>
 #### <a id='9.2.4' href='#c9.2.4'>9.2.4 结束解决冲突</a>
 #### <a id='9.2.5' href='#c9.2.5'>9.2.5 终止或重新启动合并</a>
