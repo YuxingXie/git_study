@@ -4576,7 +4576,9 @@ index d90bda0..7601807 100644
 +baz
 ```
 
-### <a href='#cbefore8.3' id='before8.3'>补充:git diff的几个语法</a>
+### <a href='#cbefore8.3' id='before8.3'>补充:git diff的语法补充</a>
+
+---
 
 ```text
 git diff [<options>] <commit>..<commit> [--] [<path>…​]
@@ -4585,6 +4587,8 @@ git diff [<options>] <commit>..<commit> [--] [<path>…​]
 If \<commit> on one side is omitted, it will have the same effect as using HEAD instead.*
 
 *这与以前的形式（不带“ ..”）的同义词相同，后者用于查看两个任意\<commit>之间的更改。如果省略了一侧的\<commit>，它将具有与使用HEAD相同的效果。*
+
+---
 
 ### <a href='#c8.3' id='8.3'>8.3 git diff和提交范围</a>
 
