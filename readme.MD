@@ -4752,7 +4752,7 @@ $ git diff --stat master~5 master
  23 files changed, 83 insertions(+), 40 deletions(-)
 ```
 
-如果要只显示Documentation 的更改，需要使用命令git diff—stat master~5 master Documentation。
+如果要只显示Documentation的更改，需要使用命令git diff —stat master~5 master Documentation。
 
 ```text
 $ git diff --stat master~5 master Documentation
@@ -4823,7 +4823,7 @@ index 0000000..f22f98b
 ```
 
 使用-S通常叫做pickaxe，Git会列出最近一定数量的提交中包含给定字符串的差异。
-概念上，你可以认为这是说“给定的字符串在哪里引入或删除？”可以在6.4.3节找到git log使用的例子。
+概念上，你可以认为这是说“给定的字符串在哪里引入或删除？”可以在<a href='#6.4.3'>6.4.3节</a>找到git log使用的例子。
 
 ### <a href='#c8.5' id='8.5'>8.5 比较SVN和Git如何产生diff</a>
 
