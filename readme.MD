@@ -5877,10 +5877,11 @@ $ git merge -s resolve Bob
 。
 ![](https://github.com/YuxingXie/git_study/raw/master/assets/image/09-03-04-01.jpg)
 
-<div style="border: 1px solid">
 图9-9　交叉合并最终历史
 
-使用“我们的”和“子树”
+---
+
+**使用“我们的”和“子树”**
 
 可以一起使用这两个合并策略。例如，曾有段时间，gitweb程序（现在是git的一部分）是在git.git主版本库外开发的。但是在版本0a8f4f，
 把它的整个历史合并到git.git中的gitweb子树下。如果你想做同样的事情，你可以如下操作。
@@ -5890,34 +5891,19 @@ $ git merge -s resolve Bob
 2．像往常一样提交它们。
 
 3．使用“我们的”策略从gitweb.git项目提取：
-
-
+```text
 $ git pull -s ours gitweb.git master
-
-
-
-
-
-
-
-
+```
 你在这里使用“我们的”策略，因为你知道你已经有了文件的最新版本，而且你已经把他们放在了你想要的位置（不是正常递归策略放的位置）。
 
 4．以后，可以使用subtree策略继续从gitweb.git项目提取最新修改：
 
-
+```text
 $ git pull -s subtree gitweb.git master
-
-
-
-
-
-
-
-
+```
 因为文件已经存在你的版本库里了，所以Git自动知道你把它们放在哪棵子树中，然后可以执行更新而且不会有冲突。
 
-</div>
+---
 
 #### <a id='9.3.5' href='#c9.3.5'>9.3.5 合并驱动程序</a>
 
