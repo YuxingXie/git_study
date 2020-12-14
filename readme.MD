@@ -4582,6 +4582,8 @@ index d90bda0..7601807 100644
 
 ---
 
+**比较两次提交**：
+
 ```text
 git diff [<options>] <commit>..<commit> [--] [<path>…​]
 ```
@@ -4593,6 +4595,25 @@ If \<commit> on one side is omitted, it will have the same effect as using HEAD 
 ---
 
 还有一种三个点的语法*git diff \[\<options>] \<commit>...\<commit> \[--] \[\<path>…​]*,这个先不研究了。
+
+---
+
+**比较两个分支**：
+
+```text
+$ git diff topic master    (1)
+$ git diff topic..master   (2)
+$ git diff topic...master  (3)
+```
+
+1. Changes between the tips of the topic and the master branches.
+
+2. Same as above.
+
+3. Changes that occurred on the master branch since when the topic branch was started off it.
+
+---
+
 
 ### <a href='#c8.3' id='8.3'>8.3 git diff和提交范围</a>
 
