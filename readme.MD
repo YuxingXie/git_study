@@ -5510,11 +5510,275 @@ $ git log --merge --left-right -p hello
 小规模的提交和更频繁的合并周期可以减少解决冲突的痛苦。
 
 #### <a id='9.2.3' href='#c9.2.3'>9.2.3 Git是如何追踪冲突的</a>
+究竟Git是如何追踪一个合并冲突的所有信息的呢？主要有以下几个部分。
+
+.git/MERGE_HEAD 包含合并进来的提交的SHA1值。不必自己使用SHA1；任何时候提到MERGE_HEAD，Git都知道去查看那个文件。
+.git/MERGE_MSG 包含当解决冲突后执行git commit命令时用到的默认合并消息。
+Git的索引包含每个冲突文件的三个副本：合并基础、“我们的”版本和“他们的”版本。给这三个副本分配了各自的编号1、2、3。
+冲突的版本（合并标记和所有内容）不存储在索引中。相反，它存储在工作目录中的文件里。当执行不带任何参数的git diff命令时，始终比较索引与工作目录中的内容。
+要查看索引项是如何存储的，可以使用如下git ls-files底层命令。
+
+```text
+
+$ git ls-files -s
+100644 ce013625030ba8dba906f756967f9e9ca394464a 1　　　　　hello
+100644 e63164d9518b1e6caf28f455ac86c8246f78ab70 2　　　　　hello
+100644 562080a4c6518e1bf67a9f58a32a67bff72d4f00 3　　　　　hello
+```
+
+git ls-files的-s参数显示所有文件的各个阶段。如果你只想看冲突的文件，请使用-u选项。
+
+换句话说，hello 文件存储了三次，每个版本都有不同的散列值对应不同的版本。可以用git cat-file命令来查看特定的变体：
+
+```text
+
+$ git cat-file -p e63164d951
+hello
+worlds
+Yay!
+```
+
+可以使用git diff的一些特殊语法来比较文件的不同版本。例如，如果你想查看合并基础和你要合并入的版本之间有什么区别，可以这样做。
+
+```text
+$ git diff :1:hello :3:hello
+
+diff --git a/:1:hello b/:3:hello
+index ce01362..562080a 100644
+--- a/:1:hello
++++ b/:3:hello
+@@ -1 +1,3 @@
+ hello
++world
++Yay!
+```
+
+---
+**提示**
+
+*从Git 1.6.1版本开始，git checkout命令接受--ours或者—theirs选项作为从冲突合并的一边检出（一个文件）的简写。这两个选项只能在冲突解决期间使用。*
+
+---
+
+使用暂存编号来命名一个版本不同于git diff --theirs，后者显示了他们的版本和工作目录中合并的（或者说仍然冲突的）版本的区别。
+合并后的版本尚未在索引中，因此它甚至还没有一个数字。
+
+因为你支持他们的版本，完全编辑并解决了工作版本的冲突，现在应该没有区别了。
+
+```text
+$ cat hello
+hello
+world
+Yay!
+
+$ git diff --theirs
+* Unmerged path hello
+```
+
+所有剩下的是未合并的路径提示，提醒你将其添加到索引中。
+
 #### <a id='9.2.4' href='#c9.2.4'>9.2.4 结束解决冲突</a>
+
+在宣布合并前对hello 文件做最后一次修改。
+
+```text
+$ cat hello
+hello
+everyone
+Yay!
+
+```
+
+既然该文件已经完全合并而且解决冲突了，git add命令就把索引再次化筒为只有一份hello 文件的副本。
+```text
+$ git add hello
+
+$ git ls-files -s
+100644 ebc56522386c504db37db907882c9dbd0d05a0f0 0 hello
+```
+
+在SHA1和路径名中间单独的0表示无冲突文件的暂存编号是零。
+
+必须解决索引中记录的所有冲突文件。只要有未解决的冲突，就不能提交。因此，当解决一个文件的冲突之后，执行git add（或者git rm、git update-index等）以清除它的冲突状态。
+
+---
+
+**警告**
+
+*不要对有冲突标记的文件执行git add命令。虽然这会清除索引中的冲突，并允许提交，但文件将是错误的。*
+
+---
+
+最后，可以对最终结果执行git commit命令，并使用git show来查看这次合并提交。
+
+```text
+
+$ cat .git/MERGE_MSG
+Merge branch 'alt'
+
+Conflicts:
+　　　　hello
+
+$ git commit
+
+$ git show
+commit a274b3003fc705ad22445308bdfb172ff583f8ad
+Merge: eddcb7d... d03e77f...
+Author: Jon Loeliger <@example.com>
+Date:　 Wed Oct 22 23:04:18 2008 -0500
+
+　　Merge branch 'alt'
+
+　　Conflicts:
+　　　　hello
+
+diff --cc hello
+index e63164d,562080a..ebc5652
+--- a/hello
++++ b/hello
+@@@ -1,3 -1,3 +1,3 @@@
+　hello
+- worlds
+ -world
+++everyone
+　Yay!
+
+```
+
+当查看一个合并提交时，应该注意三件有趣的事。
+
+在开头第二行新写着“Merge:”。通常在git log或者git show中不显示父提交，因为一般只有一个父提交，并且一般都正好在日志里显示在后边。
+但是合并提交通常有两个（有时更多）父提交，而且他们的父提交对理解合并是很重要的。因此，git log和git show始终输出每个祖先的SHA1。
+自动生成的提交日志消息有助于标注冲突的文件列表。如果事实证明一个特定的问题是由合并引起的，这将十分有用。通常，问题都是由不得不手动进行合并的文件引起的。
+合并提交的差异不是一般的差异。它始终处于组合差异或者“冲突合并”的格式。认为Git中一个成功的合并是完全没有变化的；它只是简单地把其他已经在历史中的变更组合起来。
+因此，合并提交的内容里只显示与合并分支不同的地方，而不是全部的区别。
+
 #### <a id='9.2.5' href='#c9.2.5'>9.2.5 终止或重新启动合并</a>
 
+如果你开始合并操作，但是因为某种原因你不想完成它，Git提供了一种简单的方法来中止操作。在合并提交执行最后的git commit命令前，使用如下命令。
+
+```text
+$ git reset --hard HEAD
+```
+
+这条命令立即把工作目录和索引都还原到git merge命令之前。
+
+如果要中止或在它已经结束（也就是，引进一个新的合并提交）后放弃，请使用以下命令：
+
+```text
+$ git reset --hard ORIG_HEAD
+```
+
+在开始合并操作前，Git把原始分支的HEAD保存在ORIG_HEAD，就是为了这种目的。
+
+在这里应该非常小心。如果在工作目录或索引不干净的情况下启动合并，可能会遇到麻烦并丢失目录中任何未提交的修改。
+
+可以从脏的工作目录启动git merge请求，但是如果执行git reset --hard，合并之前的脏状态不会完全还原。相反，重置会弄丢工作目录区域的脏状态。
+换言之，对HEAD状态请求了一个—hard重置（查看10.2节）。
+
+从Git 1.6.1版本开始，有另一种选择。如果你已经把冲突解决方案搞砸了，并且想再返回到尝试解决前的原始冲突状态，你可以使用git checkout -m命令。
+
 ### <a id='9.3' href='#c9.3'>9.3 合并策略</a>
+到目前为止，例子还是很容易处理的，因为只有两个分支。貌似Git特别复杂的DAG形历史和又长又难记的提交ID不是很值得。也许它这么做不是为了这样简单的例子。所以，让我们看看更复杂点的情况。
+
+试想一下，有三个人在你的版本库上工作而不仅仅是一个人。为了简单起见，假设每个开发人员——Alice、Bob和Cal——可以在一个共享的版本库中的三个不同分支提交变更。
+
+因为开发人员都向单独的分支提交代码，所以让我们留给Alice一个人来管理各种提交的整合。在此期间，根据需要，每个开发人员都可以直接加入或者合并同事的分支来利用其他开发人员的成果。
+
+最后，程序员开发出了一个具有如图9-1所示的提交历史的版本库。
+
+![](https://github.com/YuxingXie/git_study/raw/master/assets/image/09-03-01.jpg) 
+图9-1　交叉合并初始
+
+试想一下，Cal启动了项目，Alice加入了进来。Alice工作了一会儿，然后Bob加入了进来。在此期间，Cal一直在自己的版本上工作。
+
+最后，Alice合并了Bob的修改，而Bob继续工作没把Alice的变更合并回来。现在有三个不同的分支历史。结果如图9-2所示。
+
+![](https://github.com/YuxingXie/git_study/raw/master/assets/image/09-03-02.jpg)
+
+图9-2　Alice合并了Bob的更改之后
+
+想象一下，Bob想获取Cal的最新改动。图现在看起来相当复杂，但这部分还算相对容易。沿着树向上追踪，从Bob开始，穿过Alice，
+直到你到达她第一次偏离Cal的那点。那就是A，Bob和Cal的合并基础。要从Cal处合并，Bob需要在合并基础A和Cal的最新版本Q之间做出一系列变化，
+然后三方把他们合并到他自己的树中，得到提交K。结果是如图9-3所示的历史。
+
+![](https://github.com/YuxingXie/git_study/raw/master/assets/image/09-03-03.jpg)
+
+图9-3　Bob合并了Cal的更改之后
+
+提示 　提示
+
+始终可以用git merge-base来找到两个或两个以上分支之间的合并基础。一组分支等效的合并基础可能不止一个。
+
+到目前为止，一切安好。
+
+Alice现在决定她也要得到Cal的最新修改，但是她不知道Bob已经把Cal的树合并进他的树中了。所以她只把Cal的树合并到她的树中。
+这只是另一个简单的操作，因为她跟Cal分开的地方很明显。由此产生的历史记录如图9-4所示。
+
+接着，Alice意识到Bob已经做了一些工作，L，并希望能再次从他那里合并。这次合并基础（L和E之间）是什么？
+
+![](https://github.com/YuxingXie/git_study/raw/master/assets/image/09-03-04.jpg)
+图9-4　Alice合并了Cal之后
+
+遗憾的是，答案是有二义性的。如果你沿着所有路从树上倒退，你可能会认为Cal的原始版本是个不错的选择。但是这并没有意义：Alice和Bob现在都有Cal的最新版本。
+如果你询问Cal的原始版本到Bob最新版本的差异，那么它也包括Cal的新修改，而Alice已经有了，这很可能导致合并冲突。
+
+如果你使用Cal的最新版本作为基础怎么样？这更好一点，但还不太对：如果你寻找从Cal的最新版本到Bob的最新版本的差异，你会得到Bob的所有修改。
+但是Alice已经有了Bob的一些修改，因此你还是可能得到一个合并冲突。
+
+那如果你使用Alice最后从Bob合并的版本，也就是版本J，行吗？创建从那里到Bob的最新版本的差异会只包含Bob的最新修改，这是你想要的。
+但是这也包含来自Cal的修改，而这些修改Alice已经有了！
+
+怎么办呢？
+
+这种情况称为交叉合并（criss-cross merge），因为修改在分支之间来回合并。如果修改只在一个方向上移动
+（例如，从Cal到Alice到Bob，但从来没有从Bob到Alice或者从Alice到Cal），那么合并将会很简单。遗憾的是，生活并不总是那么简单。
+
+Git开发人员最初写了一个简单的机制，用合并提交加入两个分支，但是刚刚描述的情景让他们意识到需要一个更聪明的方法。因此，开发人员将问题普遍化、
+参数化并提出了可替代、可配置的合并策略来处理不同的情况。
+
+让我们来看看如何应用不同的策略。
+
 #### <a id='9.3.1' href='#c9.3.1'>9.3.1 退化合并</a>
+有两种导致合并的常见退化情况，分别称为已经是最新的（already up-to-date）和快进的（fast-forward）。因为这些情况下执行git merge ① 后实际上都不引入一个合并提交，所以有些人可能认为它们不是真正的合并策略。
+
+已经是最新的。 当来自其他分支（HEAD）的所有提交都存在于目标分支上时，即使它已经在它自己的分支上前进了，目标分支还是已经更新到最新的。因此，没有新的提交添加到你的分支上。
+例如，如果进行一次合并，然后立即提出一次完全相同的合并请求，就会告知你分支已经是最新的。
+
+```text
+# Show that alternate is already merged into master
+
+$ git show-branch
+! [alternate] Add alternate line 5 and 6
+ * [master] Merge branch 'alternate'
+--
+ - [master] Merge branch 'alternate'
++* [alternate] Add alternate line 5 and 6
+
+# Try to merge alternate into master again
+
+$ git merge alternate
+Already up-to-date.
+```
+
+快进的。 当分支HEAD已经在其他分支中完全存在或表示时，就会发生快进合并。这是“已经是最新的”的反向情景。
+因为HEAD已经在其他分支存在了（可能是由于一个共同的祖先），Git简单地把其他分支的新提交钉在HEAD上。然后Git移动分支HEAD来指向最终的新提交。
+当然，索引和工作目录也做相应调整，以反映新的最终提交状态。
+
+快进的情况是相当常见的，因为他们只是简单获取并记录来自其他版本库的远程提交。你的本地追踪分支HEAD会始终完全存在并表示，
+因为那里是在前一个获取操作后分支HEAD位于的地方。有关详细信息，请参阅第12章。
+
+Git不引入实际的提交来处理这种情况是很重要的。试想一下，如果在快进的情况下Git创建了一个提交会怎么样。把分支A合并进分支B会首先产生图9-5。
+然后合并B到A会产生图9-6，再合并回来会产生图9-7。
+
+![](https://github.com/YuxingXie/git_study/raw/master/assets/image/09-03-01-01.jpg)
+图9-5　第一次非收敛合并
+
+![](https://github.com/YuxingXie/git_study/raw/master/assets/image/09-03-01-02.jpg)
+图9-6　第二次非收敛合并
+
+![](https://github.com/YuxingXie/git_study/raw/master/assets/image/09-03-01-03.jpg)
+
 #### <a id='9.3.2' href='#c9.3.2'>9.3.2 常规合并</a>
 #### <a id='9.3.3' href='#c9.3.3'>9.3.3 特殊提交</a>
 #### <a id='9.3.4' href='#c9.3.4'>9.3.4 应用合并策略</a>
