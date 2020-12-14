@@ -184,6 +184,8 @@
 >>
 >> <a href='#after8.2' id='cafter8.2'>补充:git diff</a>
 >>
+>> <a href='#before8.3' id='cbefore8.3'>git diff语法补充</a>
+>>
 >> <a href='#8.3' id='c8.3'>8.3 git diff和提交范围</a>
 >>
 >> <a href='#8.4' id='c8.4'>8.4 路径限制的git diff</a>
@@ -4576,7 +4578,7 @@ index d90bda0..7601807 100644
 +baz
 ```
 
-### <a href='#cbefore8.3' id='before8.3'>补充:git diff的语法补充</a>
+### <a href='#cbefore8.3' id='before8.3'>git diff语法补充</a>
 
 资料来自<a href='https://git-scm.com/docs/git-diff' target='_blank'>《Pro Git》</a>
 
