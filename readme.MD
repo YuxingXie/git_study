@@ -4707,17 +4707,124 @@ index f3b6f0e..abbf9c5 100644
 在这个例子中，git log master..maint命令显示5个单独的提交：V,W,...,Z。另一方面，git diff master..maint显示H和Z处的树之间的差异，
 累计有11个提交：C,D,...,H和V,...,Z。
 
-同样，git log和git diff这两条命令都接受commit1 ...commit2 这样的参数来产生一个对称差（symmetrical difference）。
+同样，git log和git diff这两条命令都接受*commit1...commit2* 这样的参数来产生一个对称差（symmetrical difference）。
 然而，跟之前一样，它们会产生不同的结果。
 
-如同在6.3.3节讨论的一样，命令git logcommit1 ...commit2 显示的是各自可达又不同时可达的提交。
+如同在6.3.3节讨论的一样，命令git log *commit1 ...commit2* 显示的是各自可达又不同时可达的提交。
 因此，git log master...maint在前面的例子会输出C,D,...,H和V,...,Z。
 
-对称差在git diff中会显示commit2 与commit1 的共同祖先（或者合并基础［merge base］之间的差异。给定如图8-2中的关系，
+对称差在git diff中会显示commit2 与commit1 的共同祖先（或者合并基础\[merge base]之间的差异。给定如图8-2中的关系，
 git diff master...maint会组合V,W,...,Z中的变更。
 
 
 ### <a href='#c8.4' id='8.4'>8.4 路径限制的git diff</a>
+
+在默认情况下，git diff操作会基于从给定树对象的根开始的整个目录结构。
+然而，可以使用和git log中相同的路径限制（path limiting）手段来限制git diff只输出版本库的一个子集。
+
+例如，在Git自身版本库的某个版本 ② ，git diff --stat显示如下。
+
+```text
+$ git diff --stat master~5 master
+ Documentation/git-add.txt                |      2 +-
+ Documentation/git-cherry.txt             |      6 +++++
+ Documentation/git-commit-tree.txt        |      2 +-
+ Documentation/git-format-patch.txt       |      2 +-
+ Documentation/git-gc.txt                 |      2 +-
+ Documentation/git-gui.txt                |      4 +-
+ Documentation/git-ls-files.txt           |      2 +-
+ Documentation/git-pack-objects.txt       |      2 +-
+ Documentation/git-pack-redundant.txt     |      2 +-
+ Documentation/git-prune-packed.txt       |      2 +-
+ Documentation/git-prune.txt              |      2 +-
+ Documentation/git-read-tree.txt          |      2 +-
+ Documentation/git-remote.txt             |      2 +-
+ Documentation/git-repack.txt             |      2 +-
+ Documentation/git-rm.txt                 |      2 +-
+ Documentation/git-status.txt             |      2 +-
+ Documentation/git-update-index.txt       |      2 +-
+ Documentation/git-var.txt                |      2 +-
+ Documentation/gitk.txt                   |      2 +-
+ builtin-checkout.c                       |      7 ++++-
+ builtin-fetch.c                          |      6 ++--
+ git-bisect.sh                            |　   29 ++++++++++++--------------
+ t/t5518-fetch-exit-status.sh             |　   37 ++++++++++++++++++++++++++++++++++
+ 23 files changed, 83 insertions(+), 40 deletions(-)
+```
+
+如果要只显示Documentation 的更改，需要使用命令git diff—stat master~5 master Documentation。
+
+```text
+$ git diff --stat master~5 master Documentation
+ Documentation/git-add.txt 　　　　　　　　 　|　　　　2 +-
+ Documentation/git-cherry.txt 　　　　　　　 |　　　　6 ++++++
+ Documentation/git-commit-tree.txt　　　　　|　　　　2 +-
+ Documentation/git-format-patch.txt 　　　　|　　　　2 +-
+ Documentation/git-gc.txt 　　　　　　　　　　|　　　　2 +-
+ Documentation/git-gui.txt 　　　　　　　　　 |　　　　4 ++--
+ Documentation/git-ls-files.txt 　　　　　　 |　　　　2 +-
+ Documentation/git-pack-objects.txt 　　　　|　　　　2 +-
+ Documentation/git-pack-redundant.txt 　　　|　　　　2 +-
+ Documentation/git-prune-packed.txt 　　　　|　　　　2 +-
+ Documentation/git-prune.txt 　　　　　　　　|　　　　2 +-
+ Documentation/git-read-tree.txt 　　　　　 |　　　　2 +-
+ Documentation/git-remote.txt 　　　　　　　 |　　　　2 +-
+ Documentation/git-repack.txt 　　　　　　　 |　　　　2 +-
+ Documentation/git-rm.txt 　　　　　　　　　　|　　　　2 +-
+ Documentation/git-status.txt 　　　　　　　 |　　　　2 +-
+ Documentation/git-update-index.txt 　 　　 |　　　　2 +-
+ Documentation/git-var.txt 　　　　　　 　 　|　　　　2 +-
+ Documentation/gitk.txt 　　　　　　　　 　  |　　　　2 +-
+ 19 files changed, 25 insertions(+), 19 deletions(-)
+```
+
+当然，也可以只查看一个文件的差异。
+
+```text
+
+$ git diff master~5 master Documentation/git-add.txt
+diff --git a/Documentation/git-add.txt b/Documentation/git-add.txt
+index bb4abe2..1afd0c6 100644
+--- a/Documentation/git-add.txt
++++ b/Documentation/git-add.txt
+@@ -246,7 +246,7 @@ characters that need C-quoting. `core.quotepath` configuration can be
+ used to work this limitation around to some degree, but backslash,
+ double-quote and control characters will still have problems.
+
+-See Also
++SEE ALSO
+ --------
+ linkgit:git-status[1]
+ linkgit:git-rm[1]
+```
+
+下面的例子也来自Git本身的版本库，-S"string "选项用来在master分支最近50个提交中搜索包含string 的变更。
+
+```text
+$ git diff -S"octopus" master~50
+diff --git a/Documentation/RelNotes-1.5.5.3.txt b/Documentation/RelNotes-1.5.5.3.txt
+new file mode 100644
+index 0000000..f22f98b
+--- /dev/null
++++ b/Documentation/RelNotes-1.5.5.3.txt
+@@ -0,0 +1,12 @@
++GIT v1.5.5.3 Release Notes
++==========================
++
++Fixes since v1.5.5.2
++--------------------
++
++ * "git send-email --compose" did not notice that non-ascii contents
++　 needed some MIME magic.
++
++ * "git fast-export" did not export octopus merges correctly.
++
++Also comes with various documentation updates.
+```
+
+使用-S通常叫做pickaxe，Git会列出最近一定数量的提交中包含给定字符串的差异。
+概念上，你可以认为这是说“给定的字符串在哪里引入或删除？”可以在6.4.3节找到git log使用的例子。
+
 ### <a href='#c8.5' id='8.5'>8.5 比较SVN和Git如何产生diff</a>
 
 ## <a id='9' href='#c9'>第9章 合并</a>
