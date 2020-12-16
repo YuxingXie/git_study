@@ -4440,6 +4440,7 @@ file1 文件在工作目录、索引和HEAD中的每个版本都标识出来了�
 
 
 **NOTE**:--cached都可以替换为--staged。另外，这些所有的比较都发生在同一个分支上，如何比较不同分支的内容，这个还未知。
+后面在学习合并的时候，还有--theirs,--ours可以替换xxx。
 
 
 ### <a href='#c8.2' id='8.2'>8.2 简单的git diff例子</a>
@@ -5142,7 +5143,7 @@ Automatic merge failed; fix conflicts and then commit the result.
 ```
 
 **NOTE**:当没有冲突合并时，Git会自动生产一次提交，并要求你补上提交信息。当有冲突的时候，Git产生提交失败，因为它不知道合并后的内容是什么，
-需要你手动干预。使用git status查看一下：
+它生成一个状态是unmerged的中间文件，需要你手动干预解决冲突。使用git status查看一下：
 ```text
 $ git status
 On branch master
@@ -5250,6 +5251,8 @@ $ git show-branch
 ```text
 $ git log
 ```
+
+**NOTE**:切换到alternate分支，文件file还是原来的样子。这是当然的。
 
 ### <a id='9.2' href='#c9.2'>9.2 处理合并冲突</a>
 正如前面的例子展示的，有冲突的修改不能自动合并。
@@ -5374,7 +5377,7 @@ index e63164d,562080a..0000000
 
 这一切是什么意思呢？这只是两个diff文件的简单组合：一个对应第一个称为HEAD的父版本，另一个对应第二个称为alt的父版本
 （如果第二个父版本是代表某个其他版本库中未命名提交的绝对SHA1名，请不要感到惊讶！）。为了让事情容易点，
-Git也给第二个父版本起了一个特殊的名字——MERGE_HEAD。
+**Git也给第二个父版本起了一个特殊的名字——MERGE_HEAD**。
 
 可以拿HEAD和MERGE_HEAD版本跟工作目录（“合并的”）版本进行比较。
 
