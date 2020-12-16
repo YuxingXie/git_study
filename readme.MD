@@ -2485,6 +2485,9 @@ HEAD始终指向当前分支的最近提交。当切换分支时，HEAD会更新
 
 某些操作，例如合并（merge）和复位（reset），会把调整为新值之前的先前版本的HEAD记录到ORIG_HEAD中。
 可以使用ORIG_HEAD来恢复或回滚到之前的状态或者做一个比较。
+
+**NOTE**:ORIG_HEAD详见<a href='#9.2.5ORIG_HEAD'>9.2.5 终止或重新启动合并</a>
+
 ***
 * FETCH_HEAD
 
@@ -2495,6 +2498,9 @@ HEAD始终指向当前分支的最近提交。当切换分支时，HEAD会更新
 * MERGE_HEAD
 
 当一个合并操作正在进行时，其他分支的头暂时记录在MERGE_HEAD中。换言之，MERGE_HEAD是正在合并进HEAD的提交。
+
+**NOTE**:MERGE_HEAD详见<a href='#9.2.2MERGE_HEAD'>9.2.2 检查冲突</a>
+
 ***
 所有这些符号引用都可以用底层命令git symbolic-ref进行管理。
 
@@ -5374,10 +5380,12 @@ index e63164d,562080a..0000000
 ++>>>>>>> alt:hello
 　Yay!
 ```
-
+<div id='9.2.2MERGE_HEAD'>9.2.2 检查冲突</div>
 这一切是什么意思呢？这只是两个diff文件的简单组合：一个对应第一个称为HEAD的父版本，另一个对应第二个称为alt的父版本
 （如果第二个父版本是代表某个其他版本库中未命名提交的绝对SHA1名，请不要感到惊讶！）。为了让事情容易点，
 **Git也给第二个父版本起了一个特殊的名字——MERGE_HEAD**。
+
+**NOTE**:MERGE_HEAD见<a href='#6.2.2>6.2.2 引用和符号引用</a>
 
 可以拿HEAD和MERGE_HEAD版本跟工作目录（“合并的”）版本进行比较。
 
@@ -5705,6 +5713,7 @@ $ git reset --hard HEAD
 
 如果要中止或在它已经结束（也就是，引进一个新的合并提交）后放弃，请使用以下命令：
 
+<div id='9.2.5ORIG_HEAD'></div>
 ```text
 $ git reset --hard ORIG_HEAD
 ```
