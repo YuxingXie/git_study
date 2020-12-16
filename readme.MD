@@ -5141,6 +5141,22 @@ CONFLICT (content): Merge conflict in file
 Automatic merge failed; fix conflicts and then commit the result.
 ```
 
+**NOTE**:当没有冲突合并时，Git会自动生产一次提交，并要求你补上提交信息。当有冲突的时候，Git产生提交失败，因为它不知道合并后的内容是什么，
+需要你手动干预。使用git status查看一下：
+```text
+$ git status
+On branch master
+You have unmerged paths.
+  (fix conflicts and run "git commit")
+  (use "git merge --abort" to abort the merge)
+
+Unmerged paths:
+  (use "git add <file>..." to mark resolution)
+	both modified:   file
+
+no changes added to commit (use "git add" and/or "git commit -a")
+```
+
 当出现合并冲突的时候，应该无一例外地使用git diff命令来调查冲突的程度。这里，一个叫file 的文件在其内容里有冲突。
 
 ```text
