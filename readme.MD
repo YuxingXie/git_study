@@ -2477,10 +2477,14 @@ $ find .git/refs
 
 Git自动维护几个用于特定目的的特殊**符号引用**。这些引用可以在使用提交的任何地方使用。
 ***
+
 * HEAD
 
 HEAD始终指向当前分支的最近提交。当切换分支时，HEAD会更新为指向新分支的最近提交。
 ***
+
+<div id='6.2.2ORIG_HEAD'></div>
+
 * ORIG_HEAD
 
 某些操作，例如合并（merge）和复位（reset），会把调整为新值之前的先前版本的HEAD记录到ORIG_HEAD中。
@@ -5720,7 +5724,7 @@ $ git reset --hard HEAD
 $ git reset --hard ORIG_HEAD
 ```
 
-**NOTE**:关于ORIG_HEAD在<a href='#6.2.2'>6.2.2 引用和符号引用</a>介绍过。
+**NOTE**:关于ORIG_HEAD在<a href='#6.2.2ORIG_HEAD'>6.2.2 引用和符号引用</a>介绍过。
 
 在开始合并操作前，Git把原始分支的HEAD保存在ORIG_HEAD，就是为了这种目的。
 
