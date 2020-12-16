@@ -5602,6 +5602,7 @@ index ce01362..562080a 100644
 ```
 
 ---
+
 **提示**
 
 *从Git 1.6.1版本开始，git checkout命令接受--ours或者—theirs选项作为从冲突合并的一边检出（一个文件）的简写。这两个选项只能在冲突解决期间使用。*
@@ -5714,9 +5715,11 @@ $ git reset --hard HEAD
 如果要中止或在它已经结束（也就是，引进一个新的合并提交）后放弃，请使用以下命令：
 
 <div id='9.2.5ORIG_HEAD'></div>
+
 ```text
 $ git reset --hard ORIG_HEAD
 ```
+
 **NOTE**:关于ORIG_HEAD在<a href='#6.2.2'>6.2.2 引用和符号引用</a>介绍过。
 
 在开始合并操作前，Git把原始分支的HEAD保存在ORIG_HEAD，就是为了这种目的。
