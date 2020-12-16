@@ -5566,6 +5566,8 @@ $ git ls-files -s
 
 git ls-files的-s参数显示所有文件的各个阶段。如果你只想看冲突的文件，请使用-u选项。
 
+**NOTE**:当你解决冲突后提交，1、2、3都没了，只剩下0。
+
 换句话说，hello 文件存储了三次，每个版本都有不同的散列值对应不同的版本。可以用git cat-file命令来查看特定的变体：
 
 ```text
@@ -5706,6 +5708,7 @@ $ git reset --hard HEAD
 ```text
 $ git reset --hard ORIG_HEAD
 ```
+**NOTE**:关于ORIG_HEAD在<a href='#6.2.2'>6.2.2 引用和符号引用</a>介绍过。
 
 在开始合并操作前，Git把原始分支的HEAD保存在ORIG_HEAD，就是为了这种目的。
 
