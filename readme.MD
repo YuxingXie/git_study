@@ -3192,8 +3192,6 @@ Bisecting: 1 revisions left to test after this
 [b07c3f193a8074aa4afe43cfa8ae38ec4c7ccfa9] ftrace: port to tracepoints
 ```
 
-
-
 当你最终测试最后一个修订版本并且Git已经找到了引进问题的修订版本时 <a id='tag6.8' href='#remark6.8'>⑧</a> ，显示如下。
 
 ```text
@@ -3213,6 +3211,7 @@ Signed-off-by: Ingo Molnar <mingo@elte.hu>
 　　fd15e1c4adbd37b819299a9f0d4a6ff589721f6c M　init
 
 ```
+
 最后，当你完成二分查找、完成二分记录并保存了状态时，非常重要的一点是你要告诉Git你已经完成了。你可能还记得，整个二分过程在一个分离的HEAD上执行。
 
 ```text
@@ -3228,7 +3227,9 @@ $ git branch
 * master
 ```
 执行git bisect reset命令来回到原来的分支上。
+
 #### <a href='#c6.4.2' id='6.4.2'>6.4.2 使用git blame</a>
+
 有助于识别特定提交的另一工具是git blame。此命令可以告诉你一个文件中的每一行最后是谁修改的和哪次提交做出了变更。
 
 ```text
@@ -3263,16 +3264,12 @@ git blame命令告诉你文件的当前状态，git log -Sstring则根据给定�
 这条命令可以找到那些执行改变（增加或删除）的提交。
 
 ```text
-
 $ git log -Sinclude --pretty=oneline --abbrev-commit init/version.c
 cd354f1... [PATCH] remove many unneeded #includes of sched.h
 4865ecf... [PATCH] namespaces: utsname: implement utsname namespaces
 63104ee... kbuild: introduce utsrelease.h
 1da177e... Linux-2.6.12-rc2
 ```
-
-
-
 
 排列在左侧的每个提交（例如cd354f1）都添加或删除了那些包含include的行。但是要注意，如果某个提交添加和删除了相同数量的含关键词的行，
 它将不会显示出来。该提交必须有添加和删除数量上的变化才能计数。
@@ -3357,9 +3354,6 @@ Git也有追踪分支（tracking branch）的概念，或者保持一个版本�
 git show-branch 'bug/­*'
 
 ```
-
-
-
 
 **在分支命名中可以做和不能做的**
 
