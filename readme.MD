@@ -2665,6 +2665,7 @@ Signed-off-by: Junio C Hamano <gitster@pobox.com>
 commit c7ea453618e41e05a06f05e3ab63d555d0ddd7d9
 
 ...
+
 ```
 
 日志记录是权威的，但是在版本库的整个提交历史记录中进行回滚是不切实际且没有意义的。通常情况下，一个有限的历史记录往往记录了更多的信息。
