@@ -5740,7 +5740,8 @@ $ git reset --hard ORIG_HEAD
 
 最后，程序员开发出了一个具有如图9-1所示的提交历史的版本库。
 
-![](https://github.com/YuxingXie/git_study/raw/master/assets/image/09-03-01.jpg) 
+![](https://github.com/YuxingXie/git_study/raw/master/assets/image/09-03-01.jpg)
+
 图9-1　交叉合并初始
 
 试想一下，Cal启动了项目，Alice加入了进来。Alice工作了一会儿，然后Bob加入了进来。在此期间，Cal一直在自己的版本上工作。
