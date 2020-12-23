@@ -5977,6 +5977,14 @@ $ git rebase --onto origin/master $fork_point topic
 	     \
 	      D0---D1---D (topic - old)
 ```
+需要注意的是，存储库中的旧reflog条目可能会被git gc过期。如果B0不再出现在远程跟踪分支origin/master分支的reflog中，
+——fork-point模式显然无法找到它并失败，避免给出一个随机和无用的结果(比如B0的父类，就像没有——fork-point选项给出的相同命令)。
+
+另外，使用——fork-point模式的远程跟踪分支必须是主题从其提示分叉的分支。如果你从一个比提示更老的提交中分叉，
+这个模式将不会找到分叉点(想象在上面的示例历史中B0不存在，origin/master从B1开始，移动到B2，然后B，当origin/master是B1时，
+你在origin/master^分叉你的topic;历史的形状将上面的一样,
+
+如果没有B0, B1的父母是git merge-base origin/master topic正确找到的,但是——fork-point模式不会,但是——fork-point模式不会找到，因为它不是origin/master尖端的提交之一)。
 
 #### <a id='9.3.1' href='#c9.3.1'>9.3.1 退化合并</a>
 有两种导致合并的常见退化情况，分别称为已经是最新的（already up-to-date）和快进的（fast-forward）。
