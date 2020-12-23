@@ -5904,6 +5904,79 @@ o---o---o---o----------o
     /   /
 ---2---1---o---o---o---A
 ```
+**git merge-base A M**的结果是1。Commit 2也是a和M之间的公共祖先，但是1是更好的公共祖先，因为2是1的祖先。因此，2不是归并基。
+
+**git merge-base --octopus A B C**的结果是2，因为2是所有提交的最佳公共祖先。
+
+当历史记录涉及交叉合并时，两个提交可以有一个以上的最佳公共祖先。例如，这种拓扑结构:
+```text
+---1---o---A
+    \ /
+     X
+    / \
+---2---o---o---B
+```
+1和2都是A和b的合并基，没有一个比另一个好(两者都是最好的合并基)。当没有给出——all选项时，将不指定输出哪个最佳选项。
+
+常见的成语来检查“fast-forward-ness”两个提交A和B之间(或者至少曾经是)计算合并基础A和B之间,并检查如果是一样的,
+在这种情况下,A是B的祖先。你会看到这个成语经常用于旧脚本。
+
+```text
+A=$(git rev-parse --verify A)
+if test "$A" = "$(git merge-base A B)"
+then
+	... A is an ancestor of B ...
+fi
+```
+
+在现代git中，您可以用一种更直接的方式来表示这一点:
+```text
+if git merge-base --is-ancestor A B
+then
+	... A is an ancestor of B ...
+fi
+```
+
+##### 关于 fork-point模式的讨论
+
+在使用**git switch -c topic origin/master**创建的**topic**分支后，远程跟踪分支origin/master 的历史可能被重绕和重建，导致了这种形状的历史:
+
+```text
+ o------B2
+		/
+---o---o---B1--o---o---o---B (origin/master)
+	\
+	 B0
+	  \
+	   D0---D1---D (topic)
+```
+rigin/master曾经指向提交B0, B1, B2，现在它指向B，当origin/master在B0时，你的主题分支在它上面开始，你在它上面构建了三个提交，D0, D1，和D。
+假设您现在想要在更新的origin/master之上重新构建您在**topic**上所做的工作。
+
+在这种情况下，**git merge-base origin/master topic**将返回上面图片中的B0的父类，
+但是B0^..D不是你想在B上重播的提交范围(它包括B0，这不是你写的;当它的尖端从B0移动到B1时，另一方丢弃了这个commit)。
+
+**git merge-base --fork-point origin/master topic**被设计用于帮助这种情况。
+不仅B还B0, B1,和B2(即旧技巧remote-tracking分支存储库的reflog知道)考虑看到提交你的主题分支建于和发现B0,只允许您回放提交你的话题,不包括提交另一方后丢弃。
+
+因此
+```text
+$ fork_point=$(git merge-base --fork-point origin/master topic)
+```
+will find B0, and
+```text
+$ git rebase --onto origin/master $fork_point topic
+```
+将D0, D1和D重放于B之上，创建这个形状的新历史:
+```text
+                 o------B2
+		        /
+---o---o---B1--o---o---o---B (origin/master)
+	   \                      \
+	    B0                    D0'--D1'--D' (topic - updated)
+	     \
+	      D0---D1---D (topic - old)
+```
 
 #### <a id='9.3.1' href='#c9.3.1'>9.3.1 退化合并</a>
 有两种导致合并的常见退化情况，分别称为已经是最新的（already up-to-date）和快进的（fast-forward）。
