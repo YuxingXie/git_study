@@ -5885,11 +5885,9 @@ see if the history leading to \<commit> forked from an earlier incarnation of th
 给定两个提交A和B, git merge-base A B将输出一个提交，A和B可以通过父关系访问该提交。
 
 例如，这种拓扑结构:
-```text
-         o---o---o---B
-        /
-    ---o---1---o---o---o---A
-```
+
+![](https://github.com/YuxingXie/git_study/raw/master/assets/image/before09-03-01-01.png)
+
 A和B的合并基是1。
 
 
