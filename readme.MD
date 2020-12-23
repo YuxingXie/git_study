@@ -5893,34 +5893,21 @@ A和B的合并基是1。
 
 给出三个提交A, B和C, git merge-base A B C会计算A和假设提交M之间的merge base，假设提交M是B和C之间的merge。例如，对于这个拓扑:
 
-```text
-    o---o---o---o---C
-          /
-         /   o---o---o---B
-        /   /
-    ---2---1---o---o---o---A
-```
+![](https://github.com/YuxingXie/git_study/raw/master/assets/image/before09-03-01-02.png)
+
 git merge-base A B C的结果是1。这是因为B和C之间合并提交M的等效拓扑是:
 
-```text
-o---o---o---o----------o
-      /                 \
-     /   o---o---o---o---M
-    /   /
----2---1---o---o---o---A
-```
+
+![](https://github.com/YuxingXie/git_study/raw/master/assets/image/before09-03-01-03.png)
+
 **git merge-base A M**的结果是1。Commit 2也是a和M之间的公共祖先，但是1是更好的公共祖先，因为2是1的祖先。因此，2不是归并基。
 
 **git merge-base --octopus A B C**的结果是2，因为2是所有提交的最佳公共祖先。
 
 当历史记录涉及交叉合并时，两个提交可以有一个以上的最佳公共祖先。例如，这种拓扑结构:
-```text
----1---o---A
-    \ /
-     X
-    / \
----2---o---o---B
-```
+
+![](https://github.com/YuxingXie/git_study/raw/master/assets/image/before09-03-01-04.png)
+
 1和2都是A和b的合并基，没有一个比另一个好(两者都是最好的合并基)。当没有给出——all选项时，将不指定输出哪个最佳选项。
 
 常见的成语来检查“fast-forward-ness”两个提交A和B之间(或者至少曾经是)计算合并基础A和B之间,并检查如果是一样的,
@@ -5946,15 +5933,9 @@ fi
 
 在使用**git switch -c topic origin/master**创建的**topic**分支后，远程跟踪分支origin/master 的历史可能被重绕和重建，导致了这种形状的历史:
 
-```text
- o------B2
-		/
----o---o---B1--o---o---o---B (origin/master)
-	\
-	 B0
-	  \
-	   D0---D1---D (topic)
-```
+
+![](https://github.com/YuxingXie/git_study/raw/master/assets/image/before09-03-01-05.png)
+
 rigin/master曾经指向提交B0, B1, B2，现在它指向B，当origin/master在B0时，你的主题分支在它上面开始，你在它上面构建了三个提交，D0, D1，和D。
 假设您现在想要在更新的origin/master之上重新构建您在**topic**上所做的工作。
 
@@ -5973,15 +5954,8 @@ will find B0, and
 $ git rebase --onto origin/master $fork_point topic
 ```
 将D0, D1和D重放于B之上，创建这个形状的新历史:
-```text
-                 o------B2
-		        /
----o---o---B1--o---o---o---B (origin/master)
-	   \                      \
-	    B0                    D0'--D1'--D' (topic - updated)
-	     \
-	      D0---D1---D (topic - old)
-```
+
+![](https://github.com/YuxingXie/git_study/raw/master/assets/image/before09-03-01-06.png)
 
 A caveat is that older reflog entries in your repository may be expired by git gc. 
 If B0 no longer appears in the reflog of the remote-tracking branch origin/master, 
