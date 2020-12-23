@@ -5977,8 +5977,22 @@ $ git rebase --onto origin/master $fork_point topic
 	     \
 	      D0---D1---D (topic - old)
 ```
+
+A caveat is that older reflog entries in your repository may be expired by git gc. 
+If B0 no longer appears in the reflog of the remote-tracking branch origin/master, 
+the --fork-point mode obviously cannot find it and fails, avoiding to give a random and useless result 
+(such as the parent of B0, like the same command without the --fork-point option gives).
+
 需要注意的是，存储库中的旧reflog条目可能会被git gc过期。如果B0不再出现在远程跟踪分支origin/master分支的reflog中，
 ——fork-point模式显然无法找到它并失败，避免给出一个随机和无用的结果(比如B0的父类，就像没有——fork-point选项给出的相同命令)。
+
+
+Also, the remote-tracking branch you use the --fork-point mode with must be the one your topic forked from its tip.
+If you forked from an older commit than the tip, this mode would not find the fork point 
+(imagine in the above sample history B0 did not exist, origin/master started at B1, moved to B2 and then B, 
+and you forked your topic at origin/master^ when origin/master was B1; the shape of the history would be the same as above,
+without B0, and the parent of B1 is what git merge-base origin/master topic correctly finds, 
+but the --fork-point mode will not, because it is not one of the commits that used to be at the tip of origin/master).
 
 另外，使用——fork-point模式的远程跟踪分支必须是主题从其提示分叉的分支。如果你从一个比提示更老的提交中分叉，
 这个模式将不会找到分叉点(想象在上面的示例历史中B0不存在，origin/master从B1开始，移动到B2，然后B，当origin/master是B1时，
