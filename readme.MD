@@ -216,7 +216,7 @@
 >>
 >> <a id='c9.3' href='#9.3'>9.3 合并策略</a>
 >>>
->>> <a id='cbefore9.3.1' href='#before9.3.1'>补充:合并基础</a>
+>>> <a id='cbefore9.3.1' href='#before9.3.1'>补充:git merge-base</a>
 >>>
 >>> <a id='c9.3.1' href='#9.3.1'>9.3.1 退化合并</a>
 >>>
@@ -5800,13 +5800,13 @@ Git开发人员最初写了一个简单的机制，用合并提交加入两个�
 
 让我们来看看如何应用不同的策略。
 
-#### <a id='before9.3.1' href='#cbefore9.3.1'>补充:合并基础</a>
+#### <a id='before9.3.1' href='#cbefore9.3.1'>补充:git merge-base</a>
 
 
 
 参考自<a href='https://git-scm.com/docs/git-merge-base'>《Pro Git》</a>
 
-或称"合并基"。
+*merge base*或称"合并基"。
 
 **git merge-base：为合并找到尽可能好的公共祖先**
 
