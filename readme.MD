@@ -5732,6 +5732,7 @@ $ git reset --hard ORIG_HEAD
 从Git 1.6.1版本开始，有另一种选择。如果你已经把冲突解决方案搞砸了，并且想再返回到尝试解决前的原始冲突状态，你可以使用git checkout -m命令。
 
 ### <a id='9.3' href='#c9.3'>9.3 合并策略</a>
+
 到目前为止，例子还是很容易处理的，因为只有两个分支。貌似Git特别复杂的DAG形历史和又长又难记的提交ID不是很值得。也许它这么做不是为了这样简单的例子。所以，让我们看看更复杂点的情况。
 
 试想一下，有三个人在你的版本库上工作而不仅仅是一个人。为了简单起见，假设每个开发人员——Alice、Bob和Cal——可以在一个共享的版本库中的三个不同分支提交变更。
@@ -5796,6 +5797,113 @@ Git开发人员最初写了一个简单的机制，用合并提交加入两个�
 参数化并提出了可替代、可配置的合并策略来处理不同的情况。
 
 让我们来看看如何应用不同的策略。
+
+#### <a id='before9.3.1' href='#cbefore9.3.1'>补充:合并基础</a>
+
+
+
+参考自<a href='https://git-scm.com/docs/git-merge-base'>《Pro Git》</a>
+
+或称"合并基"。
+
+**git merge-base：为合并找到尽可能好的公共祖先**
+
+---
+
+##### 语法
+```text
+git merge-base [-a|--all] <commit> <commit>…​
+git merge-base [-a|--all] --octopus <commit>…​
+git merge-base --is-ancestor <commit> <commit>
+git merge-base --independent <commit>…​
+git merge-base --fork-point <ref> [<commit>]
+```
+
+---
+
+##### 描述
+
+找到两个提交之间的最佳公共祖先，以便在三路合并中使用。如果一个共同祖先是前者的祖先，那么一个共同祖先比另一个共同祖先要好。
+没有更好的公共起始点的公共起始点是最佳公共起始点，即合并基。请注意，一对提交可以有多个合并基。
+
+三路合并(three-way merge)：普通合并有三种合并策略，其中一种叫做Recursive策略，这种策略也同样只能处理两个分支， 
+这种策略主要用于要合并的两个分支有多个merge-base的情况， 它首先将多个merge-base合并成一个临时的提交，
+然后再进行三路合并（three-way merge）。
+
+---
+
+##### 操作方式
+
+作为最常见的特殊情况，在命令行上只指定两个提交意味着计算给定的两个提交之间的合并基。
+
+更一般地，在计算合并基的两个提交中，一个由命令行上的第一个提交参数指定;另一个提交是一个(可能是假设的)提交，它跨命令行上所有剩余的提交进行合并。
+
+因此，如果指定了两个以上的提交，合并基不一定包含在每个提交参数中。当与——merge-base选项一起使用时，这与git-show-branch不同。
+
+**--octopus**
+
+计算所有提供的提交的最佳公共祖先，为n路合并做准备。这模仿了git show-branch -merge-base的行为。
+
+
+**--independent**
+
+不是打印合并基，而是打印提供的具有相同祖先的提交的最小子集。换句话说，在给定的提交中，列出不能从任何其他提交到达的提交。
+这模仿了git show-branch -independent的行为。
+
+**--is-ancestor**
+
+Check if the first \<commit> is an ancestor of the second \<commit>, and exit with status 0 if true, or with status 1 if not.
+ Errors are signaled by a non-zero status that is not 1.
+
+检查第一个\<commit>是否是第二个\<commit>的祖先，如果为真退出，则退出状态0，如果不退出，则退出状态1。错误由非0状态(非1)发出信号。
+
+**--fork-point**
+
+Find the point at which a branch (or any history that leads to \<commit>) forked from another branch (or any reference) \<ref>. 
+This does not just look for the common ancestor of the two commits, but also takes into account the reflog of \<ref> to 
+see if the history leading to \<commit> forked from an earlier incarnation of the branch \<ref> (see discussion on this mode below).
+
+找到一个分支(或任何导致<commit>的历史记录)从另一个分支(或任何引用)<ref>分叉的点。这不仅要查找两个提交的共同祖先，还要考虑<ref>的reflog，
+以查看导致<commit>的历史记录是否与<ref>分支的早期版本分叉(请参阅下面关于这种模式的讨论)。
+
+---
+
+##### 选项
+**-a --all**
+
+输出提交的所有合并基，而不是只有一个。
+
+##### 讨论
+
+给定两个提交A和B, git merge-base A B将输出一个提交，A和B可以通过父关系访问该提交。
+
+例如，这种拓扑结构:
+```text
+         o---o---o---B
+        /
+    ---o---1---o---o---o---A
+```
+A和B的合并基是1。
+
+
+给出三个提交A, B和C, git merge-base A B C会计算A和假设提交M之间的merge base，假设提交M是B和C之间的merge。例如，对于这个拓扑:
+
+```text
+    o---o---o---o---C
+          /
+         /   o---o---o---B
+        /   /
+    ---2---1---o---o---o---A
+```
+git merge-base A B C的结果是1。这是因为B和C之间合并提交M的等效拓扑是:
+
+```text
+o---o---o---o----------o
+      /                 \
+     /   o---o---o---o---M
+    /   /
+---2---1---o---o---o---A
+```
 
 #### <a id='9.3.1' href='#c9.3.1'>9.3.1 退化合并</a>
 有两种导致合并的常见退化情况，分别称为已经是最新的（already up-to-date）和快进的（fast-forward）。
