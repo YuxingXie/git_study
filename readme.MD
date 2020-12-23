@@ -5825,10 +5825,15 @@ git merge-base --fork-point <ref> [<commit>]
 
 ##### 描述
 
-找到两个提交之间的最佳公共祖先，以便在三路合并中使用。如果一个共同祖先是前者的祖先，那么一个共同祖先比另一个共同祖先要好。
-没有更好的公共起始点的公共起始点是最佳公共起始点，即合并基。请注意，一对提交可以有多个合并基。
+**git merge-base** finds best common ancestor(s) between two commits to use in a three-way merge. One common ancestor is 
+better than another common ancestor if the latter is an ancestor of the former. A common ancestor that does not have any 
+better common ancestor is a best common ancestor, i.e. a merge base. 
+Note that there can be more than one merge base for a pair of commits.
 
-三路合并(three-way merge)：普通合并有三种合并策略，其中一种叫做Recursive策略，这种策略也同样只能处理两个分支， 
+**git merge-base**找到两个提交之间的最佳公共祖先，以便在三路合并中使用。两个祖先里,如果后者是前者的祖先那么前者好过后者(译注:越年轻的祖先越好)。
+没有更好的公共起始点的公共起始点(译注:最年轻的共同祖先)是最佳公共起始点，即合并基。请注意，一对提交可以有多个合并基。
+
+**NOTE**:三路合并(three-way merge)：普通合并有三种合并策略，其中一种叫做Recursive策略，这种策略也同样只能处理两个分支， 
 这种策略主要用于要合并的两个分支有多个merge-base的情况， 它首先将多个merge-base合并成一个临时的提交，
 然后再进行三路合并（three-way merge）。
 
