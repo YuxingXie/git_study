@@ -5841,7 +5841,7 @@ Note that there can be more than one merge base for a pair of commits.
 **git merge-base**找到两个提交之间的最佳公共祖先，以便在三路合并中使用。两个祖先里,如果后者是前者的祖先那么前者好过后者(译注:越年轻的祖先越好)。
 没有更好的公共起始点的公共起始点(译注:最年轻的共同祖先)是最佳公共起始点，即合并基。请注意，一对提交可以有多个合并基。
 
-**NOTE**:三路合并(three-way merge)：普通合并有三种合并策略，其中一种叫做Recursive策略，这种策略也同样只能处理两个分支， 
+**NOTE**:三路合并(three-way merge)：普通合并有三种合并策略，其中一种叫做Recursive(递归)策略，这种策略也同样只能处理两个分支， 
 这种策略主要用于要合并的两个分支有多个merge-base的情况， 它首先将多个merge-base合并成一个临时的提交，
 然后再进行三路合并（three-way merge）。
 
