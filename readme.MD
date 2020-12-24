@@ -5814,8 +5814,8 @@ Git开发人员最初写了一个简单的机制，用合并提交加入两个�
 
 **git merge-base：为合并找到尽可能好的公共祖先**
 
-**NOTE**:*为什么合并需要一个合并基呢？此时我并没有答案，我甚至疑惑为什么需要合并基？因为两个分支合并，拿两个分支的HEAD对比一下不就可以合并了吗？
-所以我将带着这个疑问研究下去。*
+**NOTE**:*为什么合并需要一个合并基呢？此时我并没有答案，我甚至疑惑为什么需要合并基？因为无论几个分支合并，
+拿这几个分支的HEAD对比一下不就可以合并了吗？所以我将带着这个疑问研究下去。*
 
 
 ---
@@ -5853,7 +5853,7 @@ Note that there can be more than one merge base for a pair of commits.
 
 更一般地，在计算合并基的两个提交中，一个由命令行上的第一个提交参数指定;另一个提交是一个(可能是假设的)提交，它跨命令行上所有剩余的提交进行合并。
 
-因此，如果指定了两个以上的提交，合并基不一定包含在每个提交参数中。当与——merge-base选项一起使用时，这与git-show-branch不同。
+因此，如果指定了两个以上的提交，合并基不一定包含在每个提交参数中。当与 **--merge-base**选项一起使用时，这与 **git-show-branch**不同。
 
 **--octopus**
 
@@ -5884,9 +5884,12 @@ see if the history leading to \<commit> forked from an earlier incarnation of th
 ---
 
 #### 选项
+
 **-a --all**
 
 输出提交的所有合并基，而不是只有一个。
+
+---
 
 #### 讨论
 
@@ -5908,7 +5911,7 @@ A和B的合并基是1。
 
 ![](https://github.com/YuxingXie/git_study/raw/master/assets/image/before09-03-01-03.png)
 
-**git merge-base A M**的结果是1。Commit 2也是a和M之间的公共祖先，但是1是更好的公共祖先，因为2是1的祖先。因此，2不是归并基。
+**git merge-base A M**的结果是1。Commit 2也是a和M之间的公共祖先，但是1是更好的公共祖先，因为2是1的祖先。因此，2不是合并基。
 
 **git merge-base --octopus A B C**的结果是2，因为2是所有提交的最佳公共祖先。
 
