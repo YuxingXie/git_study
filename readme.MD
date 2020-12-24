@@ -5849,13 +5849,13 @@ Note that there can be more than one merge base for a pair of commits.
 
 **--octopus**
 
-计算所有提供的提交的最佳公共祖先，为n路合并做准备。这模仿了git show-branch -merge-base的行为。
+计算所有提供的提交的最佳公共祖先，为n路合并做准备。这模仿了**git show-branch -merge-base**的行为。
 
 
 **--independent**
 
 不是打印合并基，而是打印提供的具有相同祖先的提交的最小子集。换句话说，在给定的提交中，列出不能从任何其他提交到达的提交。
-这模仿了git show-branch -independent的行为。
+这模仿了**git show-branch -independent**的行为。
 
 **--is-ancestor**
 
@@ -5870,8 +5870,8 @@ Find the point at which a branch (or any history that leads to \<commit>) forked
 This does not just look for the common ancestor of the two commits, but also takes into account the reflog of \<ref> to 
 see if the history leading to \<commit> forked from an earlier incarnation of the branch \<ref> (see discussion on this mode below).
 
-找到一个分支(或任何导致<commit>的历史记录)从另一个分支(或任何引用)<ref>分叉的点。这不仅要查找两个提交的共同祖先，还要考虑<ref>的reflog，
-以查看导致<commit>的历史记录是否与<ref>分支的早期版本分叉(请参阅下面关于这种模式的讨论)。
+找到一个分支(或任何导致<commit>的历史记录)从另一个分支(或任何引用)<ref>分叉的点。这不仅要查找两个提交的共同祖先，还要考虑\<ref>的reflog，
+以查看导致\<commit>的历史记录是否与\<ref>分支的早期版本分叉(请参阅下面关于这种模式的讨论)。
 
 ---
 
@@ -5882,7 +5882,7 @@ see if the history leading to \<commit> forked from an earlier incarnation of th
 
 #### 讨论
 
-给定两个提交A和B, git merge-base A B将输出一个提交，A和B可以通过父关系访问该提交。
+给定两个提交A和B, **git merge-base A B**将输出一个提交，A和B可以通过父关系访问该提交。
 
 例如，这种拓扑结构:
 
@@ -5891,11 +5891,11 @@ see if the history leading to \<commit> forked from an earlier incarnation of th
 A和B的合并基是1。
 
 
-给出三个提交A, B和C, git merge-base A B C会计算A和假设提交M之间的merge base，假设提交M是B和C之间的merge。例如，对于这个拓扑:
+给出三个提交A, B和C, **git merge-base A B C**会计算A和假设提交M之间的merge base，假设提交M是B和C之间的merge。例如，对于这个拓扑:
 
 ![](https://github.com/YuxingXie/git_study/raw/master/assets/image/before09-03-01-02.png)
 
-git merge-base A B C的结果是1。这是因为B和C之间合并提交M的等效拓扑是:
+**git merge-base A B C**的结果是1。这是因为B和C之间合并提交M的等效拓扑是:
 
 
 ![](https://github.com/YuxingXie/git_study/raw/master/assets/image/before09-03-01-03.png)
@@ -5936,7 +5936,7 @@ fi
 
 ![](https://github.com/YuxingXie/git_study/raw/master/assets/image/before09-03-01-05.png)
 
-rigin/master曾经指向提交B0, B1, B2，现在它指向B，当origin/master在B0时，你的主题分支在它上面开始，你在它上面构建了三个提交，D0, D1，和D。
+origin/master曾经指向提交B0, B1, B2，现在它指向B，当origin/master在B0时，你的主题分支在它上面开始，你在它上面构建了三个提交，D0, D1，和D。
 假设您现在想要在更新的origin/master之上重新构建您在**topic**上所做的工作。
 
 在这种情况下，**git merge-base origin/master topic**将返回上面图片中的B0的父类，
