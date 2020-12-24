@@ -5812,7 +5812,7 @@ Git开发人员最初写了一个简单的机制，用合并提交加入两个�
 
 ---
 
-##### 语法
+#### 语法
 ```text
 git merge-base [-a|--all] <commit> <commit>…​
 git merge-base [-a|--all] --octopus <commit>…​
@@ -5823,7 +5823,7 @@ git merge-base --fork-point <ref> [<commit>]
 
 ---
 
-##### 描述
+#### 描述
 
 **git merge-base** finds best common ancestor(s) between two commits to use in a three-way merge. One common ancestor is 
 better than another common ancestor if the latter is an ancestor of the former. A common ancestor that does not have any 
@@ -5839,7 +5839,7 @@ Note that there can be more than one merge base for a pair of commits.
 
 ---
 
-##### 操作方式
+#### 操作方式
 
 作为最常见的特殊情况，在命令行上只指定两个提交意味着计算给定的两个提交之间的合并基。
 
@@ -5875,12 +5875,12 @@ see if the history leading to \<commit> forked from an earlier incarnation of th
 
 ---
 
-##### 选项
+#### 选项
 **-a --all**
 
 输出提交的所有合并基，而不是只有一个。
 
-##### 讨论
+#### 讨论
 
 给定两个提交A和B, git merge-base A B将输出一个提交，A和B可以通过父关系访问该提交。
 
@@ -5929,7 +5929,7 @@ then
 fi
 ```
 
-##### 关于 fork-point模式的讨论
+#### 关于 fork-point模式的讨论
 
 在使用**git switch -c topic origin/master**创建的**topic**分支后，远程跟踪分支origin/master 的历史可能被重绕和重建，导致了这种形状的历史:
 
