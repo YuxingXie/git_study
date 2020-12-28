@@ -5772,12 +5772,12 @@ better than another common ancestor if the latter is an ancestor of the former. 
 better common ancestor is a best common ancestor, i.e. a merge base. 
 Note that there can be more than one merge base for a pair of commits.
 
-**git merge-base**找到两个提交之间的最佳公共祖先，以便在三路合并中使用。两个祖先里,如果后者是前者的祖先那么前者好过后者(译注:越年轻的祖先越好)。
+**git merge-base**找到两个提交之间的最佳公共祖先，以便在三方合并中使用。两个祖先里,如果后者是前者的祖先那么前者好过后者(译注:越年轻的祖先越好)。
 没有更好的公共起始点的公共起始点(译注:最年轻的共同祖先)是最佳公共起始点，即合并基。请注意，一对提交可以有多个合并基。
 
-**NOTE**:三路合并(three-way merge)：普通合并有三种合并策略，其中一种叫做Recursive(递归)策略，这种策略也同样只能处理两个分支， 
+**NOTE**:三方合并(three-way merge)：普通合并有三种合并策略，其中一种叫做Recursive(递归)策略，这种策略也同样只能处理两个分支， 
 这种策略主要用于要合并的两个分支有多个merge-base的情况， 它首先将多个merge-base合并成一个临时的提交，
-然后再进行三路合并（three-way merge）。
+然后再进行三方合并（three-way merge）。
 
 ---
 
@@ -6006,7 +6006,7 @@ Git开发人员最初写了一个简单的机制，用合并提交加入两个�
 
 #### <a id='9.3.1' href='#c9.3.1'>9.3.1 退化合并</a>
 有两种导致合并的常见退化情况，分别称为**已经是最新的**（already up-to-date）和**快进的**（fast-forward）。
-因为这些情况下执行git merge <a href='#tag9.1' id='remark9.1'>①</a> 后实际上都不引入一个合并提交，所以有些人可能认为它们不是真正的合并策略。
+因为这些情况下执行git merge <a href='#tag9.1' id='remark9.1'>①</a> 后实际上*都不引入一个合并提交*，所以有些人可能认为它们不是真正的合并策略。
 
 **已经是最新的**。 当来自其他分支（HEAD）的所有提交都存在于目标分支上时，即使它已经在它自己的分支上前进了，目标分支还是已经更新到最新的。因此，没有新的提交添加到你的分支上。
 例如，如果进行一次合并，然后立即提出一次完全相同的合并请求，就会告知你分支已经是最新的。
