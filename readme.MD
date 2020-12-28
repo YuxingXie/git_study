@@ -213,10 +213,10 @@
 >>> <a id='c9.2.4' href='#9.2.4'>9.2.4 结束解决冲突</a>
 >>>
 >>> <a id='c9.2.5' href='#9.2.5'>9.2.5 终止或重新启动合并</a>
+>>>
+>>> <a id='cbefore9.3' href='#before9.3'>补充:git merge-base</a>
 >>
 >> <a id='c9.3' href='#9.3'>9.3 合并策略</a>
->>>
->>> <a id='cbefore9.3.1' href='#before9.3.1'>补充:git merge-base</a>
 >>>
 >>> <a id='c9.3.1' href='#9.3.1'>9.3.1 退化合并</a>
 >>>
@@ -5733,10 +5733,10 @@ $ git reset --hard ORIG_HEAD
 
 从Git 1.6.1版本开始，有另一种选择。如果你已经把冲突解决方案搞砸了，并且想再返回到尝试解决前的原始冲突状态，你可以使用git checkout -m命令。
 
-### <a id='9.3' href='#c9.3'>9.3 合并策略</a>
 
+#### <a id='before9.3' href='#cbefore9.3'>补充:git merge-base</a>
 
-#### <a id='before9.3.1' href='#cbefore9.3.1'>补充:git merge-base</a>
+在开始9.3小节之前先补充该命令知识。
 
 参考自<a href='https://git-scm.com/docs/git-merge-base'>《Pro Git》</a>
 
@@ -5922,6 +5922,10 @@ but the --fork-point mode will not, because it is not one of the commits that us
 这个模式将不会找到分叉点(想象在上面的示例历史中B0不存在，origin/master从B1开始，移动到B2，然后B，当origin/master是B1时，
 你在origin/master^分叉你的topic;历史的形状将上面的一样,如果没有B0, B1的父母是**git merge-base origin/master topic**正确找到的,
 但是——fork-point模式不会,但是——fork-point模式不会找到，因为它不是origin/master尖端的提交之一)。
+
+
+
+### <a id='9.3' href='#c9.3'>9.3 合并策略</a>
 
 
 到目前为止，例子还是很容易处理的，因为只有两个分支。貌似Git特别复杂的DAG形历史和又长又难记的提交ID不是很值得。也许它这么做不是为了这样简单的例子。所以，让我们看看更复杂点的情况。
